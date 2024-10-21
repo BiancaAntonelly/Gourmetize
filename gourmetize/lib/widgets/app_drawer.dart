@@ -30,30 +30,40 @@ class AppDrawer extends StatelessWidget {
       ),
       drawer: Drawer(
         child: Container(
-          color: const Color(0xFF4D281E),  
-          padding:  EdgeInsets.zero,
+          color: const Color(0xFF4D281E),
+          padding: EdgeInsets.zero,
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
               const SizedBox(height: 150),
               ListTile(
-                leading: const Icon(Icons.home, color: Colors.white), 
+                leading: const Icon(Icons.home, color: Colors.white),
                 title: const Text(
                   'Receitas',
-                  style: TextStyle(color: Colors.white), 
+                  style: TextStyle(color: Colors.white),
                 ),
                 onTap: () {
                   context.go('/');
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.person, color: Colors.white), 
+                leading: const Icon(Icons.person, color: Colors.white),
                 title: const Text(
                   'Perfil',
-                  style: TextStyle(color: Colors.white), 
+                  style: TextStyle(color: Colors.white),
                 ),
                 onTap: () {
                   context.go('/perfil');
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.home, color: Colors.white),
+                title: const Text(
+                  'Login',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onTap: () {
+                  context.go('/login');
                 },
               ),
             ],
