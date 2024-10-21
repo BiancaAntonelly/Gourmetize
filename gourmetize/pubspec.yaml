@@ -30,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_svg: ^2.0.0
+  font_awesome_flutter: ^10.0.0
   go_router: ^14.2.7
 
   # The following adds the Cupertino Icons font to your application.
@@ -61,6 +63,15 @@ flutter:
   assets:
     - assets/background.jpeg
     - assets/icone.png
+    - assets/revenues.svg
+    - assets/register_recipe.svg
+    - assets/my_reviews.svg
+    - assets/my_recipes.svg
+    - assets/all_recipies.svg
+    - assets/fork_and_knife.svg
+    - assets/home.svg
+    - assets/person.svg
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
