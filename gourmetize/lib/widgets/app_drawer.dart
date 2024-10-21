@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gourmetize/screens/nova_avaliacao.dart';
 
 class AppDrawer extends StatelessWidget {
   final Widget body;
@@ -13,6 +14,14 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void openNovaAvaliacao() {
+      showModalBottomSheet(
+        context: context,
+        builder: (context) => NovaAvaliacao(),
+        backgroundColor: Colors.transparent,
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -70,7 +79,11 @@ class AppDrawer extends StatelessWidget {
           ),
         ),
       ),
-      body: body, // O conteúdo principal da tela
+      body: body,
+      floatingActionButton: FloatingActionButton(
+        onPressed: openNovaAvaliacao,
+        child: Icon(Icons.star, color: Colors.yellow),
+      ), // O conteúdo principal da tela
     );
   }
 }
