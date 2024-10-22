@@ -60,17 +60,13 @@ class Home extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Center(
-              child: Text(
+            Text(
               'Bem vindos ao Gourmetize',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
             ),
-            const Center(
-              child: Text(
+            const Text(
               'Olá, Fulano! Que bom que você está de volta!',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
             ),
             const SizedBox(height: 20),
             const Text(
