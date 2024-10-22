@@ -1,4 +1,3 @@
-import 'ingrediente.dart';
 import 'usuario.dart';
 
 class Receita {
@@ -6,7 +5,7 @@ class Receita {
   int id;
   String nome;
   String descricao;
-  List<Ingrediente> ingredientes = [];
+  String ingredientes;
  
   Receita({
     required this.id,
