@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gourmetize/widgets/app_drawer.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/widgets/styled_text.dart';
+import 'package:gourmetize/widgets/receita_card.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
@@ -85,15 +86,7 @@ class Home extends StatelessWidget {
                       itemCount: _receitas.length,
                       itemBuilder: (ctx, index) {
                         final receita = _receitas[index];
-                        return Card(
-                          child: ListTile(
-                            title: Text(receita.nome),
-                            subtitle: Text(receita.descricao),
-                            onTap: () {
-                              // Ação ao clicar na receita
-                            },
-                          ),
-                        );
+                        return ReceitaCard(receita: receita);
                       },
                     ),
                   ),
