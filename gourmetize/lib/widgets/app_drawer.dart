@@ -30,7 +30,7 @@ class AppDrawer extends StatelessWidget {
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: const Icon(Icons.menu),
+              icon: Icon(Icons.menu, color: Theme.of(context).colorScheme.secondary),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },

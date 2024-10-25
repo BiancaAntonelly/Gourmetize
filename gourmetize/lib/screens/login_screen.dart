@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Opacity(
             opacity: 0.8, // Definindo a opacidade para 50%
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/background.jpeg'),
                   fit: BoxFit.cover,
@@ -51,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 80),
                 TextField(
                   controller: _emailController,
-                  style: TextStyle(color: Color(0xFF5E3023)),
+                  style: const TextStyle(color: Color(0xFF5E3023)),
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.email, color: Colors.orange),
@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 20),
                 TextField(
                   controller: _passwordController,
-                  style: TextStyle(color: Color(0xFF5E3023)),
+                  style: const TextStyle(color: Color(0xFF5E3023)),
                   obscureText: true,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.lock, color: Colors.orange),

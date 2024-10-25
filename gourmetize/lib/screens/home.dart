@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gourmetize/widgets/app_drawer.dart';
 import 'package:gourmetize/model/receita.dart';
+import 'package:gourmetize/widgets/styled_text.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
@@ -69,10 +70,7 @@ class Home extends StatelessWidget {
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Receitas',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+            const StyledText(title: "Receitas"),
             const SizedBox(height: 16), // Espaçamento entre o título e a lista
             _receitas.isEmpty
                 ? const Center(

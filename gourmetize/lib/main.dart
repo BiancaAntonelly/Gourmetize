@@ -18,6 +18,7 @@ void main() {
         primaryColor: const Color(
           0xFFFFCC00,
         ),
+        secondaryHeaderColor: const Color(0xFF4D281E),
       ),
     ),
   );
