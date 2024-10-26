@@ -71,6 +71,7 @@ flutter:
     - assets/fork_and_knife.svg
     - assets/home.svg
     - assets/person.svg
+    - assets/receita-meta2.jpeg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
