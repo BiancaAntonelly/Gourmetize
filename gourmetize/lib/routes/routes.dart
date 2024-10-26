@@ -2,8 +2,8 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:gourmetize/screens/home.dart';
 import 'package:gourmetize/screens/perfil.dart';
-import 'package:gourmetize/screens/login_screen.dart';
-import 'package:gourmetize/screens/RegisterScreen.dart';
+import 'package:gourmetize/screens/login.dart';
+import 'package:gourmetize/screens/register_user.dart';
 import 'package:gourmetize/screens/RegisterRevenue.dart';
 
 final GoRouter myRouter = GoRouter(
@@ -23,7 +23,7 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/login',
       builder: (BuildContext context, GoRouterState state) {
-        return const LoginScreen();
+        return const Login();
       },
     ),
     GoRoute(
@@ -31,12 +31,12 @@ final GoRouter myRouter = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         return const RegisterRevenue();
       },
-    )
-    //GoRoute(
-    //  path: '/register',
-    //  builder: (BuildContext context, GoRouterState state) {
-    //   return const RegisterScreen(); // Tela de Cadastro
-    // },
-    //),
+    ),
+    GoRoute(
+      path: '/register',
+      builder: (BuildContext context, GoRouterState state) {
+        return RegisterUser();
+      },
+    ),
   ],
 );
