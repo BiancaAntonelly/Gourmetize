@@ -18,7 +18,7 @@ class AppDrawer extends StatelessWidget {
     void openNovaAvaliacao() {
       showModalBottomSheet(
         context: context,
-        builder: (context) => NovaAvaliacao(),
+        builder: (context) => const NovaAvaliacao(),
         backgroundColor: Colors.transparent,
       );
     }
@@ -27,6 +27,8 @@ class AppDrawer extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
         backgroundColor: Colors.white,
+        shadowColor: Colors.grey,
+        surfaceTintColor: const Color.fromRGBO(163, 101, 83, 100),
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -37,6 +39,17 @@ class AppDrawer extends StatelessWidget {
             );
           },
         ),
+        actions: [
+          Container(
+            padding: const EdgeInsets.fromLTRB(0, 0, 20, 5),
+            child: Image.asset(
+              'assets/icone.png',
+              fit: BoxFit.cover,
+              height: 36,
+              width: 36,
+            ),
+          )
+        ],
       ),
       drawer: Drawer(
         child: Container(
