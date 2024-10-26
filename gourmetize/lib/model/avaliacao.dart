@@ -5,12 +5,10 @@ class Avaliacao {
   int idUsuario;
   int idReceita;
 
-  Avaliacao({
-    required this.id,
-    required this.nota,
-    required this.comentario,
-    required this.idUsuario,
-    required this.idReceita
-  });
-
+  Avaliacao(
+      {required this.id,
+      required this.nota,
+      required this.comentario,
+      required this.idUsuario,
+      required this.idReceita});
 }

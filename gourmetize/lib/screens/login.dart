@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gourmetize/widgets/logo.dart';
 
 class Login extends StatelessWidget {
@@ -18,7 +19,7 @@ class Login extends StatelessWidget {
             image: AssetImage('assets/background.jpeg'),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5), // Aplicando opacidade
+              Colors.black.withOpacity(0.5), // Ajuste a opacidade aqui
               BlendMode.darken,
             ),
           ),
@@ -182,12 +183,10 @@ class Login extends StatelessWidget {
       );
     } else {
       print('Tentando fazer login com email: $email e senha: $senha');
-      // Aqui você pode adicionar a lógica para autenticar o usuário
     }
   }
 
   void _navigateToSignup(BuildContext context) {
-    // Aqui você pode implementar a navegação para a tela de cadastro
-    print('Navegando para a tela de cadastro');
+    context.go('/register');
   }
 }
