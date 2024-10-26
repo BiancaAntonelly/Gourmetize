@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gourmetize/widgets/app_drawer.dart';
 import 'package:gourmetize/model/receita.dart';
+import 'package:gourmetize/widgets/styled_text.dart';
+import 'package:gourmetize/widgets/receita_card.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
@@ -9,7 +11,7 @@ class Home extends StatelessWidget {
     Receita(
       id: 1,
       nome: 'Bolo de cenoura',
-      descricao: 'Bolo de cenoura com cobertura de chocolate',
+      descricao: 'Bolo de cenoura com cobertura de chocolate. E eu vou colocar uma descrição bem grande aqui para ver como a tela se comporta com um texto bem grande. Quero ver se ocupa mais de uma linha automaticamente.',
       ingredientes:
           '1 Cenoura \n 2kg farinha de trigo \n 500G de açúcar \n 4 ovos \n 1l óleo \n 100g manteiga \n 1l leite',
     ),
@@ -69,10 +71,7 @@ class Home extends StatelessWidget {
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Receitas',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+            const StyledText(title: "Receitas"),
             const SizedBox(height: 16), // Espaçamento entre o título e a lista
             _receitas.isEmpty
                 ? const Center(
@@ -87,15 +86,7 @@ class Home extends StatelessWidget {
                       itemCount: _receitas.length,
                       itemBuilder: (ctx, index) {
                         final receita = _receitas[index];
-                        return Card(
-                          child: ListTile(
-                            title: Text(receita.nome),
-                            subtitle: Text(receita.descricao),
-                            onTap: () {
-                              // Ação ao clicar na receita
-                            },
-                          ),
-                        );
+                        return ReceitaCard(receita: receita);
                       },
                     ),
                   ),
