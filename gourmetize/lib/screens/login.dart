@@ -11,46 +11,58 @@ class Login extends StatelessWidget {
     final TextEditingController _passwordController = TextEditingController();
     final screenSize = MediaQuery.of(context).size;
 
+    // Definindo proporções para fontes e espaçamentos
+    final double baseFontSize = screenSize.width * 0.05;
+    final double logoSize = screenSize.height * 0.11;
+    final double buttonFontSize = screenSize.width * 0.045;
+    final double inputHeight = screenSize.height * 0.07;
+
     return Scaffold(
-      backgroundColor: Color(0xFF5E3023),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/background.jpeg'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5), // Ajuste a opacidade aqui
-              BlendMode.darken,
+      backgroundColor: const Color(0xFF5E3023),
+      body: SingleChildScrollView(
+        // Permite rolagem
+        child: Container(
+          height: screenSize.height, // Mantém o tamanho da tela
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: const AssetImage('assets/background.jpeg'),
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.5),
+                BlendMode.darken,
+              ),
             ),
           ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: screenSize.width * 0.1,
-            vertical: screenSize.height * 0.1,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  LogoWidget(size: screenSize.height * 0.11),
-                  const SizedBox(height: 5),
-                  const Text(
-                    'COOKING',
-                    style: TextStyle(
-                      fontSize: 72.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: screenSize.width * 0.1,
+              vertical: screenSize.height * 0.1,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    LogoWidget(size: logoSize),
+                    SizedBox(height: screenSize.height * 0.01),
+                    Text(
+                      'Gourmetize',
+                      style: TextStyle(
+                        fontSize: baseFontSize * 2.5, // Fonte responsiva
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 150),
-              _buildTextFields(_emailController, _passwordController),
-              const SizedBox(height: 40),
-              _buildButtons(context, _emailController, _passwordController),
-            ],
+                  ],
+                ),
+                SizedBox(height: screenSize.height * 0.1),
+                _buildTextFields(
+                    _emailController, _passwordController, inputHeight),
+                SizedBox(height: screenSize.height * 0.05),
+                _buildButtons(context, _emailController, _passwordController,
+                    buttonFontSize),
+              ],
+            ),
           ),
         ),
       ),
@@ -58,7 +70,7 @@ class Login extends StatelessWidget {
   }
 
   Widget _buildTextFields(TextEditingController emailController,
-      TextEditingController passwordController) {
+      TextEditingController passwordController, double inputHeight) {
     return Column(
       children: [
         _buildCustomTextField(
@@ -66,20 +78,22 @@ class Login extends StatelessWidget {
           hintText: 'E-mail',
           icon: Icons.email,
           obscureText: false,
+          height: inputHeight,
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: inputHeight * 0.2),
         _buildCustomTextField(
           controller: passwordController,
           hintText: 'Senha',
           icon: Icons.lock,
           obscureText: true,
+          height: inputHeight,
         ),
         Align(
           alignment: Alignment.centerLeft,
-          child: const Text(
-            'Esqueci minha senha',
+          child: Text(
+            ' Esqueci minha senha',
             style: TextStyle(
-              fontSize: 18.0,
+              fontSize: inputHeight * 0.25,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
@@ -94,9 +108,10 @@ class Login extends StatelessWidget {
     required String hintText,
     required IconData icon,
     required bool obscureText,
+    required double height,
   }) {
     return Container(
-      height: 60,
+      height: height,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
@@ -111,9 +126,9 @@ class Login extends StatelessWidget {
       ),
       child: TextField(
         controller: controller,
-        style: const TextStyle(
-          color: Color(0xFF5E3023),
-          fontSize: 15.0,
+        style: TextStyle(
+          color: const Color(0xFF5E3023),
+          fontSize: height * 0.3, // Fonte responsiva dentro do campo
         ),
         keyboardType: obscureText
             ? TextInputType.visiblePassword
@@ -121,11 +136,11 @@ class Login extends StatelessWidget {
         obscureText: obscureText,
         textAlign: TextAlign.start,
         decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Colors.orange),
+          prefixIcon: Icon(icon, color: Colors.orange, size: height * 0.3),
           hintText: hintText,
           filled: false,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 18.0, horizontal: 15.0),
+          contentPadding: EdgeInsets.symmetric(
+              vertical: height * 0.3, horizontal: height * 0.2),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide.none,
@@ -138,34 +153,42 @@ class Login extends StatelessWidget {
   Widget _buildButtons(
       BuildContext context,
       TextEditingController emailController,
-      TextEditingController passwordController) {
+      TextEditingController passwordController,
+      double buttonFontSize) {
     return Column(
       children: [
-        _buildButton('Entrar',
-            () => _login(context, emailController, passwordController)),
-        const SizedBox(height: 12),
-        _buildButton('Realizar cadastro', () => _navigateToSignup(context)),
+        _buildButton(
+          'Entrar',
+          () => _login(context, emailController, passwordController),
+          buttonFontSize,
+        ),
+        SizedBox(height: buttonFontSize * 0.5),
+        _buildButton(
+          'Realizar cadastro',
+          () => _navigateToSignup(context),
+          buttonFontSize,
+        ),
       ],
     );
   }
 
-  Widget _buildButton(String text, VoidCallback onPressed) {
+  Widget _buildButton(String text, VoidCallback onPressed, double fontSize) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.orange,
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.symmetric(vertical: fontSize * 0.8),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
         ),
         child: Text(
           text,
-          style: const TextStyle(
-            fontSize: 18,
-            color: Color(0xFF5E3023),
+          style: TextStyle(
+            fontSize: fontSize,
+            color: const Color(0xFF5E3023),
           ),
         ),
       ),
