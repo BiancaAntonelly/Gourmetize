@@ -86,10 +86,10 @@ class AppDrawer extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  context.go('/login');
+                  context.go('/');
                 },
               ),
-              ListTile(
+              /*ListTile(
                 leading: SvgPicture.asset(
                   'assets/all_recipies.svg',
                   width: 28,
@@ -105,7 +105,7 @@ class AppDrawer extends StatelessWidget {
                 onTap: () {
                   context.go('/');
                 },
-              ),
+              ),*/
               ListTile(
                 leading: SvgPicture.asset(
                   'assets/revenues.svg',
@@ -137,7 +137,7 @@ class AppDrawer extends StatelessWidget {
                   style: TextStyle(color: Colors.white, fontSize: 13),
                 ),
                 onTap: () {
-                  context.go('/');
+                  context.go('/receitas-usuario');
                 },
               ),
               ListTile(

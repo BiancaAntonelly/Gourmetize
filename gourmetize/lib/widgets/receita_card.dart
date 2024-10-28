@@ -5,12 +5,14 @@ import 'package:gourmetize/screens/visualizar_receita.dart';
 
 class ReceitaCard extends StatelessWidget {
   final Receita _receita;
-  final VoidCallback onDelete; // Callback para deleção
+  final VoidCallback? onDelete;
+  final bool mostrarOpcoes;
 
   const ReceitaCard({
     super.key,
     required Receita receita,
-    required this.onDelete,
+    this.onDelete,
+    this.mostrarOpcoes = false,
   }) : _receita = receita;
 
   List<String> _obterIngredientesEmLista() {
@@ -23,7 +25,7 @@ class ReceitaCard extends StatelessWidget {
   Future<void> _showDeleteConfirmationDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // Usuário deve pressionar um botão para sair
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirmar Deleção'),
@@ -32,14 +34,14 @@ class ReceitaCard extends StatelessWidget {
             TextButton(
               child: const Text('Cancelar'),
               onPressed: () {
-                Navigator.of(context).pop(); // Fecha o diálogo
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
               child: const Text('Deletar'),
               onPressed: () {
-                onDelete(); // Chama a função de deleção
-                Navigator.of(context).pop(); // Fecha o diálogo
+                if (onDelete != null) onDelete!();
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -55,9 +57,9 @@ class ReceitaCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) {
-              return VisualizarReceita(receita: _receita);
-            },
+          builder: (context) {
+            return VisualizarReceita(receita: _receita);
+          },
         ));
       },
       child: Card(
@@ -97,21 +99,25 @@ class ReceitaCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
-                                child: Text(
-                                  _receita.titulo.toUpperCase(),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).colorScheme.secondary,
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 10),
+                                  child: Text(
+                                    _receita.titulo.toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                    ),
                                   ),
                                 ),
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () => _showDeleteConfirmationDialog(context),
-                                tooltip: 'Deletar receita',
-                                color: Colors.red,
-                              ),
+                              if (mostrarOpcoes) // Verifica se mostrarOpcoes é verdadeiro
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () => _showDeleteConfirmationDialog(context),
+                                  tooltip: 'Deletar receita',
+                                  color: Colors.red,
+                                ),
                             ],
                           ),
                           Container(
