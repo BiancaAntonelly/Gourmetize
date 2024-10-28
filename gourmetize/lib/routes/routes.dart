@@ -1,19 +1,22 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
+import 'package:gourmetize/screens/register_revenue.dart';
 import 'package:gourmetize/screens/avaliacoes.dart';
 import 'package:gourmetize/screens/home.dart';
 import 'package:gourmetize/screens/perfil.dart';
 import 'package:gourmetize/screens/login.dart';
 import 'package:gourmetize/screens/register_user.dart';
-import 'package:gourmetize/screens/RegisterRevenue.dart';
+
+import '../main.dart';
 
 final GoRouter myRouter = GoRouter(
   routes: <RouteBase>[
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
-        return Home();
+        final mainAppState = context.findAncestorStateOfType<MyAppState>();
+        return Home(receitas: mainAppState!.receitas);
       },
     ),
     GoRoute(
@@ -31,7 +34,10 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/cadastrar-receita',
       builder: (BuildContext context, GoRouterState state) {
-        return const RegisterRevenue();
+        final mainAppState = context.findAncestorStateOfType<MyAppState>();
+        return RegisterRevenue(
+          onCadastrarReceita: mainAppState!.adicionarReceita,
+        );
       },
     ),
     GoRoute(

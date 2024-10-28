@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gourmetize/widgets/app_drawer.dart';
 
 class RegisterRevenue extends StatelessWidget {
-  const RegisterRevenue({super.key});
+  final Function(String, String, String, String) onCadastrarReceita;
+
+  const RegisterRevenue({super.key, required this.onCadastrarReceita});
 
   @override
   Widget build(BuildContext context) {
+    // Controladores para capturar os inputs do formulário
+    final TextEditingController tituloController = TextEditingController();
+    final TextEditingController ingredientesController = TextEditingController();
+    final TextEditingController descricaoController = TextEditingController();
+    final TextEditingController preparoController = TextEditingController();
+
     return AppDrawer(
       title: 'Cadastrar Receita',
       body: Padding(
@@ -24,18 +33,19 @@ class RegisterRevenue extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               TextFormField(
-                decoration: InputDecoration(
+                controller: tituloController,
+                decoration: const InputDecoration(
                   hintText: 'Digite o título da sua receita',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                    borderSide: BorderSide(color: Colors.brown), // Borda quando não focada
+                    borderSide: BorderSide(color: Colors.brown),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                    borderSide: BorderSide(color: Colors.brown, width: 2), // Borda quando focada
+                    borderSide: BorderSide(color: Colors.brown, width: 2),
                   ),
                 ),
               ),
@@ -50,8 +60,9 @@ class RegisterRevenue extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               TextFormField(
+                controller: ingredientesController,
                 maxLines: 4,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Informe os ingredientes separados por uma quebra de linha',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -77,8 +88,9 @@ class RegisterRevenue extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               TextFormField(
+                controller: descricaoController,
                 maxLines: 4,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Informe uma breve descrição para ser mostrada na listagem de receitas',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -104,8 +116,9 @@ class RegisterRevenue extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               TextFormField(
+                controller: preparoController,
                 maxLines: 4,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Informe o modo de preparo da sua receita separando os passos por uma quebra de linha',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -124,12 +137,20 @@ class RegisterRevenue extends StatelessWidget {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    // Ação de cadastrar receita
+                    // Chamando a função callback ao pressionar o botão
+                    onCadastrarReceita(
+                      tituloController.text,
+                      ingredientesController.text,
+                      descricaoController.text,
+                      preparoController.text,
+                    );
+
+                    // Redirecionar para a tela inicial após o cadastro
+                    GoRouter.of(context).go('/');
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.brown, // Cor do botão
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 15), // Tamanho do botão
+                    backgroundColor: Colors.brown,
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
@@ -140,6 +161,8 @@ class RegisterRevenue extends StatelessWidget {
                   ),
                 ),
               ),
+
+
             ],
           ),
         ),

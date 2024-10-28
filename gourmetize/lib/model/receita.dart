@@ -4,16 +4,18 @@ import 'usuario.dart';
 
 class Receita {
   int id;
-  String nome;
+  String titulo;
   String descricao;
   String ingredientes;
   List<Avaliacao> avaliacoes;
+  String preparo;
 
   Receita({
     required this.id,
-    required this.nome,
+    required this.titulo,
     required this.descricao,
     required this.ingredientes,
+    required this.preparo,
     this.avaliacoes = const [],
   });
 }
