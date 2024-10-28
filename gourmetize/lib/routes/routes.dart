@@ -2,7 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/screens/register_revenue.dart';
-import 'package:gourmetize/screens/avaliacoes.dart';
+import 'package:gourmetize/screens/visualizar_receita.dart';
 import 'package:gourmetize/screens/home.dart';
 import 'package:gourmetize/screens/perfil.dart';
 import 'package:gourmetize/screens/login.dart';
@@ -47,9 +47,9 @@ final GoRouter myRouter = GoRouter(
       },
     ),
     GoRoute(
-      path: '/avaliacoes',
+      path: '/visualizar-receita',
       builder: (BuildContext context, GoRouterState state) {
-        return Avaliacoes(
+        return VisualizarReceita(
           receita: state.extra as Receita,
         );
       },
