@@ -54,7 +54,7 @@ class ReceitaCard extends StatelessWidget {
                           child: Column(
                             children: [
                               Text(
-                                _receita.nome.toUpperCase(),
+                                _receita.titulo.toUpperCase(),
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
