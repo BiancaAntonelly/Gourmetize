@@ -20,7 +20,7 @@ class AppDrawer extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        backgroundColor: Colors.white10,
+        backgroundColor: const Color.fromRGBO(255, 204, 0, 100),
         shadowColor: Colors.grey,
         surfaceTintColor: const Color.fromRGBO(163, 101, 83, 100),
         automaticallyImplyLeading: true,
@@ -41,8 +41,8 @@ class AppDrawer extends StatelessWidget {
             child: Image.asset(
               'assets/icone.png',
               fit: BoxFit.cover,
-              height: 36,
-              width: 36,
+              height: 34,
+              width: 30,
             ),
           )
         ],

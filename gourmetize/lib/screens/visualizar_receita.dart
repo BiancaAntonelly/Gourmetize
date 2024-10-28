@@ -63,9 +63,10 @@ class _VisualizarReceitaState extends State<VisualizarReceita> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          height: 200,
+                          height: 180,
                           width: double.infinity,
                           child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
                             child: Image.asset(
                               'assets/receita-meta2.jpeg',
                               fit: BoxFit.cover,
