@@ -4,14 +4,47 @@ import 'package:go_router/go_router.dart';
 
 class ReceitaCard extends StatelessWidget {
   final Receita _receita;
+  final VoidCallback onDelete; // Callback para deleção
 
-  const ReceitaCard({super.key, required Receita receita}) : _receita = receita;
+  const ReceitaCard({
+    super.key,
+    required Receita receita,
+    required this.onDelete,
+  }) : _receita = receita;
 
   List<String> _obterIngredientesEmLista() {
     return _receita.ingredientes
         .split('\n')
         .map((ingrediente) => '- $ingrediente')
         .toList();
+  }
+
+  Future<void> _showDeleteConfirmationDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // Usuário deve pressionar um botão para sair
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar Deleção'),
+          content: const Text('Você tem certeza que deseja deletar esta receita?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Fecha o diálogo
+              },
+            ),
+            TextButton(
+              child: const Text('Deletar'),
+              onPressed: () {
+                onDelete(); // Chama a função de deleção
+                Navigator.of(context).pop(); // Fecha o diálogo
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -35,50 +68,66 @@ class ReceitaCard extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Container(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                          flex: 2,
-                          child: SizedBox(
-                              height: 130,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.asset(
-                                  'assets/receita-meta2.jpeg',
-                                  fit: BoxFit.cover,
-                                ),
-                              ))),
-                      Expanded(
-                          flex: 5,
-                          child: Column(
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 2,
+                      child: SizedBox(
+                        height: 130,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.asset(
+                            'assets/receita-meta2.jpeg',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                _receita.titulo.toUpperCase(),
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
+                              Expanded(
+                                child: Text(
+                                  _receita.titulo.toUpperCase(),
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
                                 ),
                               ),
-                              Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(10, 10, 0, 0),
-                                  child: IngredientesGrid(
-                                      ingredientes: ingredientes))
+                              IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () => _showDeleteConfirmationDialog(context),
+                                tooltip: 'Deletar receita',
+                                color: Colors.red,
+                              ),
                             ],
-                          ))
-                    ],
-                  )),
-              Container(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Text(
-                    _receita.descricao,
-                    style: const TextStyle(
-                      fontSize: 14,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                            child: IngredientesGrid(ingredientes: ingredientes),
+                          ),
+                        ],
+                      ),
                     ),
-                  )),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 10),
+                child: Text(
+                  _receita.descricao,
+                  style: const TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
