@@ -6,12 +6,14 @@ class AppDrawer extends StatelessWidget {
   final Widget body;
   final String title;
   final FloatingActionButton? floatingActionButton;
+  final Widget? bottomNavigationBar;
 
   const AppDrawer({
     super.key,
     required this.body,
     required this.title,
     this.floatingActionButton,
+    this.bottomNavigationBar,
   });
 
   @override
@@ -22,6 +24,7 @@ class AppDrawer extends StatelessWidget {
         backgroundColor: Colors.white,
         shadowColor: Colors.grey,
         surfaceTintColor: const Color.fromRGBO(163, 101, 83, 100),
+        automaticallyImplyLeading: true,
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -104,7 +107,7 @@ class AppDrawer extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  context.go('/perfil');
+                  context.go('/');
                 },
               ),
               ListTile(
@@ -140,7 +143,7 @@ class AppDrawer extends StatelessWidget {
                   style: TextStyle(color: Colors.white, fontSize: 13),
                 ),
                 onTap: () {
-                  // Navegar para a página de Minhas receitas
+                  context.go('/');
                 },
               ),
               ListTile(
@@ -186,6 +189,7 @@ class AppDrawer extends StatelessWidget {
         ),
       ),
       body: body,
+      bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
     );
   }

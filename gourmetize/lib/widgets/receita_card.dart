@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gourmetize/screens/visualizar_receita.dart';
 
 class ReceitaCard extends StatelessWidget {
   final Receita _receita;
@@ -20,7 +21,11 @@ class ReceitaCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        context.go('/avaliacoes', extra: _receita);
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) {
+              return VisualizarReceita(receita: _receita);
+            },
+        ));
       },
       child: Card(
         child: Container(
