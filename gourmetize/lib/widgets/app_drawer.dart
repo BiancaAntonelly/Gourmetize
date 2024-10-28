@@ -6,14 +6,13 @@ class AppDrawer extends StatelessWidget {
   final Widget body;
   final String title;
   final FloatingActionButton? floatingActionButton;
-  final Widget? bottomNavigationBar;
 
   const AppDrawer({
     super.key,
     required this.body,
     required this.title,
     this.floatingActionButton,
-    this.bottomNavigationBar,
+
   });
 
   @override
@@ -21,7 +20,7 @@ class AppDrawer extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.white10,
         shadowColor: Colors.grey,
         surfaceTintColor: const Color.fromRGBO(163, 101, 83, 100),
         automaticallyImplyLeading: true,
@@ -59,7 +58,6 @@ class AppDrawer extends StatelessWidget {
               ListTile(
                 leading: SvgPicture.asset(
                   'assets/person.svg',
-                  color: Colors.white,
                   width: 28,
                   height: 28,
                 ),
@@ -77,7 +75,6 @@ class AppDrawer extends StatelessWidget {
               ListTile(
                 leading: SvgPicture.asset(
                   'assets/home.svg',
-                  color: Colors.white,
                   width: 28,
                   height: 28,
                 ),
@@ -95,7 +92,6 @@ class AppDrawer extends StatelessWidget {
               ListTile(
                 leading: SvgPicture.asset(
                   'assets/all_recipies.svg',
-                  color: Colors.white,
                   width: 28,
                   height: 28,
                 ),
@@ -113,7 +109,6 @@ class AppDrawer extends StatelessWidget {
               ListTile(
                 leading: SvgPicture.asset(
                   'assets/revenues.svg',
-                  color: Colors.white,
                   width: 28,
                   height: 28,
                 ),
@@ -133,7 +128,6 @@ class AppDrawer extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 36.0),
                   child: SvgPicture.asset(
                     'assets/my_recipes.svg',
-                    color: Colors.white,
                     width: 21,
                     height: 16,
                   ),
@@ -151,7 +145,6 @@ class AppDrawer extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 36.0),
                     child: SvgPicture.asset(
                       'assets/register_recipe.svg',
-                      color: Colors.white,
                       width: 24,
                       height: 24,
                     )),
@@ -170,7 +163,6 @@ class AppDrawer extends StatelessWidget {
                   // Adiciona espaço à esquerda
                   child: SvgPicture.asset(
                     'assets/my_reviews.svg',
-                    color: Colors.white,
                     width: 24,
                     height: 24,
                   ),
@@ -189,7 +181,6 @@ class AppDrawer extends StatelessWidget {
         ),
       ),
       body: body,
-      bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
     );
   }
