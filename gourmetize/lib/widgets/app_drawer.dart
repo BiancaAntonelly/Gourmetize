@@ -1,28 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gourmetize/screens/nova_avaliacao.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AppDrawer extends StatelessWidget {
   final Widget body;
   final String title;
+  final FloatingActionButton? floatingActionButton;
 
   const AppDrawer({
     super.key,
     required this.body,
     required this.title,
+    this.floatingActionButton,
   });
 
   @override
   Widget build(BuildContext context) {
-    void openNovaAvaliacao() {
-      showModalBottomSheet(
-        context: context,
-        builder: (context) => const NovaAvaliacao(),
-        backgroundColor: Colors.transparent,
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -32,7 +25,8 @@ class AppDrawer extends StatelessWidget {
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu, color: Theme.of(context).colorScheme.secondary),
+              icon: Icon(Icons.menu,
+                  color: Theme.of(context).colorScheme.secondary),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -192,10 +186,7 @@ class AppDrawer extends StatelessWidget {
         ),
       ),
       body: body,
-      floatingActionButton: FloatingActionButton(
-        onPressed: openNovaAvaliacao,
-        child: Icon(Icons.star, color: Colors.yellow),
-      ), // O conteúdo principal da tela
+      floatingActionButton: floatingActionButton,
     );
   }
 }
