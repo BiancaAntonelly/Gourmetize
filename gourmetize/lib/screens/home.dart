@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gourmetize/model/avaliacao.dart';
+import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/widgets/app_drawer.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/widgets/styled_text.dart';
@@ -9,12 +11,25 @@ class Home extends StatelessWidget {
 
   final List<Receita> _receitas = [
     Receita(
-      id: 1,
-      nome: 'Bolo de cenoura',
-      descricao: 'Bolo de cenoura com cobertura de chocolate. E eu vou colocar uma descrição bem grande aqui para ver como a tela se comporta com um texto bem grande. Quero ver se ocupa mais de uma linha automaticamente.',
-      ingredientes:
-          '1 Cenoura \n 2kg farinha de trigo \n 500G de açúcar \n 4 ovos \n 1l óleo \n 100g manteiga \n 1l leite',
-    ),
+        id: 1,
+        nome: 'Bolo de cenoura',
+        descricao:
+            'Bolo de cenoura com cobertura de chocolate. E eu vou colocar uma descrição bem grande aqui para ver como a tela se comporta com um texto bem grande. Quero ver se ocupa mais de uma linha automaticamente.',
+        ingredientes:
+            '1 Cenoura \n 2kg farinha de trigo \n 500G de açúcar \n 4 ovos \n 1l óleo \n 100g manteiga \n 1l leite',
+        avaliacoes: [
+          Avaliacao(
+            id: 1,
+            nota: 3,
+            comentario: 'Receita boa, ficou saboroso, porém esperava mais!',
+            usuario: Usuario(
+              id: 1,
+              nome: 'Ádisson',
+              email: 'adissonmprtejo@gmail.com',
+              senha: '123',
+            ),
+          ),
+        ]),
     Receita(
       id: 2,
       nome: 'Bolo de chocolate',
@@ -29,21 +44,21 @@ class Home extends StatelessWidget {
       ingredientes:
           '1 laranja \n 2kg farinha de trigo \n 500G de açúcar \n 4 ovos \n 1l óleo \n 100g manteiga \n 1l leite',
     ),
-     Receita(
+    Receita(
       id: 4,
       nome: 'Bolo de laranja',
       descricao: 'Bolo de laranja com cobertura de chocolate',
       ingredientes:
           '1 laranja \n 2kg farinha de trigo \n 500G de açúcar \n 4 ovos \n 1l óleo \n 100g manteiga \n 1l leite',
     ),
-     Receita(
+    Receita(
       id: 5,
       nome: 'Bolo de laranja 2',
       descricao: 'Bolo de laranja com cobertura de chocolate',
       ingredientes:
           '1 laranja \n 2kg farinha de trigo \n 500G de açúcar \n 4 ovos \n 1l óleo \n 100g manteiga \n 1l leite',
     ),
-     Receita(
+    Receita(
       id: 6,
       nome: 'Bolo de laranja 3',
       descricao: 'Bolo de laranja com cobertura de chocolate',
@@ -51,7 +66,6 @@ class Home extends StatelessWidget {
           '1 laranja \n 2kg farinha de trigo \n 500G de açúcar \n 4 ovos \n 1l óleo \n 100g manteiga \n 1l leite',
     ),
   ];
-
 
   @override
   Widget build(BuildContext context) {
@@ -64,11 +78,17 @@ class Home extends StatelessWidget {
           children: [
             Text(
               'Bem vindos ao Gourmetize',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.secondary),
             ),
             const Text(
               'Olá, Fulano! Que bom que você está de volta!',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey),
             ),
             const SizedBox(height: 20),
             const StyledText(title: "Receitas"),

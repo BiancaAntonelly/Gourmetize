@@ -1,9 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:gourmetize/model/avaliacao.dart';
+import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/widgets/app_button.dart';
 
 class NovaAvaliacao extends StatefulWidget {
-  const NovaAvaliacao({super.key});
+  final void Function(Avaliacao avaliacao) onSubmit;
+
+  const NovaAvaliacao({super.key, required this.onSubmit});
 
   @override
   State<StatefulWidget> createState() => _NovaAvaliacaoState();
@@ -11,6 +17,20 @@ class NovaAvaliacao extends StatefulWidget {
 
 class _NovaAvaliacaoState extends State<NovaAvaliacao> {
   double _notaAvaliacao = 0;
+  final TextEditingController _descricaoController = TextEditingController();
+
+  void _onSubmit() {
+    if (_notaAvaliacao == 0) return;
+
+    widget.onSubmit(
+      Avaliacao(
+        id: Random().nextInt(10000),
+        nota: _notaAvaliacao.toInt(),
+        comentario: _descricaoController.text,
+        usuario: Usuario(id: 1, nome: 'Ádisson', email: '', senha: ''),
+      ),
+    );
+  }
 
   void _onNotaChange(double nota) {
     setState(() {
@@ -65,6 +85,7 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
               const SizedBox(height: 8),
               TextFormField(
                 maxLines: 8,
+                controller: _descricaoController,
                 decoration: InputDecoration(
                   hintText: 'Digite sua avaliação',
                   hintStyle: const TextStyle(
@@ -107,7 +128,7 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
                 children: [
                   AppButton(
                     label: 'Enviar',
-                    onPressed: () {},
+                    onPressed: _onSubmit,
                     variant: AppButtonVariant.primary,
                   ),
                 ],
