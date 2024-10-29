@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/model/usuario.dart';
-import 'package:gourmetize/widgets/app_drawer.dart';
+import 'package:gourmetize/widgets/page_wrapper.dart';
 
 class RegisterRevenue extends StatefulWidget {
   final Usuario usuarioLogado;
@@ -63,8 +63,10 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
 
   @override
   Widget build(BuildContext context) {
-    return AppDrawer(
-      title: 'Cadastrar Receita',
+    return PageWrapper(
+      title:
+          '${widget.receitaParaEdicao != null ? 'Editar' : 'Cadastrar'} Receita',
+      pageWrapperButtonType: PageWrapperButtonType.back,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -299,6 +301,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                             preparo: preparoController.text,
                             usuario: widget.usuarioLogado,
                             etiquetas: _etiquetas,
+                            avaliacoes: widget.receitaParaEdicao!.avaliacoes,
                           ),
                         );
                       } else {

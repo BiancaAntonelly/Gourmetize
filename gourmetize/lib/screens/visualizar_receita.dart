@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/avaliacao.dart';
 import 'package:gourmetize/model/receita.dart';
-import 'package:gourmetize/widgets/app_drawer.dart';
+import 'package:gourmetize/model/usuario.dart';
+import 'package:gourmetize/widgets/etiquetas_receita.dart';
+import 'package:gourmetize/widgets/page_wrapper.dart';
 import 'package:gourmetize/widgets/avaliacao_card.dart';
+import 'package:gourmetize/widgets/nota_receita.dart';
 import 'package:gourmetize/widgets/nova_avaliacao.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gourmetize/widgets/styled_text.dart';
 
 class VisualizarReceita extends StatefulWidget {
   final Receita receita;
+  final Usuario usuarioLogado;
 
-  VisualizarReceita({super.key, required this.receita});
+  VisualizarReceita(
+      {super.key, required this.receita, required this.usuarioLogado});
 
   @override
   State<StatefulWidget> createState() => _VisualizarReceitaState();
@@ -56,10 +61,17 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
     );
   }
 
+  bool get _ususarioHasAvaliacao {
+    return widget.receita.avaliacoes
+        .where((avaliacao) => avaliacao.usuario.id == widget.usuarioLogado.id)
+        .isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return AppDrawer(
+    return PageWrapper(
       title: 'Receita',
+      pageWrapperButtonType: PageWrapperButtonType.back,
       body: Column(
         children: [
           TabBar(
@@ -93,15 +105,20 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                         ),
                       ),
                       SizedBox(height: 20),
-                      Center(
-                        child: Text(
-                          widget.receita.titulo,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            widget.receita.titulo,
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                           ),
-                        ),
+                          NotaReceita(receita: widget.receita)
+                        ],
                       ),
                       SizedBox(height: 20),
                       StyledText(title: 'Descrição'),
@@ -118,6 +135,10 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                       Text(widget.receita.preparo,
                           style: TextStyle(fontSize: 18)),
                       SizedBox(height: 20),
+                      if (widget.receita.etiquetas.length > 0)
+                        StyledText(title: 'Etiquetas'),
+                      if (widget.receita.etiquetas.length > 0)
+                        EtiquetasReceita(receita: widget.receita)
                     ],
                   ),
                 ),
@@ -127,37 +148,56 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                     children: [
                       StyledText(title: 'Avaliações'),
                       SizedBox(height: 20),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: widget.receita.avaliacoes.length,
-                          itemBuilder: (context, index) => Column(
-                            children: [
-                              AvaliacaoCard(
-                                avaliacao: widget.receita.avaliacoes[index],
+                      widget.receita.avaliacoes.isEmpty
+                          ? const Center(
+                              child: Text(
+                                'Nenhuma avaliação disponível.',
+                                style: TextStyle(fontSize: 18),
                               ),
-                              SizedBox(
-                                height: 16,
-                              )
-                            ],
-                          ),
-                        ),
-                      )
+                            )
+                          : Expanded(
+                              child: ListView.builder(
+                                itemCount: widget.receita.avaliacoes.length,
+                                itemBuilder: (context, index) => Column(
+                                  children: [
+                                    AvaliacaoCard(
+                                      avaliacao:
+                                          widget.receita.avaliacoes[index],
+                                    ),
+                                    SizedBox(
+                                      height: 16,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
         ],
       ),
-      floatingActionButton: (_selectedTabIndex == 1)
-          ? FloatingActionButton(
-              onPressed: openNovaAvaliacao,
-              child: Icon(Icons.star,
-                  color: Theme.of(context).colorScheme.secondary),
-              backgroundColor: Theme.of(context).colorScheme.primary,
-            )
-          : null,
+      floatingActionButton: widget.usuarioLogado.id == widget.receita.usuario.id
+          ? (_selectedTabIndex == 0
+              ? (FloatingActionButton(
+                  onPressed: () {
+                    context.push("/editar-receita", extra: widget.receita);
+                  },
+                  child: Icon(Icons.edit,
+                      color: Theme.of(context).colorScheme.secondary),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                ))
+              : null)
+          : (_selectedTabIndex == 1 && !_ususarioHasAvaliacao
+              ? FloatingActionButton(
+                  onPressed: openNovaAvaliacao,
+                  child: Icon(Icons.star,
+                      color: Theme.of(context).colorScheme.secondary),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                )
+              : null),
     );
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/screens/visualizar_receita.dart';
+import 'package:go_router/go_router.dart';
+import 'package:gourmetize/widgets/etiquetas_receita.dart';
+import 'package:gourmetize/widgets/nota_receita.dart';
 
 import '../model/etiqueta.dart';
 import '../model/usuario.dart';
@@ -34,7 +37,8 @@ class ReceitaCard extends StatelessWidget {
   Future<void> _showDeleteConfirmationDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // Impede que o modal seja fechado ao tocar fora dele
+      barrierDismissible:
+          false, // Impede que o modal seja fechado ao tocar fora dele
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
@@ -55,9 +59,13 @@ class ReceitaCard extends StatelessWidget {
           ),
           content: RichText(
             text: TextSpan(
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontSize: 16),
               children: [
-                const TextSpan(text: 'Você tem certeza que deseja deletar a receita '),
+                const TextSpan(
+                    text: 'Você tem certeza que deseja deletar a receita '),
                 TextSpan(
                   text: _receita.titulo, // Adicionando o título da receita aqui
                   style: const TextStyle(
@@ -95,18 +103,13 @@ class ReceitaCard extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final ingredientes = _obterIngredientesEmLista();
 
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) {
-            return VisualizarReceita(receita: _receita);
-          },
-        ));
+        context.push('/visualizar-receita', extra: _receita);
       },
       child: Card(
         child: Container(
@@ -121,19 +124,18 @@ class ReceitaCard extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Container(
-                padding: const EdgeInsets.all(10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                 child: Row(
                   children: <Widget>[
-                    Expanded(
-                      flex: 2,
-                      child: SizedBox(
-                        height: 130,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            'assets/receita-meta2.jpeg',
-                            fit: BoxFit.cover,
-                          ),
+                    SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.asset(
+                          'assets/receita-meta2.jpeg',
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
@@ -152,20 +154,23 @@ class ReceitaCard extends StatelessWidget {
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
-                                      color: Theme.of(context).colorScheme.secondary,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     ),
                                   ),
                                 ),
                               ),
-                              Column(
+                              Row(
                                 children: [
                                   if (mostrarOpcoes)
                                     IconButton(
-                                    icon: const Icon(Icons.delete),
-                                    onPressed: () => _showDeleteConfirmationDialog(context),
-                                    tooltip: 'Deletar receita',
-                                    color: Colors.red,
-                                  ),
+                                      icon: const Icon(Icons.delete),
+                                      onPressed: () =>
+                                          _showDeleteConfirmationDialog(
+                                              context),
+                                      tooltip: 'Deletar receita',
+                                      color: Colors.red,
+                                    ),
                                   if (mostrarOpcoes)
                                     IconButton(
                                       icon: const Icon(Icons.edit),
@@ -173,11 +178,14 @@ class ReceitaCard extends StatelessWidget {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => RegisterRevenue(
+                                            builder: (context) =>
+                                                RegisterRevenue(
                                               usuarioLogado: usuarioLogado,
-                                              onCadastrarReceita: onCadastrarReceita,
+                                              onCadastrarReceita:
+                                                  onCadastrarReceita,
                                               onCriarEtiqueta: onCriarEtiqueta,
-                                              receitaParaEdicao: _receita, // passa a receita para edição
+                                              receitaParaEdicao:
+                                                  _receita, // passa a receita para edição
                                             ),
                                           ),
                                         );
@@ -190,7 +198,7 @@ class ReceitaCard extends StatelessWidget {
                             ],
                           ),
                           Container(
-                            padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                            padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                             child: IngredientesGrid(ingredientes: ingredientes),
                           ),
                         ],
@@ -200,13 +208,33 @@ class ReceitaCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.only(left: 10),
-                child: Text(
-                  _receita.descricao,
-                  style: const TextStyle(
-                    fontSize: 14,
-                  ),
+                padding: const EdgeInsets.only(top: 8, left: 10, right: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [NotaReceita(receita: _receita)],
                 ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [EtiquetasReceita(receita: _receita)],
+                ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.only(top: 4, left: 10, right: 10),
+                      child: Text(
+                        _receita.descricao,
+                        style: const TextStyle(
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
             ],
           ),

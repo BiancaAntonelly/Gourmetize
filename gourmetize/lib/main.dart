@@ -25,7 +25,7 @@ class MyAppState extends State<MyApp> {
       descricao: 'Bolo de Cenoura',
       ingredientes: 'Cenoura\nFarinha\nOvos',
       preparo: 'Faça a massa\nColoque no forno',
-      usuario: Usuario(id: 1, nome: 'Ádisson', email: 'email', senha: 'senha'),
+      usuario: Usuario(id: 2, nome: 'Ádisson', email: 'email', senha: 'senha'),
     )
   ];
 
