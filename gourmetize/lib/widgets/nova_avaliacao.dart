@@ -43,7 +43,7 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary,
+        color: Theme.of(context).colorScheme.primary,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(50),
           topRight: Radius.circular(50),
@@ -106,7 +106,7 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
                   ),
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                  fillColor: Theme.of(context).colorScheme.secondary,
+                  fillColor: Theme.of(context).colorScheme.primary,
                   filled: true,
                 ),
                 style: const TextStyle(

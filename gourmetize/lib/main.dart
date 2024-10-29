@@ -16,7 +16,15 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
   Usuario? usuarioLogado =
       Usuario(id: 1, nome: 'Ádisson', email: 'email', senha: 'senha');
-  List<Receita> receitas = [];
+  List<Receita> receitas = [
+    Receita(
+      titulo: 'Bolo',
+      descricao: 'Bolo de Cenoura',
+      ingredientes: 'Cenoura\nFarinha\nOvos',
+      preparo: 'Faça a massa\nColoque no forno',
+      usuario: Usuario(id: 1, nome: 'Ádisson', email: 'email', senha: 'senha'),
+    )
+  ];
 
   void adicionarReceita(Receita receita) {
     setState(() {
