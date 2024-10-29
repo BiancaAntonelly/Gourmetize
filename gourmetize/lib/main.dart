@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:gourmetize/model/avaliacao.dart';
 import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/routes/routes.dart';
@@ -16,51 +17,96 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  List<Usuario> usuarios = [
-    Usuario(id: 1, nome: 'Ádisson', email: 'teste@gmail.com', senha: 'password')
-  ];
+  List<Usuario> usuarios = [];
   Usuario? usuarioLogado;
-  List<Receita> receitas = [
-    Receita
-      id: Random().nextInt(10000),
-      titulo: 'Bolo',
-      descricao: 'Bolo de Cenoura',
-      ingredientes: 'Cenoura\nFarinha\nOvos',
-      preparo: 'Faça a massa\nColoque no forno',
-      usuario: Usuario(id: 2, nome: 'Ádisson', email: 'email', senha: 'senha'),
-    )
-  ];
+  List<Receita> receitas = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    usuarios = [
+      Usuario(
+        id: Random().nextInt(10000),
+        nome: 'Adisson',
+        email: 'adisson@gmail.com',
+        senha: 'password',
+      ),
+      Usuario(
+        id: Random().nextInt(10000),
+        nome: 'Bianca',
+        email: 'bianca@gmail.com',
+        senha: 'password',
+      ),
+      Usuario(
+        id: Random().nextInt(10000),
+        nome: 'Rodrigo',
+        email: 'rodrigo@gmail.com',
+        senha: 'password',
+      ),
+      Usuario(
+        id: Random().nextInt(10000),
+        nome: 'Maria',
+        email: 'maria@gmail.com',
+        senha: 'password',
+      ),
+    ];
+
+    receitas = [
+      Receita(
+        id: Random().nextInt(10000),
+        titulo: 'Bolo de chocolate',
+        descricao: 'Bolo de cenoura com calda de chocolate delicioso!',
+        ingredientes: 'Farinha\nOvos\nCenoura\nAçucar\nLeite condensado',
+        preparo: 'Faça a massa do bolo\nColoque no forno\nAguarde 30 min',
+        usuario: usuarios[0],
+      ),
+    ];
+
+    usuarios[0].receitas.add(receitas[0]);
+
+    Etiqueta etiqueta = Etiqueta(nome: 'Sobremesa', usuario: usuarios[0]);
+
+    usuarios[0].etiquetas.add(etiqueta);
+
+    receitas[0].etiquetas.add(etiqueta);
+
+    Avaliacao avaliacao = Avaliacao(
+      nota: 4,
+      comentario:
+          'Receita ótima! Só deixou a desejar na explicação do modo de preparo.',
+      usuario: usuarios[1],
+    );
+
+    receitas[0].avaliacoes.add(avaliacao);
+  }
+
   void adicionarUsuario(Usuario novoUsuario) {
+    int novoId = 1; // Começamos com 1
+    if (usuarios.isNotEmpty) {
+      // Se já houver usuários, pegamos o maior ID atual e incrementamos.
+      novoId = usuarios.map((u) => u.id).reduce((a, b) => a > b ? a : b) + 1;
+    }
+
+    // Cria uma nova instância de Usuario com o novo ID.
+    Usuario usuarioComId = Usuario(
+      id: novoId,
+      nome: novoUsuario.nome,
+      email: novoUsuario.email,
+      senha: novoUsuario.senha,
+      receitas: novoUsuario.receitas,
+      etiquetas: novoUsuario.etiquetas,
+    );
+
+    int usuarioIndex =
+        usuarios.indexWhere((u) => u.email == usuarioComId.email);
+
     setState(() {
-      // Gera um novo ID, garantindo que não haverá repetição.
-      int novoId = 1; // Começamos com 1
-      if (usuarios.isNotEmpty) {
-        // Se já houver usuários, pegamos o maior ID atual e incrementamos.
-        novoId = usuarios.map((u) => u.id).reduce((a, b) => a > b ? a : b) + 1;
-      }
-
-      // Cria uma nova instância de Usuario com o novo ID.
-      Usuario usuarioComId = Usuario(
-        id: novoId,
-        nome: novoUsuario.nome,
-        email: novoUsuario.email,
-        senha: novoUsuario.senha,
-        receitas: novoUsuario.receitas,
-        etiquetas: novoUsuario.etiquetas,
-      );
-
-      // Verifica se o usuário já existe pelo email.
-      int usuarioIndex =
-          usuarios.indexWhere((u) => u.email == usuarioComId.email);
-
       if (usuarioIndex != -1) {
-        // Atualizar usuário existente
         usuarios[usuarioIndex] = usuarioComId;
         print('Usuário atualizado: ${usuarioComId.nome}');
       } else {
-        // Adicionar novo usuário
         usuarios.add(usuarioComId);
-        print('Novo usuário adicionado: ${usuarioComId.nome}');
       }
     });
   }
@@ -79,18 +125,26 @@ class MyAppState extends State<MyApp> {
   }
 
   void adicionarReceita(Receita receita) {
-    setState(() {
-      int receitaIndex = receitas.indexWhere((r) => r.id == receita.id);
+    int receitaIndex = receitas.indexWhere((r) => r.id == receita.id);
+    int receitaIndexUsuario =
+        usuarioLogado!.receitas.indexWhere((r) => r.id == receita.id);
 
+    print(receitaIndex);
+
+    setState(() {
       if (receitaIndex != -1) {
-        // Atualizar receita existente
         receitas[receitaIndex] = receita;
-        print('Receita atualizada: ${receita.titulo}');
+        receitas[receitaIndexUsuario] = receita;
       } else {
-        // Adicionar nova receita
         receitas.add(receita);
-        print('Nova receita cadastrada: ${receita.titulo}');
+        usuarioLogado!.receitas.add(receita);
       }
+    });
+  }
+
+  void deletarReceita(Receita receita) {
+    setState(() {
+      receitas.removeWhere((r) => r.id == receita.id);
     });
   }
 

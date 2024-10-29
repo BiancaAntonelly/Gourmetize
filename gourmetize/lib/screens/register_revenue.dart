@@ -7,6 +7,16 @@ import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/widgets/page_wrapper.dart';
 
+class RegisterRevenueExtraProps {
+  final Receita? receitaParaEdicao;
+  final void Function(Receita) onCadastrarReceita;
+
+  const RegisterRevenueExtraProps({
+    this.receitaParaEdicao,
+    required this.onCadastrarReceita,
+  });
+}
+
 class RegisterRevenue extends StatefulWidget {
   final Usuario usuarioLogado;
   final void Function(Receita) onCadastrarReceita;
@@ -59,6 +69,25 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
     widget.onCriarEtiqueta(etiqueta);
 
     etiquetaController.clear();
+  }
+
+  void _onSubmit() {
+    if (_formKey.currentState!.validate()) {
+      Receita receita = Receita(
+        id: widget.receitaParaEdicao?.id ?? Random().nextInt(10000),
+        titulo: tituloController.text,
+        descricao: descricaoController.text,
+        ingredientes: ingredientesController.text,
+        preparo: preparoController.text,
+        usuario: widget.usuarioLogado,
+        etiquetas: _etiquetas,
+        avaliacoes: widget.receitaParaEdicao?.avaliacoes ?? [],
+      );
+
+      widget.onCadastrarReceita(receita);
+
+      context.pop(receita);
+    }
   }
 
   @override
@@ -288,38 +317,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                 const SizedBox(height: 24),
                 Center(
                     child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      if (widget.receitaParaEdicao != null) {
-                        // Atualizar a receita existente
-                        widget.onCadastrarReceita(
-                          Receita(
-                            id: widget.receitaParaEdicao!.id,
-                            titulo: tituloController.text,
-                            descricao: descricaoController.text,
-                            ingredientes: ingredientesController.text,
-                            preparo: preparoController.text,
-                            usuario: widget.usuarioLogado,
-                            etiquetas: _etiquetas,
-                            avaliacoes: widget.receitaParaEdicao!.avaliacoes,
-                          ),
-                        );
-                      } else {
-                        widget.onCadastrarReceita(
-                          Receita(
-                            id: Random().nextInt(10000),
-                            titulo: tituloController.text,
-                            descricao: descricaoController.text,
-                            ingredientes: ingredientesController.text,
-                            preparo: preparoController.text,
-                            usuario: widget.usuarioLogado,
-                            etiquetas: _etiquetas,
-                          ),
-                        );
-                      }
-                      GoRouter.of(context).go('/'); // Redireciona após a ação
-                    }
-                  },
+                  onPressed: _onSubmit,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     padding: const EdgeInsets.symmetric(

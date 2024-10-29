@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
-import 'package:gourmetize/screens/visualizar_receita.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gourmetize/widgets/etiquetas_receita.dart';
 import 'package:gourmetize/widgets/nota_receita.dart';

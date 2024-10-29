@@ -175,7 +175,9 @@ class PageWrapper extends StatelessWidget {
                     fontSize: 15,
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  context.go('/login');
+                },
               )
             ],
           ),

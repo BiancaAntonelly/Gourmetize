@@ -11,6 +11,7 @@ class ReceitasUsuario extends StatefulWidget {
   final List<Receita> receitas;
   final Usuario usuarioLogado;
   final void Function(Receita) onCadastrarReceita;
+  final void Function(Receita) onDeletarReceita;
   final void Function(Etiqueta) onCriarEtiqueta;
 
   ReceitasUsuario({
@@ -18,6 +19,7 @@ class ReceitasUsuario extends StatefulWidget {
     required this.receitas,
     required this.usuarioLogado,
     required this.onCadastrarReceita,
+    required this.onDeletarReceita,
     required this.onCriarEtiqueta,
   });
 
@@ -26,12 +28,6 @@ class ReceitasUsuario extends StatefulWidget {
 }
 
 class _ReceitasUsuarioState extends State<ReceitasUsuario> {
-  void _deleteReceita(Receita receita) {
-    setState(() {
-      widget.receitas.remove(receita);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return PageWrapper(
@@ -48,8 +44,8 @@ class _ReceitasUsuarioState extends State<ReceitasUsuario> {
               usuarioLogado: widget.usuarioLogado,
               onCadastrarReceita: widget.onCadastrarReceita,
               onCriarEtiqueta: widget.onCriarEtiqueta,
-              receitas: widget.receitas,
-              deleteReceita: _deleteReceita,
+              receitas: widget.usuarioLogado.receitas,
+              deleteReceita: widget.onDeletarReceita,
               pertencemAoUsuario: true,
             ),
           ],

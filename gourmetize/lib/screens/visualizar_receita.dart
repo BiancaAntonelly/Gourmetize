@@ -14,8 +14,11 @@ class VisualizarReceita extends StatefulWidget {
   final Receita receita;
   final Usuario usuarioLogado;
 
-  VisualizarReceita(
-      {super.key, required this.receita, required this.usuarioLogado});
+  VisualizarReceita({
+    super.key,
+    required this.receita,
+    required this.usuarioLogado,
+  });
 
   @override
   State<StatefulWidget> createState() => _VisualizarReceitaState();
@@ -24,11 +27,13 @@ class VisualizarReceita extends StatefulWidget {
 class _VisualizarReceitaState extends State<VisualizarReceita>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late Receita _receita;
   int _selectedTabIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    _receita = widget.receita;
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     _tabController.addListener(() {
       setState(() {
@@ -45,7 +50,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
 
   void _addAvaliacao(Avaliacao avaliacao) {
     setState(() {
-      widget.receita.avaliacoes.add(avaliacao);
+      _receita.avaliacoes.add(avaliacao);
     });
 
     context.pop();
@@ -62,9 +67,20 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   }
 
   bool get _ususarioHasAvaliacao {
-    return widget.receita.avaliacoes
+    return _receita.avaliacoes
         .where((avaliacao) => avaliacao.usuario.id == widget.usuarioLogado.id)
         .isNotEmpty;
+  }
+
+  void _openEditar() async {
+    Receita? receita =
+        await context.push<Receita>("/editar-receita", extra: _receita);
+
+    if (receita != null) {
+      setState(() {
+        _receita = receita;
+      });
+    }
   }
 
   @override
@@ -110,35 +126,34 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            widget.receita.titulo,
+                            _receita.titulo,
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
-                          NotaReceita(receita: widget.receita)
+                          NotaReceita(receita: _receita)
                         ],
                       ),
                       SizedBox(height: 20),
                       StyledText(title: 'Descrição'),
                       Text(
-                        widget.receita.descricao,
+                        _receita.descricao,
                         style: TextStyle(fontSize: 18),
                       ),
                       SizedBox(height: 20),
                       StyledText(title: 'Ingredientes'),
-                      Text(widget.receita.ingredientes,
+                      Text(_receita.ingredientes,
                           style: TextStyle(fontSize: 18)),
                       SizedBox(height: 20),
                       StyledText(title: 'Modo de preparo'),
-                      Text(widget.receita.preparo,
-                          style: TextStyle(fontSize: 18)),
+                      Text(_receita.preparo, style: TextStyle(fontSize: 18)),
                       SizedBox(height: 20),
-                      if (widget.receita.etiquetas.length > 0)
+                      if (_receita.etiquetas.length > 0)
                         StyledText(title: 'Etiquetas'),
-                      if (widget.receita.etiquetas.length > 0)
-                        EtiquetasReceita(receita: widget.receita)
+                      if (_receita.etiquetas.length > 0)
+                        EtiquetasReceita(receita: _receita)
                     ],
                   ),
                 ),
@@ -148,7 +163,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                     children: [
                       StyledText(title: 'Avaliações'),
                       SizedBox(height: 20),
-                      widget.receita.avaliacoes.isEmpty
+                      _receita.avaliacoes.isEmpty
                           ? const Center(
                               child: Text(
                                 'Nenhuma avaliação disponível.',
@@ -157,12 +172,11 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                             )
                           : Expanded(
                               child: ListView.builder(
-                                itemCount: widget.receita.avaliacoes.length,
+                                itemCount: _receita.avaliacoes.length,
                                 itemBuilder: (context, index) => Column(
                                   children: [
                                     AvaliacaoCard(
-                                      avaliacao:
-                                          widget.receita.avaliacoes[index],
+                                      avaliacao: _receita.avaliacoes[index],
                                     ),
                                     SizedBox(
                                       height: 16,
@@ -179,12 +193,10 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
           ),
         ],
       ),
-      floatingActionButton: widget.usuarioLogado.id == widget.receita.usuario.id
+      floatingActionButton: widget.usuarioLogado.id == _receita.usuario.id
           ? (_selectedTabIndex == 0
               ? (FloatingActionButton(
-                  onPressed: () {
-                    context.push("/editar-receita", extra: widget.receita);
-                  },
+                  onPressed: _openEditar,
                   child: Icon(Icons.edit,
                       color: Theme.of(context).colorScheme.secondary),
                   backgroundColor: Theme.of(context).colorScheme.primary,

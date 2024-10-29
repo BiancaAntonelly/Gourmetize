@@ -13,7 +13,7 @@ class Perfil extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const PageWrapper(
+    return PageWrapper(
       title: 'Perfil',
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -43,9 +43,10 @@ final GoRouter myRouter = GoRouter(
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
         return ReceitasUsuario(
           receitas: mainAppState!.receitas,
-          onCadastrarReceita: mainAppState!.adicionarReceita,
-          onCriarEtiqueta: mainAppState!.criarEtiqueta,
+          onCadastrarReceita: mainAppState.adicionarReceita,
+          onCriarEtiqueta: mainAppState.criarEtiqueta,
           usuarioLogado: mainAppState.usuarioLogado!,
+          onDeletarReceita: mainAppState.deletarReceita,
         );
       },
     ),
@@ -80,7 +81,7 @@ final GoRouter myRouter = GoRouter(
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
         return RegisterRevenue(
           onCadastrarReceita: mainAppState!.adicionarReceita,
-          onCriarEtiqueta: mainAppState!.criarEtiqueta,
+          onCriarEtiqueta: mainAppState.criarEtiqueta,
           usuarioLogado: mainAppState.usuarioLogado!,
         );
       },
@@ -92,7 +93,7 @@ final GoRouter myRouter = GoRouter(
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
         return RegisterRevenue(
           onCadastrarReceita: mainAppState!.adicionarReceita,
-          onCriarEtiqueta: mainAppState!.criarEtiqueta,
+          onCriarEtiqueta: mainAppState.criarEtiqueta,
           usuarioLogado: mainAppState.usuarioLogado!,
           receitaParaEdicao: receitaParaEdicao,
         );
