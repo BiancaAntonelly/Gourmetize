@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gourmetize/widgets/logo.dart';
 
 enum PageWrapperButtonType {
   drawer,
@@ -53,13 +54,11 @@ class PageWrapper extends StatelessWidget {
         actions: [
           Container(
             padding: const EdgeInsets.fromLTRB(0, 0, 20, 5),
-            child: Image.asset(
-              'assets/icone.png',
-              fit: BoxFit.cover,
-              height: 34,
-              width: 30,
+            child: LogoWidget(
+              size: 34,
+              iconColor: Color(0xFF4D281E),
             ),
-          )
+          ),
         ],
       ),
       drawer: Drawer(

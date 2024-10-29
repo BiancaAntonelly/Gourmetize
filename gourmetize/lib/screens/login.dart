@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gourmetize/model/receita.dart';
+import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/widgets/logo.dart';
 
 class Login extends StatelessWidget {
-  const Login({Key? key}) : super(key: key);
+  final List<Usuario> usuarios; // Lista de usuários cadastrados
+
+  const Login({Key? key, required this.usuarios}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +47,15 @@ class Login extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    LogoWidget(size: logoSize),
+                    LogoWidget(
+                      size: screenSize.height * 0.11,
+                      iconColor: Colors.orange,
+                    ),
                     SizedBox(height: screenSize.height * 0.01),
                     Text(
                       'Gourmetize',
                       style: TextStyle(
-                        fontSize: baseFontSize * 2.5, // Fonte responsiva
+                        fontSize: baseFontSize * 2.5,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -93,7 +100,7 @@ class Login extends StatelessWidget {
           child: Text(
             ' Esqueci minha senha',
             style: TextStyle(
-              fontSize: inputHeight * 0.25,
+              fontSize: inputHeight * 0.28,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
@@ -128,7 +135,7 @@ class Login extends StatelessWidget {
         controller: controller,
         style: TextStyle(
           color: const Color(0xFF5E3023),
-          fontSize: height * 0.3, // Fonte responsiva dentro do campo
+          fontSize: height * 0.3,
         ),
         keyboardType: obscureText
             ? TextInputType.visiblePassword
@@ -162,7 +169,7 @@ class Login extends StatelessWidget {
           () => _login(context, emailController, passwordController),
           buttonFontSize,
         ),
-        SizedBox(height: buttonFontSize * 0.5),
+        SizedBox(height: buttonFontSize * 0.2),
         _buildButton(
           'Realizar cadastro',
           () => _navigateToSignup(context),
@@ -179,7 +186,7 @@ class Login extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.orange,
-          padding: EdgeInsets.symmetric(vertical: fontSize * 0.8),
+          padding: EdgeInsets.symmetric(vertical: fontSize * 0.4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
@@ -204,8 +211,22 @@ class Login extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Por favor, insira o e-mail e a senha')),
       );
+      return;
+    }
+
+    // Verifica se o usuário existe na lista de usuários
+    final usuario = usuarios.firstWhere(
+      (usuario) => usuario.email == email && usuario.senha == senha,
+      orElse: () => Usuario(id: -1, nome: '', email: '', senha: ''),
+    );
+
+    if (usuario.id == -1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('E-mail ou senha incorretos')),
+      );
     } else {
-      print('Tentando fazer login com email: $email e senha: $senha');
+      print('Login bem-sucedido com e-mail: $email');
+      // Navegar para a próxima tela ou fazer outras ações
     }
   }
 

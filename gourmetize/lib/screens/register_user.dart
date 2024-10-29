@@ -8,8 +8,6 @@ import 'package:go_router/go_router.dart';
 class RegisterUser extends StatelessWidget {
   RegisterUser({Key? key}) : super(key: key);
 
-  final AuthService _authService = AuthService();
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
@@ -43,7 +41,11 @@ class RegisterUser extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(height: 100),
-            LogoWidget(size: screenSize.height * 0.11),
+            LogoWidget(
+              size: screenSize.height * 0.11,
+              iconColor: Colors.orange,
+            ),
+
             const SizedBox(height: 150),
             _buildTextFields(_nomeController, 'Nome', false, false),
             const SizedBox(height: 10),
