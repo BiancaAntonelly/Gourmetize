@@ -24,7 +24,6 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
 
     widget.onSubmit(
       Avaliacao(
-        id: Random().nextInt(10000),
         nota: _notaAvaliacao.toInt(),
         comentario: _descricaoController.text,
         usuario: Usuario(id: 1, nome: 'Ádisson', email: '', senha: ''),
@@ -44,7 +43,7 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary,
+        color: Theme.of(context).colorScheme.primary,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(50),
           topRight: Radius.circular(50),
@@ -65,7 +64,7 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
             maxValue: 5,
             starSpacing: 10,
             valueLabelVisibility: false,
-            starColor: Theme.of(context).colorScheme.primary,
+            starColor: Theme.of(context).colorScheme.secondary,
             starOffColor: Colors.white,
           ),
           const SizedBox(
@@ -77,7 +76,7 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
               Text(
                 "Avaliação:",
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).colorScheme.secondary,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
@@ -94,20 +93,20 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.secondary,
                       width: 2,
                     ),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                  fillColor: Theme.of(context).colorScheme.secondary,
+                  fillColor: Theme.of(context).colorScheme.primary,
                   filled: true,
                 ),
                 style: const TextStyle(
@@ -129,7 +128,7 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
                   AppButton(
                     label: 'Enviar',
                     onPressed: _onSubmit,
-                    variant: AppButtonVariant.primary,
+                    variant: AppButtonVariant.secondary,
                   ),
                 ],
               ),

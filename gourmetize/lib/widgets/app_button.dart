@@ -17,8 +17,8 @@ class AppButton extends StatelessWidget {
   Color _getColor(BuildContext context) {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
 
-    return variant == AppButtonVariant.primary
-        ? colorScheme.primary
+    return variant == AppButtonVariant.secondary
+        ? colorScheme.secondary
         : colorScheme.secondary;
   }
 

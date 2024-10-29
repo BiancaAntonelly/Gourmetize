@@ -6,22 +6,25 @@ import '../widgets/app_drawer.dart';
 import '../widgets/styled_text.dart';
 import '../widgets/lista_receitas.dart';
 
-class Home extends StatefulWidget {
+class ReceitasUsuario extends StatefulWidget {
   final List<Receita> receitas;
   final Usuario usuarioLogado;
   final void Function(Receita) onCadastrarReceita;
   final void Function(Etiqueta) onCriarEtiqueta;
 
-  Home({super.key, required this.receitas,
+  ReceitasUsuario({
+    super.key,
+    required this.receitas,
     required this.usuarioLogado,
     required this.onCadastrarReceita,
-    required this.onCriarEtiqueta,});
+    required this.onCriarEtiqueta,
+  });
 
   @override
-  _HomeState createState() => _HomeState();
+  _ReceitasUsuarioState createState() => _ReceitasUsuarioState();
 }
 
-class _HomeState extends State<Home> {
+class _ReceitasUsuarioState extends State<ReceitasUsuario> {
   void _deleteReceita(Receita receita) {
     setState(() {
       widget.receitas.remove(receita);
@@ -37,22 +40,7 @@ class _HomeState extends State<Home> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Bem vindos ao Gourmetize',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            const Text(
-              'Olá, Fulano! Que bom que você está de volta!',
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey),
-            ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             const StyledText(title: "Receitas"),
             const SizedBox(height: 16), // Espaçamento entre o título e a lista
             ListaReceitas(
@@ -61,7 +49,7 @@ class _HomeState extends State<Home> {
               onCriarEtiqueta: widget.onCriarEtiqueta,
               receitas: widget.receitas,
               deleteReceita: _deleteReceita,
-              pertencemAoUsuario: false,
+              pertencemAoUsuario: true,
             ),
           ],
         ),

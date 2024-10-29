@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/usuario.dart';
-import 'package:gourmetize/routes/routes.dart'; // Certifique-se de que este caminho esteja correto
-import 'package:gourmetize/model/receita.dart'; // Certifique-se de que seu modelo Receita está definido
+import 'package:gourmetize/routes/routes.dart';
+import 'package:gourmetize/model/receita.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,54 +14,56 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  List<Receita> receitas = [];
-  List<Usuario> usuarios = [];
-  Usuario? userLogado;
+  Usuario? usuarioLogado =
+      Usuario(id: 1, nome: 'Ádisson', email: 'email', senha: 'senha');
+  List<Receita> receitas = [
+    Receita(
+      titulo: 'Bolo',
+      descricao: 'Bolo de Cenoura',
+      ingredientes: 'Cenoura\nFarinha\nOvos',
+      preparo: 'Faça a massa\nColoque no forno',
+      usuario: Usuario(id: 1, nome: 'Ádisson', email: 'email', senha: 'senha'),
+    )
+  ];
 
-  void cadastrarUsuario(String nome, String email, String senha) {
-    final usuarioExistente = usuarios.firstWhere(
-      (user) => user.email == email,
-      orElse: () => Usuario(id: -1, nome: '', email: '', senha: ''),
-    );
+  void adicionarReceita(Receita receita) {
+    setState(() {
+      int receitaIndex = receitas.indexWhere((r) => r.id == receita.id);
 
-    if (usuarioExistente.id == -1) {
-      final novoUsuario = Usuario(
-        id: usuarios.length + 1,
-        nome: nome,
-        email: email,
-        senha: senha,
-      );
-
-      setState(() {
-        usuarios.add(novoUsuario);
-      });
-
-      print('Usuário cadastrado com sucesso: $nome');
-    } else {
-      print('Email já está em uso: $email');
-    }
+      if (receitaIndex != -1) {
+        // Atualizar receita existente
+        receitas[receitaIndex] = receita;
+        print('Receita atualizada: ${receita.titulo}');
+      } else {
+        // Adicionar nova receita
+        receitas.add(receita);
+        print('Nova receita cadastrada: ${receita.titulo}');
+      }
+    });
   }
 
-  void adicionarReceita(
-      String titulo, String ingredientes, String descricao, String preparo) {
-    final novaReceita = Receita(
-      id: receitas.length + 1,
-      titulo: titulo,
-      ingredientes: ingredientes,
-      descricao: descricao,
-      preparo: preparo,
-    );
+  void criarEtiqueta(Etiqueta etiqueta) {
+    print(usuarioLogado!.nome);
+
+    if (usuarioLogado == null) {
+      return;
+    }
 
     setState(() {
-      receitas.add(novaReceita); // Adiciona a nova receita à lista
+      usuarioLogado!.etiquetas.add(etiqueta);
     });
+  }
 
-    // Imprimir todas as receitas no console
-    print('Receitas cadastradas:');
-    for (var receita in receitas) {
-      print(
-          'ID: ${receita.id}, Título: ${receita.titulo}, Ingredientes: ${receita.ingredientes}, Descrição: ${receita.descricao}, Modo de Preparo: ${receita.preparo}');
+  void adicionarEtiquetaAReceita(Receita receita, Etiqueta etiqueta) {
+    int index = receitas.indexWhere((item) => item.id == receita.id);
+
+    if (index == -1) {
+      return;
     }
+
+    setState(() {
+      receitas[index].etiquetas.add(etiqueta);
+    });
   }
 
   @override
@@ -69,8 +71,23 @@ class MyAppState extends State<MyApp> {
     return MaterialApp.router(
       routerConfig: myRouter,
       theme: ThemeData(
-          // Defina seu tema aqui
-          ),
+        primaryColor: const Color(0xFF4D281E),
+        secondaryHeaderColor: const Color(0xFFFFCC00),
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.brown,
+        ).copyWith(
+          primary: const Color(0xFF4D281E),
+          secondary: const Color(0xFFFFCC00),
+          surface: Colors.white,
+          onPrimary: Colors.white,
+          onSecondary: Colors.black,
+        ),
+        textTheme: const TextTheme(
+          bodySmall: TextStyle(fontSize: 16.0, color: Color(0xFF4D281E)),
+          bodyMedium: TextStyle(fontSize: 20.0, color: Color(0xFF4D281E)),
+          bodyLarge: TextStyle(fontSize: 24.0, color: Color(0xFF4D281E)),
+        ),
+      ),
     );
   }
 }

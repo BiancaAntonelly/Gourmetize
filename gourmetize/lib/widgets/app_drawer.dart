@@ -19,7 +19,10 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(
+          title,
+          style: TextStyle(color: Theme.of(context).colorScheme.primary),
+        ),
         backgroundColor: const Color.fromRGBO(255, 204, 0, 100),
         shadowColor: Colors.grey,
         surfaceTintColor: const Color.fromRGBO(163, 101, 83, 100),
@@ -28,7 +31,7 @@ class AppDrawer extends StatelessWidget {
           builder: (BuildContext context) {
             return IconButton(
               icon: Icon(Icons.menu,
-                  color: Theme.of(context).colorScheme.secondary),
+                  color: Theme.of(context).colorScheme.primary),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -47,7 +50,7 @@ class AppDrawer extends StatelessWidget {
       ),
       drawer: Drawer(
         child: Container(
-          color: const Color(0xFF4D281E),
+          color: Theme.of(context).colorScheme.primary,
           padding: EdgeInsets.zero,
           child: ListView(
             padding: EdgeInsets.zero,
@@ -84,10 +87,10 @@ class AppDrawer extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  context.go('/login');
+                  context.go('/');
                 },
               ),
-              ListTile(
+              /*ListTile(
                 leading: SvgPicture.asset(
                   'assets/all_recipies.svg',
                   width: 28,
@@ -103,7 +106,7 @@ class AppDrawer extends StatelessWidget {
                 onTap: () {
                   context.go('/');
                 },
-              ),
+              ),*/
               ListTile(
                 leading: SvgPicture.asset(
                   'assets/revenues.svg',
@@ -135,7 +138,7 @@ class AppDrawer extends StatelessWidget {
                   style: TextStyle(color: Colors.white, fontSize: 13),
                 ),
                 onTap: () {
-                  context.go('/');
+                  context.go('/receitas-usuario');
                 },
               ),
               ListTile(

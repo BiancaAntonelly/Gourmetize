@@ -59,7 +59,22 @@ class RegisterUser extends StatelessWidget {
             Container(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (_authService.checarSenhas(
+                      _senhaController.text, _senhaConfirmController.text)) {
+                    final novoUsuario = Usuario(
+                      id: _generateRandomId(),
+                      nome: _nomeController.text,
+                      email: _emailController.text,
+                      senha: _senhaController.text,
+                    );
+
+                    _authService.registrarUsuario(novoUsuario);
+                    _limparCampos();
+                  } else {
+                    _showMessage(context, 'As senhas não coincidem');
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
                   foregroundColor: const Color(0xFF5E3023),

@@ -13,7 +13,7 @@ class AvaliacaoCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            color: Theme.of(context).colorScheme.secondary,
+            color: Theme.of(context).colorScheme.primary,
             width: 2,
           ),
           borderRadius: BorderRadius.circular(10),
@@ -35,8 +35,8 @@ class AvaliacaoCard extends StatelessWidget {
               maxValue: 5,
               starSpacing: 0,
               valueLabelVisibility: false,
-              starColor: Theme.of(context).colorScheme.primary,
-              starOffColor: Theme.of(context).colorScheme.secondary,
+              starColor: Theme.of(context).colorScheme.secondary,
+              starOffColor: Theme.of(context).colorScheme.primary,
             ),
             SizedBox(height: 20),
             Container(
@@ -44,7 +44,7 @@ class AvaliacaoCard extends StatelessWidget {
               child: Text(
                 avaliacao.comentario,
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: Theme.of(context).colorScheme.primary,
                   fontSize: 14,
                 ),
                 textAlign: TextAlign.center,
@@ -58,7 +58,7 @@ class AvaliacaoCard extends StatelessWidget {
                   '• ' + avaliacao.usuario.nome,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.secondary,
                     fontWeight: FontWeight.w600,
                   ),
                 )
