@@ -29,7 +29,8 @@ class ReceitaCard extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirmar Deleção'),
-          content: const Text('Você tem certeza que deseja deletar esta receita?'),
+          content:
+              const Text('Você tem certeza que deseja deletar esta receita?'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),

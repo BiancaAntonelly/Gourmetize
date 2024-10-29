@@ -35,7 +35,7 @@ class AvaliacaoCard extends StatelessWidget {
               maxValue: 5,
               starSpacing: 0,
               valueLabelVisibility: false,
-              starColor: Theme.of(context).colorScheme.primary,
+              starColor: Theme.of(context).colorScheme.secondary,
               starOffColor: Theme.of(context).colorScheme.secondary,
             ),
             SizedBox(height: 20),
@@ -58,7 +58,7 @@ class AvaliacaoCard extends StatelessWidget {
                   '• ' + avaliacao.usuario.nome,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.secondary,
                     fontWeight: FontWeight.w600,
                   ),
                 )

@@ -1,3 +1,4 @@
+import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/receita.dart';
 
 class Usuario {
@@ -6,12 +7,15 @@ class Usuario {
   String email;
   String senha;
   List<Receita> receitas;
+  List<Etiqueta> etiquetas;
 
   Usuario({
     required this.id,
     required this.nome,
     required this.email,
     required this.senha,
-    this.receitas = const [], // Inicializa como lista vazia se não fornecida
-  });
+    List<Receita>? receitas,
+    List<Etiqueta>? etiquetas,
+  })  : receitas = receitas ?? [],
+        etiquetas = etiquetas ?? [];
 }

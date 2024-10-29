@@ -1,20 +1,18 @@
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
 
 class StyledText extends StatelessWidget {
-
   final String _title;
 
   const StyledText({
-    super.key, 
+    super.key,
     required String title,
-  }) : _title = title;  
+  }) : _title = title;
 
   @override
   Widget build(BuildContext context) {
-
     return Row(
       children: <Widget>[
-         Container(
+        Container(
           width: 5,
           height: 25,
           margin: const EdgeInsets.only(right: 5),
@@ -22,12 +20,12 @@ class StyledText extends StatelessWidget {
             color: Colors.red,
           ),
         ),
-         Text(
+        Text(
           _title,
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.secondary,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         const SizedBox(height: 10),

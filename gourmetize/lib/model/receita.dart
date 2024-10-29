@@ -1,21 +1,28 @@
+import 'dart:math';
+
 import 'package:gourmetize/model/avaliacao.dart';
+import 'package:gourmetize/model/etiqueta.dart';
 
 import 'usuario.dart';
 
 class Receita {
-  int id;
+  final int id = Random().nextInt(10000);
   String titulo;
   String descricao;
   String ingredientes;
-  List<Avaliacao> avaliacoes;
   String preparo;
+  Usuario usuario;
+  List<Avaliacao> avaliacoes;
+  List<Etiqueta> etiquetas;
 
   Receita({
-    required this.id,
     required this.titulo,
     required this.descricao,
     required this.ingredientes,
     required this.preparo,
-    this.avaliacoes = const [],
-  });
+    required this.usuario,
+    List<Avaliacao>? avaliacoes,
+    List<Etiqueta>? etiquetas,
+  })  : avaliacoes = avaliacoes ?? [],
+        etiquetas = etiquetas ?? [];
 }

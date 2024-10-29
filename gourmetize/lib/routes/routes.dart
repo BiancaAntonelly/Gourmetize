@@ -45,6 +45,8 @@ final GoRouter myRouter = GoRouter(
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
         return RegisterRevenue(
           onCadastrarReceita: mainAppState!.adicionarReceita,
+          onCriarEtiqueta: mainAppState!.criarEtiqueta,
+          usuarioLogado: mainAppState.usuarioLogado!,
         );
       },
     ),

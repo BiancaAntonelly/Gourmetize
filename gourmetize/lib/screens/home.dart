@@ -32,9 +32,10 @@ class _HomeState extends State<Home> {
             Text(
               'Bem vindos ao Gourmetize',
               style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.secondary),
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
             const Text(
               'Olá, Fulano! Que bom que você está de volta!',
