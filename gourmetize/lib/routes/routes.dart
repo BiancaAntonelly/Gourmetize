@@ -12,29 +12,29 @@ import 'package:gourmetize/screens/receitas_usuario.dart';
 import '../main.dart';
 
 final GoRouter myRouter = GoRouter(
+  initialLocation: '/login',
   routes: <RouteBase>[
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
+        return Home(
+          receitas: mainAppState!.receitas,
+          onCadastrarReceita: mainAppState.adicionarReceita,
+          onCriarEtiqueta: mainAppState.criarEtiqueta,
+          usuarioLogado: mainAppState.usuarioLogado!,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/login',
+      builder: (BuildContext context, GoRouterState state) {
+        final mainAppState = context.findAncestorStateOfType<MyAppState>();
 
-        if (mainAppState == null) {
-          return Center(child: Text('Erro ao carregar o estado da aplicação.'));
-        }
-
-        // Verifique se o usuário está logado
-        if (mainAppState.usuarioLogado == null) {
-          return Login(
-              usuarios: mainAppState.usuarios,
-              onLogarUsuario: mainAppState.logarUsuario);
-        } else {
-          return Home(
-            receitas: mainAppState.receitas,
-            onCadastrarReceita: mainAppState.adicionarReceita,
-            onCriarEtiqueta: mainAppState.criarEtiqueta,
-            usuarioLogado: mainAppState.usuarioLogado!,
-          );
-        }
+        return Login(
+          usuarios: mainAppState!.usuarios,
+          onLogarUsuario: mainAppState.logarUsuario,
+        );
       },
     ),
     GoRoute(

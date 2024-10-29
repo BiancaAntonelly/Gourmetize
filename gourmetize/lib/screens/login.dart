@@ -213,9 +213,7 @@ class _LoginState extends State<Login> {
     } else {
       widget.onLogarUsuario(usuario);
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.replace('/');
-      });
+      context.go('/');
     }
   }
 
