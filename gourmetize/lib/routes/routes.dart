@@ -28,7 +28,8 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/login',
       builder: (BuildContext context, GoRouterState state) {
-        return const Login();
+        final mainAppState = context.findAncestorStateOfType<MyAppState>();
+        return Login(usuarios: mainAppState!.usuarios);
       },
     ),
     GoRoute(

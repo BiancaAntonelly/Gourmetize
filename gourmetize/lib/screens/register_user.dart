@@ -8,8 +8,6 @@ import 'package:go_router/go_router.dart';
 class RegisterUser extends StatelessWidget {
   RegisterUser({Key? key}) : super(key: key);
 
-  final AuthService _authService = AuthService();
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
@@ -43,7 +41,11 @@ class RegisterUser extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(height: 100),
-            LogoWidget(size: screenSize.height * 0.11),
+            LogoWidget(
+              size: screenSize.height * 0.11,
+              iconColor: Colors.orange,
+            ),
+
             const SizedBox(height: 150),
             _buildTextFields(_nomeController, 'Nome', false, false),
             const SizedBox(height: 10),
@@ -57,23 +59,7 @@ class RegisterUser extends StatelessWidget {
             Container(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  if (_authService.checarSenhas(
-                      _senhaController.text, _senhaConfirmController.text)) {
-                    final novoUsuario = Usuario(
-                      id: _generateRandomId(),
-                      nome: _nomeController.text,
-                      email: _emailController.text,
-                      senha: _senhaController.text,
-                      receitas: [],
-                    );
-
-                    _authService.registrarUsuario(novoUsuario);
-                    _limparCampos();
-                  } else {
-                    _showMessage(context, 'As senhas não coincidem');
-                  }
-                },
+                onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
                   foregroundColor: const Color(0xFF5E3023),
