@@ -7,7 +7,7 @@ import 'package:gourmetize/screens/home.dart';
 import 'package:gourmetize/screens/perfil.dart';
 import 'package:gourmetize/screens/login.dart';
 import 'package:gourmetize/screens/register_user.dart';
-import 'package:gourmetize/screens/receitas_usuario.dart';  
+import 'package:gourmetize/screens/receitas_usuario.dart';
 
 import '../main.dart';
 
@@ -17,10 +17,12 @@ final GoRouter myRouter = GoRouter(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
-        return Home(receitas: mainAppState!.receitas,
+        return Home(
+          receitas: mainAppState!.receitas,
           onCadastrarReceita: mainAppState!.adicionarReceita,
           onCriarEtiqueta: mainAppState!.criarEtiqueta,
-          usuarioLogado: mainAppState.usuarioLogado!,);
+          usuarioLogado: mainAppState.usuarioLogado!,
+        );
       },
     ),
     GoRoute(
@@ -28,7 +30,7 @@ final GoRouter myRouter = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
         return ReceitasUsuario(
-            receitas: mainAppState!.receitas,
+          receitas: mainAppState!.receitas,
           onCadastrarReceita: mainAppState!.adicionarReceita,
           onCriarEtiqueta: mainAppState!.criarEtiqueta,
           usuarioLogado: mainAppState.usuarioLogado!,
@@ -81,8 +83,10 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/visualizar-receita',
       builder: (BuildContext context, GoRouterState state) {
+        final mainAppState = context.findAncestorStateOfType<MyAppState>();
         return VisualizarReceita(
           receita: state.extra as Receita,
+          usuarioLogado: mainAppState!.usuarioLogado!,
         );
       },
     )

@@ -3,17 +3,23 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gourmetize/widgets/logo.dart';
 
-class AppDrawer extends StatelessWidget {
+enum PageWrapperButtonType {
+  drawer,
+  back;
+}
+
+class PageWrapper extends StatelessWidget {
   final Widget body;
   final String title;
   final FloatingActionButton? floatingActionButton;
+  final PageWrapperButtonType pageWrapperButtonType;
 
-  const AppDrawer({
-    super.key,
-    required this.body,
-    required this.title,
-    this.floatingActionButton,
-  });
+  const PageWrapper(
+      {super.key,
+      required this.body,
+      required this.title,
+      this.floatingActionButton,
+      this.pageWrapperButtonType = PageWrapperButtonType.drawer});
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +36,17 @@ class AppDrawer extends StatelessWidget {
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu,
+              icon: Icon(
+                  pageWrapperButtonType == PageWrapperButtonType.drawer
+                      ? Icons.menu
+                      : Icons.arrow_back,
                   color: Theme.of(context).colorScheme.primary),
               onPressed: () {
-                Scaffold.of(context).openDrawer();
+                if (pageWrapperButtonType == PageWrapperButtonType.drawer) {
+                  Scaffold.of(context).openDrawer();
+                } else {
+                  context.pop();
+                }
               },
             );
           },
@@ -69,9 +82,6 @@ class AppDrawer extends StatelessWidget {
                     fontSize: 15,
                   ),
                 ),
-                onTap: () {
-                  context.go('/perfil');
-                },
               ),
               ListTile(
                 leading: SvgPicture.asset(
@@ -86,18 +96,15 @@ class AppDrawer extends StatelessWidget {
                     fontSize: 15,
                   ),
                 ),
-                onTap: () {
-                  context.go('/');
-                },
               ),
-              /*ListTile(
+              ListTile(
                 leading: SvgPicture.asset(
                   'assets/all_recipies.svg',
                   width: 28,
                   height: 28,
                 ),
                 title: const Text(
-                  'Todas receitas',
+                  'Todas as receitas',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 15,
@@ -106,7 +113,7 @@ class AppDrawer extends StatelessWidget {
                 onTap: () {
                   context.go('/');
                 },
-              ),*/
+              ),
               ListTile(
                 leading: SvgPicture.asset(
                   'assets/revenues.svg',
@@ -120,9 +127,6 @@ class AppDrawer extends StatelessWidget {
                     fontSize: 15,
                   ),
                 ),
-                onTap: () {
-                  context.go('/');
-                },
               ),
               ListTile(
                 leading: Padding(
@@ -143,40 +147,36 @@ class AppDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: Padding(
-                    padding: const EdgeInsets.only(left: 36.0),
-                    child: SvgPicture.asset(
-                      'assets/register_recipe.svg',
-                      width: 24,
-                      height: 24,
-                    )),
-                title: const Text(
-                  'Cadastrar receitas',
-                  style: TextStyle(color: Colors.white, fontSize: 13),
-                ),
-                onTap: () {
-                  context.go('/cadastrar-receita');
-                },
-              ),
-              const SizedBox(height: 4),
-              ListTile(
-                leading: Padding(
                   padding: const EdgeInsets.only(left: 36.0),
-                  // Adiciona espaço à esquerda
                   child: SvgPicture.asset(
-                    'assets/my_reviews.svg',
+                    'assets/register_recipe.svg',
                     width: 24,
                     height: 24,
                   ),
                 ),
                 title: const Text(
-                  'Minhas avaliações',
+                  'Cadastrar receitas',
+                  style: TextStyle(color: Colors.white, fontSize: 13),
+                ),
+                onTap: () {
+                  context.push('/cadastrar-receita');
+                },
+              ),
+              ListTile(
+                leading: SvgPicture.asset(
+                  'assets/logout.svg',
+                  width: 28,
+                  height: 28,
+                ),
+                title: const Text(
+                  'Sair',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 13,
+                    fontSize: 15,
                   ),
                 ),
                 onTap: () {},
-              ),
+              )
             ],
           ),
         ),
