@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/usuario.dart';
-import 'package:gourmetize/routes/routes.dart'; // Certifique-se de que este caminho esteja correto
-import 'package:gourmetize/model/receita.dart'; // Certifique-se de que seu modelo Receita está definido
+import 'package:gourmetize/routes/routes.dart';
+import 'package:gourmetize/model/receita.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,7 +20,17 @@ class MyAppState extends State<MyApp> {
 
   void adicionarReceita(Receita receita) {
     setState(() {
-      receitas.add(receita);
+      int receitaIndex = receitas.indexWhere((r) => r.id == receita.id);
+
+      if (receitaIndex != -1) {
+        // Atualizar receita existente
+        receitas[receitaIndex] = receita;
+        print('Receita atualizada: ${receita.titulo}');
+      } else {
+        // Adicionar nova receita
+        receitas.add(receita);
+        print('Nova receita cadastrada: ${receita.titulo}');
+      }
     });
   }
 

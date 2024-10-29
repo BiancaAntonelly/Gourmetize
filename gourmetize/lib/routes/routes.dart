@@ -17,14 +17,22 @@ final GoRouter myRouter = GoRouter(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
-        return Home(receitas: mainAppState!.receitas);
+        return Home(receitas: mainAppState!.receitas,
+          onCadastrarReceita: mainAppState!.adicionarReceita,
+          onCriarEtiqueta: mainAppState!.criarEtiqueta,
+          usuarioLogado: mainAppState.usuarioLogado!,);
       },
     ),
     GoRoute(
       path: '/receitas-usuario',
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
-        return ReceitasUsuario(receitas: mainAppState!.receitas);
+        return ReceitasUsuario(
+            receitas: mainAppState!.receitas,
+          onCadastrarReceita: mainAppState!.adicionarReceita,
+          onCriarEtiqueta: mainAppState!.criarEtiqueta,
+          usuarioLogado: mainAppState.usuarioLogado!,
+        );
       },
     ),
     GoRoute(
@@ -47,6 +55,19 @@ final GoRouter myRouter = GoRouter(
           onCadastrarReceita: mainAppState!.adicionarReceita,
           onCriarEtiqueta: mainAppState!.criarEtiqueta,
           usuarioLogado: mainAppState.usuarioLogado!,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/editar-receita',
+      builder: (BuildContext context, GoRouterState state) {
+        final receitaParaEdicao = state.extra as Receita;
+        final mainAppState = context.findAncestorStateOfType<MyAppState>();
+        return RegisterRevenue(
+          onCadastrarReceita: mainAppState!.adicionarReceita,
+          onCriarEtiqueta: mainAppState!.criarEtiqueta,
+          usuarioLogado: mainAppState.usuarioLogado!,
+          receitaParaEdicao: receitaParaEdicao,
         );
       },
     ),
