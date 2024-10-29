@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/screens/visualizar_receita.dart';
+import 'package:go_router/go_router.dart';
+import 'package:gourmetize/widgets/etiquetas_receita.dart';
+import 'package:gourmetize/widgets/nota_receita.dart';
 
 import '../model/etiqueta.dart';
 import '../model/usuario.dart';
@@ -106,11 +109,7 @@ class ReceitaCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) {
-            return VisualizarReceita(receita: _receita);
-          },
-        ));
+        context.push('/visualizar-receita', extra: _receita);
       },
       child: Card(
         child: Container(
@@ -125,19 +124,18 @@ class ReceitaCard extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Container(
-                padding: const EdgeInsets.all(10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                 child: Row(
                   children: <Widget>[
-                    Expanded(
-                      flex: 2,
-                      child: SizedBox(
-                        height: 130,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            'assets/receita-meta2.jpeg',
-                            fit: BoxFit.cover,
-                          ),
+                    SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.asset(
+                          'assets/receita-meta2.jpeg',
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
@@ -156,14 +154,13 @@ class ReceitaCard extends StatelessWidget {
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
+                                      color: 
+                                          Theme.of(context).colorScheme.primary,
                                     ),
                                   ),
                                 ),
                               ),
-                              Column(
+                              Row(
                                 children: [
                                   if (mostrarOpcoes)
                                     IconButton(
@@ -201,7 +198,7 @@ class ReceitaCard extends StatelessWidget {
                             ],
                           ),
                           Container(
-                            padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                            padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                             child: IngredientesGrid(ingredientes: ingredientes),
                           ),
                         ],
@@ -211,13 +208,33 @@ class ReceitaCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.only(left: 10),
-                child: Text(
-                  _receita.descricao,
-                  style: const TextStyle(
-                    fontSize: 14,
-                  ),
+                padding: const EdgeInsets.only(top: 8, left: 10, right: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [NotaReceita(receita: _receita)],
                 ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [EtiquetasReceita(receita: _receita)],
+                ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.only(top: 4, left: 10, right: 10),
+                      child: Text(
+                        _receita.descricao,
+                        style: const TextStyle(
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
             ],
           ),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../model/etiqueta.dart';
 import '../model/receita.dart';
 import '../model/usuario.dart';
-import '../widgets/app_drawer.dart';
+import '../widgets/page_wrapper.dart';
 import '../widgets/styled_text.dart';
 import '../widgets/lista_receitas.dart';
 
@@ -33,7 +34,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return AppDrawer(
+    return PageWrapper(
       title: '',
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -70,6 +71,13 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add, color: Theme.of(context).colorScheme.secondary),
+        onPressed: () {
+          context.push('/cadastrar-receita');
+        },
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }

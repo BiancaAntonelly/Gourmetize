@@ -111,8 +111,10 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/visualizar-receita',
       builder: (BuildContext context, GoRouterState state) {
+        final mainAppState = context.findAncestorStateOfType<MyAppState>();
         return VisualizarReceita(
           receita: state.extra as Receita,
+          usuarioLogado: mainAppState!.usuarioLogado!,
         );
       },
     )

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/usuario.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gourmetize/widgets/app_drawer.dart';
+import 'package:gourmetize/widgets/page_wrapper.dart';
 
 class Perfil extends StatelessWidget {
   final void Function() onDeslogarUsuario;
@@ -13,7 +13,7 @@ class Perfil extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppDrawer(
+    return const PageWrapper(
       title: 'Perfil',
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/usuario.dart';
@@ -19,14 +21,13 @@ class MyAppState extends State<MyApp> {
   ];
   Usuario? usuarioLogado;
   List<Receita> receitas = [
-    Receita(
-      id: 1,
+    Receita
+      id: Random().nextInt(10000),
       titulo: 'Bolo',
       descricao: 'Bolo de Cenoura',
       ingredientes: 'Cenoura\nFarinha\nOvos',
       preparo: 'Faça a massa\nColoque no forno',
-      usuario: Usuario(
-          id: 1, nome: 'Ádisson', email: 'teste@gmail.com', senha: 'password'),
+      usuario: Usuario(id: 2, nome: 'Ádisson', email: 'email', senha: 'senha'),
     )
   ];
   void adicionarUsuario(Usuario novoUsuario) {
