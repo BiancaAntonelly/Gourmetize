@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gourmetize/model/etiqueta.dart';
@@ -9,14 +11,15 @@ class RegisterRevenue extends StatefulWidget {
   final Usuario usuarioLogado;
   final void Function(Receita) onCadastrarReceita;
   final void Function(Etiqueta) onCriarEtiqueta;
+  final Receita? receitaParaEdicao;
 
   const RegisterRevenue({
     super.key,
     required this.usuarioLogado,
     required this.onCadastrarReceita,
     required this.onCriarEtiqueta,
+    this.receitaParaEdicao,
   });
-
   @override
   _RegisterRevenueState createState() => _RegisterRevenueState();
 }
@@ -29,6 +32,20 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<Etiqueta> _etiquetas = [];
   final TextEditingController etiquetaController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.receitaParaEdicao != null) {
+      tituloController.text = widget.receitaParaEdicao!.titulo;
+      ingredientesController.text = widget.receitaParaEdicao!.ingredientes;
+      descricaoController.text = widget.receitaParaEdicao!.descricao;
+      preparoController.text = widget.receitaParaEdicao!.preparo;
+
+      _etiquetas.addAll(widget.receitaParaEdicao!.etiquetas);
+    }
+  }
 
   void _addEtiqueta(String nome) {
     if (nome.isEmpty) return;
@@ -271,17 +288,33 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        widget.onCadastrarReceita(
-                          Receita(
-                            titulo: tituloController.text,
-                            descricao: descricaoController.text,
-                            ingredientes: ingredientesController.text,
-                            preparo: preparoController.text,
-                            usuario: widget.usuarioLogado,
-                            etiquetas: _etiquetas,
-                          ),
-                        );
-                        GoRouter.of(context).go('/');
+                        if (widget.receitaParaEdicao != null) {
+                          // Atualizar a receita existente
+                          widget.onCadastrarReceita(
+                            Receita(
+                              id: widget.receitaParaEdicao!.id,
+                              titulo: tituloController.text,
+                              descricao: descricaoController.text,
+                              ingredientes: ingredientesController.text,
+                              preparo: preparoController.text,
+                              usuario: widget.usuarioLogado,
+                              etiquetas: _etiquetas,
+                            ),
+                          );
+                        } else {
+                          widget.onCadastrarReceita(
+                            Receita(
+                              id: Random().nextInt(10000),
+                              titulo: tituloController.text,
+                              descricao: descricaoController.text,
+                              ingredientes: ingredientesController.text,
+                              preparo: preparoController.text,
+                              usuario: widget.usuarioLogado,
+                              etiquetas: _etiquetas,
+                            ),
+                          );
+                        }
+                        GoRouter.of(context).go('/'); // Redireciona após a ação
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -292,11 +325,12 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    child: const Text(
-                      'Cadastrar',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
+                    child: Text(widget.receitaParaEdicao == null
+                        ? 'Cadastrar Receita'
+                        : 'Atualizar Receita',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
+                  )
                 ),
               ],
             ),

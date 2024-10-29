@@ -2,12 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/widgets/receita_card.dart';
 
+import '../model/etiqueta.dart';
+import '../model/usuario.dart';
+
 class ListaReceitas extends StatelessWidget {
   final List<Receita> receitas;
   final void Function(Receita receita)? deleteReceita;
   final bool pertencemAoUsuario;
+  final Usuario usuarioLogado;
+  final void Function(Receita) onCadastrarReceita;
+  final void Function(Etiqueta) onCriarEtiqueta;
 
-  ListaReceitas({required this.receitas, this.deleteReceita, required this.pertencemAoUsuario});
+  ListaReceitas({
+    required this.receitas,
+    this.deleteReceita,
+    required this.pertencemAoUsuario,
+    required this.usuarioLogado,
+    required this.onCadastrarReceita,
+    required this.onCriarEtiqueta,});
 
   void deletar(Receita receita){
     if(deleteReceita != null){
@@ -32,6 +44,9 @@ class ListaReceitas extends StatelessWidget {
           final receita = receitas[index];
           return ReceitaCard(
             receita: receita,
+            usuarioLogado: usuarioLogado,
+            onCadastrarReceita: onCadastrarReceita,
+            onCriarEtiqueta: onCriarEtiqueta,
             onDelete: () => deletar(receita), // Passa a função de deleção
             mostrarOpcoes: pertencemAoUsuario,
           );

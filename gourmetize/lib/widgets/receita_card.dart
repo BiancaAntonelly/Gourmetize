@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
-import 'package:go_router/go_router.dart';
 import 'package:gourmetize/screens/visualizar_receita.dart';
+
+import '../model/etiqueta.dart';
+import '../model/usuario.dart';
+import '../screens/register_revenue.dart';
 
 class ReceitaCard extends StatelessWidget {
   final Receita _receita;
   final VoidCallback? onDelete;
   final bool mostrarOpcoes;
+  final Usuario usuarioLogado;
+  final void Function(Receita) onCadastrarReceita;
+  final void Function(Etiqueta) onCriarEtiqueta;
 
   const ReceitaCard({
     super.key,
     required Receita receita,
     this.onDelete,
+    required this.usuarioLogado,
+    required this.onCadastrarReceita,
+    required this.onCriarEtiqueta,
     this.mostrarOpcoes = false,
   }) : _receita = receita;
 
@@ -25,24 +34,59 @@ class ReceitaCard extends StatelessWidget {
   Future<void> _showDeleteConfirmationDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: false, // Impede que o modal seja fechado ao tocar fora dele
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirmar Deleção'),
-          content:
-              const Text('Você tem certeza que deseja deletar esta receita?'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Row(
+            children: [
+              Icon(Icons.warning, color: Colors.red),
+              const SizedBox(width: 10),
+              Text(
+                'Deletar receita',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          content: RichText(
+            text: TextSpan(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+              children: [
+                const TextSpan(text: 'Você tem certeza que deseja deletar a receita '),
+                TextSpan(
+                  text: _receita.titulo, // Adicionando o título da receita aqui
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                ),
+                const TextSpan(text: '? Esta ação não pode ser desfeita.'),
+              ],
+            ),
+          ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancelar'),
+              child: const Text(
+                'Cancelar',
+                style: TextStyle(color: Colors.grey),
+              ),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Fecha o modal
               },
             ),
             TextButton(
-              child: const Text('Deletar'),
+              child: const Text(
+                'Deletar',
+                style: TextStyle(color: Colors.red),
+              ),
               onPressed: () {
                 if (onDelete != null) onDelete!();
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Fecha o modal após deletar
               },
             ),
           ],
@@ -50,6 +94,7 @@ class ReceitaCard extends StatelessWidget {
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -112,13 +157,36 @@ class ReceitaCard extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              if (mostrarOpcoes) // Verifica se mostrarOpcoes é verdadeiro
-                                IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  onPressed: () => _showDeleteConfirmationDialog(context),
-                                  tooltip: 'Deletar receita',
-                                  color: Colors.red,
-                                ),
+                              Column(
+                                children: [
+                                  if (mostrarOpcoes)
+                                    IconButton(
+                                    icon: const Icon(Icons.delete),
+                                    onPressed: () => _showDeleteConfirmationDialog(context),
+                                    tooltip: 'Deletar receita',
+                                    color: Colors.red,
+                                  ),
+                                  if (mostrarOpcoes)
+                                    IconButton(
+                                      icon: const Icon(Icons.edit),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => RegisterRevenue(
+                                              usuarioLogado: usuarioLogado,
+                                              onCadastrarReceita: onCadastrarReceita,
+                                              onCriarEtiqueta: onCriarEtiqueta,
+                                              receitaParaEdicao: _receita, // passa a receita para edição
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      tooltip: 'Editar receita',
+                                      color: Colors.yellow,
+                                    ),
+                                ],
+                              )
                             ],
                           ),
                           Container(

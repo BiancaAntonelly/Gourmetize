@@ -6,7 +6,7 @@ import 'package:gourmetize/model/etiqueta.dart';
 import 'usuario.dart';
 
 class Receita {
-  final int id = Random().nextInt(10000);
+  final int id;
   String titulo;
   String descricao;
   String ingredientes;
@@ -16,6 +16,7 @@ class Receita {
   List<Etiqueta> etiquetas;
 
   Receita({
+    required this.id,
     required this.titulo,
     required this.descricao,
     required this.ingredientes,
