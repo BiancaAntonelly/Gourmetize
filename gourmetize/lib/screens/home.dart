@@ -33,9 +33,10 @@ class _HomeState extends State<Home> {
             Text(
               'Bem vindos ao Gourmetize',
               style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.secondary),
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
             const Text(
               'Olá, Fulano! Que bom que você está de volta!',
@@ -49,24 +50,25 @@ class _HomeState extends State<Home> {
             const SizedBox(height: 16), // Espaçamento entre o título e a lista
             widget.receitas.isEmpty
                 ? const Center(
-              child: Text(
-                'Nenhuma receita disponível.',
-                style: TextStyle(fontSize: 18),
-              ),
-            )
+                    child: Text(
+                      'Nenhuma receita disponível.',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  )
                 : Expanded(
-              // O Expanded permite que o ListView ocupe o espaço restante
-              child: ListView.builder(
-                itemCount: widget.receitas.length,
-                itemBuilder: (ctx, index) {
-                  final receita = widget.receitas[index];
-                  return ReceitaCard(
-                    receita: receita,
-                    onDelete: () => _deleteReceita(receita), // Passa a função de deleção
-                  );
-                },
-              ),
-            ),
+                    // O Expanded permite que o ListView ocupe o espaço restante
+                    child: ListView.builder(
+                      itemCount: widget.receitas.length,
+                      itemBuilder: (ctx, index) {
+                        final receita = widget.receitas[index];
+                        return ReceitaCard(
+                          receita: receita,
+                          onDelete: () => _deleteReceita(
+                              receita), // Passa a função de deleção
+                        );
+                      },
+                    ),
+                  ),
           ],
         ),
       ),

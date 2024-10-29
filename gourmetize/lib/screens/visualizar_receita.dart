@@ -80,7 +80,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita> {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                         ),
@@ -92,10 +92,12 @@ class _VisualizarReceitaState extends State<VisualizarReceita> {
                         ),
                         SizedBox(height: 20),
                         StyledText(title: 'Ingredientes'),
-                        Text(widget.receita.ingredientes, style: TextStyle(fontSize: 18)),
+                        Text(widget.receita.ingredientes,
+                            style: TextStyle(fontSize: 18)),
                         SizedBox(height: 20),
                         StyledText(title: 'Modo de preparo'),
-                        Text(widget.receita.preparo, style: TextStyle(fontSize: 18)),
+                        Text(widget.receita.preparo,
+                            style: TextStyle(fontSize: 18)),
                         SizedBox(height: 20),
                       ],
                     ),
@@ -106,14 +108,15 @@ class _VisualizarReceitaState extends State<VisualizarReceita> {
                       Expanded(
                         child: ListView.builder(
                           itemCount: widget.receita.avaliacoes.length,
-                          itemBuilder: (context, index) =>
-                              AvaliacaoCard(avaliacao: widget.receita.avaliacoes[index]),
+                          itemBuilder: (context, index) => AvaliacaoCard(
+                              avaliacao: widget.receita.avaliacoes[index]),
                         ),
                       ),
                       FloatingActionButton(
                         onPressed: openNovaAvaliacao,
-                        child: Icon(Icons.star, color: Theme.of(context).colorScheme.primary),
-                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        child: Icon(Icons.star,
+                            color: Theme.of(context).colorScheme.secondary),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                       ),
                     ],
                   ),

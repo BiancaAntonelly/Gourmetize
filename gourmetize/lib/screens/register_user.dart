@@ -65,7 +65,6 @@ class RegisterUser extends StatelessWidget {
                       nome: _nomeController.text,
                       email: _emailController.text,
                       senha: _senhaController.text,
-                      receitas: [],
                     );
 
                     _authService.registrarUsuario(novoUsuario);

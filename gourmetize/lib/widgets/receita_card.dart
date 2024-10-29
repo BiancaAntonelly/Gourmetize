@@ -27,7 +27,8 @@ class ReceitaCard extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirmar Deleção'),
-          content: const Text('Você tem certeza que deseja deletar esta receita?'),
+          content:
+              const Text('Você tem certeza que deseja deletar esta receita?'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),
@@ -55,9 +56,9 @@ class ReceitaCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(
-            builder: (context) {
-              return VisualizarReceita(receita: _receita);
-            },
+          builder: (context) {
+            return VisualizarReceita(receita: _receita);
+          },
         ));
       },
       child: Card(
@@ -102,13 +103,15 @@ class ReceitaCard extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).colorScheme.secondary,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                   ),
                                 ),
                               ),
                               IconButton(
                                 icon: const Icon(Icons.delete),
-                                onPressed: () => _showDeleteConfirmationDialog(context),
+                                onPressed: () =>
+                                    _showDeleteConfirmationDialog(context),
                                 tooltip: 'Deletar receita',
                                 color: Colors.red,
                               ),
