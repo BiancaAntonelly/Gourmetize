@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/widgets/logo.dart';
 
-class Login extends StatelessWidget {
-  final List<Usuario> usuarios; // Lista de usuários cadastrados
+class Login extends StatefulWidget {
+  final List<Usuario> usuarios;
+  final void Function(Usuario) onLogarUsuario;
 
-  const Login({Key? key, required this.usuarios}) : super(key: key);
+  const Login({Key? key, required this.usuarios, required this.onLogarUsuario})
+      : super(key: key);
+
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _emailController = TextEditingController();
-    final TextEditingController _passwordController = TextEditingController();
     final screenSize = MediaQuery.of(context).size;
-
-    // Definindo proporções para fontes e espaçamentos
-    final double baseFontSize = screenSize.width * 0.05;
-    final double logoSize = screenSize.height * 0.11;
-    final double buttonFontSize = screenSize.width * 0.045;
-    final double inputHeight = screenSize.height * 0.07;
 
     return Scaffold(
       backgroundColor: const Color(0xFF5E3023),
       body: SingleChildScrollView(
-        // Permite rolagem
         child: Container(
-          height: screenSize.height, // Mantém o tamanho da tela
+          height: screenSize.height,
           decoration: BoxDecoration(
             image: DecorationImage(
               image: const AssetImage('assets/background.jpeg'),
@@ -55,7 +55,7 @@ class Login extends StatelessWidget {
                     Text(
                       'Gourmetize',
                       style: TextStyle(
-                        fontSize: baseFontSize * 2.5,
+                        fontSize: screenSize.width * 0.05 * 2.5,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -63,11 +63,9 @@ class Login extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: screenSize.height * 0.1),
-                _buildTextFields(
-                    _emailController, _passwordController, inputHeight),
+                _buildTextFields(),
                 SizedBox(height: screenSize.height * 0.05),
-                _buildButtons(context, _emailController, _passwordController,
-                    buttonFontSize),
+                _buildButtons(context),
               ],
             ),
           ),
@@ -76,31 +74,28 @@ class Login extends StatelessWidget {
     );
   }
 
-  Widget _buildTextFields(TextEditingController emailController,
-      TextEditingController passwordController, double inputHeight) {
+  Widget _buildTextFields() {
     return Column(
       children: [
         _buildCustomTextField(
-          controller: emailController,
+          controller: _emailController,
           hintText: 'E-mail',
           icon: Icons.email,
           obscureText: false,
-          height: inputHeight,
         ),
-        SizedBox(height: inputHeight * 0.2),
+        SizedBox(height: 20),
         _buildCustomTextField(
-          controller: passwordController,
+          controller: _passwordController,
           hintText: 'Senha',
           icon: Icons.lock,
           obscureText: true,
-          height: inputHeight,
         ),
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
             ' Esqueci minha senha',
             style: TextStyle(
-              fontSize: inputHeight * 0.28,
+              fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
@@ -115,10 +110,9 @@ class Login extends StatelessWidget {
     required String hintText,
     required IconData icon,
     required bool obscureText,
-    required double height,
   }) {
     return Container(
-      height: height,
+      height: 50,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
@@ -133,9 +127,9 @@ class Login extends StatelessWidget {
       ),
       child: TextField(
         controller: controller,
-        style: TextStyle(
-          color: const Color(0xFF5E3023),
-          fontSize: height * 0.3,
+        style: const TextStyle(
+          color: Color(0xFF5E3023),
+          fontSize: 18,
         ),
         keyboardType: obscureText
             ? TextInputType.visiblePassword
@@ -143,11 +137,11 @@ class Login extends StatelessWidget {
         obscureText: obscureText,
         textAlign: TextAlign.start,
         decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Colors.orange, size: height * 0.3),
+          prefixIcon: Icon(icon, color: Colors.orange),
           hintText: hintText,
           filled: false,
-          contentPadding: EdgeInsets.symmetric(
-              vertical: height * 0.3, horizontal: height * 0.2),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide.none,
@@ -157,55 +151,48 @@ class Login extends StatelessWidget {
     );
   }
 
-  Widget _buildButtons(
-      BuildContext context,
-      TextEditingController emailController,
-      TextEditingController passwordController,
-      double buttonFontSize) {
+  Widget _buildButtons(BuildContext context) {
     return Column(
       children: [
         _buildButton(
           'Entrar',
-          () => _login(context, emailController, passwordController),
-          buttonFontSize,
+          () => _login(context),
         ),
-        SizedBox(height: buttonFontSize * 0.2),
+        const SizedBox(height: 10),
         _buildButton(
           'Realizar cadastro',
           () => _navigateToSignup(context),
-          buttonFontSize,
         ),
       ],
     );
   }
 
-  Widget _buildButton(String text, VoidCallback onPressed, double fontSize) {
+  Widget _buildButton(String text, VoidCallback onPressed) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.orange,
-          padding: EdgeInsets.symmetric(vertical: fontSize * 0.4),
+          padding: const EdgeInsets.symmetric(vertical: 15),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
         ),
         child: Text(
           text,
-          style: TextStyle(
-            fontSize: fontSize,
-            color: const Color(0xFF5E3023),
+          style: const TextStyle(
+            fontSize: 18,
+            color: Color(0xFF5E3023),
           ),
         ),
       ),
     );
   }
 
-  void _login(BuildContext context, TextEditingController emailController,
-      TextEditingController passwordController) {
-    final email = emailController.text;
-    final senha = passwordController.text;
+  void _login(BuildContext context) {
+    final email = _emailController.text;
+    final senha = _passwordController.text;
 
     if (email.isEmpty || senha.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -214,8 +201,7 @@ class Login extends StatelessWidget {
       return;
     }
 
-    // Verifica se o usuário existe na lista de usuários
-    final usuario = usuarios.firstWhere(
+    final usuario = widget.usuarios.firstWhere(
       (usuario) => usuario.email == email && usuario.senha == senha,
       orElse: () => Usuario(id: -1, nome: '', email: '', senha: ''),
     );
@@ -225,8 +211,11 @@ class Login extends StatelessWidget {
         const SnackBar(content: Text('E-mail ou senha incorretos')),
       );
     } else {
-      print('Login bem-sucedido com e-mail: $email');
-      // Navegar para a próxima tela ou fazer outras ações
+      widget.onLogarUsuario(usuario);
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.replace('/');
+      });
     }
   }
 

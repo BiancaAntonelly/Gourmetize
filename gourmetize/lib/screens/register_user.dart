@@ -1,12 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:gourmetize/service/auth_service.dart';
 import '../model/usuario.dart';
 import '../widgets/logo.dart';
 import 'package:go_router/go_router.dart';
 
 class RegisterUser extends StatelessWidget {
-  RegisterUser({Key? key}) : super(key: key);
+  final void Function(Usuario) onAddUsuario;
+  RegisterUser({Key? key, required this.onAddUsuario}) : super(key: key);
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nomeController = TextEditingController();
@@ -59,22 +59,7 @@ class RegisterUser extends StatelessWidget {
             Container(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  if (_authService.checarSenhas(
-                      _senhaController.text, _senhaConfirmController.text)) {
-                    final novoUsuario = Usuario(
-                      id: _generateRandomId(),
-                      nome: _nomeController.text,
-                      email: _emailController.text,
-                      senha: _senhaController.text,
-                    );
-
-                    _authService.registrarUsuario(novoUsuario);
-                    _limparCampos();
-                  } else {
-                    _showMessage(context, 'As senhas não coincidem');
-                  }
-                },
+                onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
                   foregroundColor: const Color(0xFF5E3023),

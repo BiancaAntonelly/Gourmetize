@@ -14,17 +14,49 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  Usuario? usuarioLogado =
-      Usuario(id: 1, nome: 'Ádisson', email: 'email', senha: 'senha');
+  List<Usuario> usuarios = [
+    Usuario(id: 1, nome: 'Ádisson', email: 'teste@gmail.com', senha: 'password')
+  ];
+  Usuario? usuarioLogado;
   List<Receita> receitas = [
     Receita(
+      id: 1,
       titulo: 'Bolo',
       descricao: 'Bolo de Cenoura',
       ingredientes: 'Cenoura\nFarinha\nOvos',
       preparo: 'Faça a massa\nColoque no forno',
-      usuario: Usuario(id: 1, nome: 'Ádisson', email: 'email', senha: 'senha'),
+      usuario: Usuario(
+          id: 1, nome: 'Ádisson', email: 'teste@gmail.com', senha: 'password'),
     )
   ];
+  void adicionarUsuario(Usuario novoUsuario) {
+    setState(() {
+      int usuarioIndex = usuarios.indexWhere((u) => u.id == novoUsuario.id);
+
+      if (usuarioIndex != -1) {
+        // Atualizar usuário existente
+        usuarios[usuarioIndex] = novoUsuario;
+        print('Usuário atualizado: ${novoUsuario.nome}');
+      } else {
+        // Adicionar novo usuário
+        usuarios.add(novoUsuario);
+        print('Novo usuário adicionado: ${novoUsuario.nome}');
+      }
+    });
+  }
+
+  void logarUsuario(Usuario usuario) {
+    setState(() {
+      usuarioLogado = usuario;
+    });
+    print('Usuário logado: ${usuario.nome}');
+  }
+
+  void deslogarUsuario() {
+    setState(() {
+      usuarioLogado = null;
+    });
+  }
 
   void adicionarReceita(Receita receita) {
     setState(() {

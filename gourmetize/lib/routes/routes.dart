@@ -7,7 +7,7 @@ import 'package:gourmetize/screens/home.dart';
 import 'package:gourmetize/screens/perfil.dart';
 import 'package:gourmetize/screens/login.dart';
 import 'package:gourmetize/screens/register_user.dart';
-import 'package:gourmetize/screens/receitas_usuario.dart';  
+import 'package:gourmetize/screens/receitas_usuario.dart';
 
 import '../main.dart';
 
@@ -17,10 +17,24 @@ final GoRouter myRouter = GoRouter(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
-        return Home(receitas: mainAppState!.receitas,
-          onCadastrarReceita: mainAppState!.adicionarReceita,
-          onCriarEtiqueta: mainAppState!.criarEtiqueta,
-          usuarioLogado: mainAppState.usuarioLogado!,);
+
+        if (mainAppState == null) {
+          return Center(child: Text('Erro ao carregar o estado da aplicação.'));
+        }
+
+        // Verifique se o usuário está logado
+        if (mainAppState.usuarioLogado == null) {
+          return Login(
+              usuarios: mainAppState.usuarios,
+              onLogarUsuario: mainAppState.logarUsuario);
+        } else {
+          return Home(
+            receitas: mainAppState.receitas,
+            onCadastrarReceita: mainAppState.adicionarReceita,
+            onCriarEtiqueta: mainAppState.criarEtiqueta,
+            usuarioLogado: mainAppState.usuarioLogado!,
+          );
+        }
       },
     ),
     GoRoute(
@@ -28,7 +42,7 @@ final GoRouter myRouter = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
         return ReceitasUsuario(
-            receitas: mainAppState!.receitas,
+          receitas: mainAppState!.receitas,
           onCadastrarReceita: mainAppState!.adicionarReceita,
           onCriarEtiqueta: mainAppState!.criarEtiqueta,
           usuarioLogado: mainAppState.usuarioLogado!,
@@ -38,14 +52,26 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/perfil',
       builder: (BuildContext context, GoRouterState state) {
-        return const Perfil();
+        final mainAppState = context.findAncestorStateOfType<MyAppState>();
+
+        if (mainAppState != null && mainAppState.usuarioLogado != null) {
+          return Perfil(
+              usuarioLogado: mainAppState.usuarioLogado!,
+              onDeslogarUsuario: mainAppState!.deslogarUsuario);
+        } else {
+          return Login(
+              usuarios: mainAppState!.usuarios,
+              onLogarUsuario: mainAppState.logarUsuario);
+        }
       },
     ),
     GoRoute(
       path: '/login',
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
-        return Login(usuarios: mainAppState!.usuarios);
+        return Login(
+            usuarios: mainAppState!.usuarios,
+            onLogarUsuario: mainAppState.logarUsuario);
       },
     ),
     GoRoute(
@@ -75,7 +101,9 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/register',
       builder: (BuildContext context, GoRouterState state) {
-        return RegisterUser();
+        final mainAppState = context.findAncestorStateOfType<MyAppState>();
+
+        return RegisterUser(onAddUsuario: mainAppState!.adicionarUsuario);
       },
     ),
     GoRoute(

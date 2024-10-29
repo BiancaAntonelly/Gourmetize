@@ -34,7 +34,8 @@ class ReceitaCard extends StatelessWidget {
   Future<void> _showDeleteConfirmationDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // Impede que o modal seja fechado ao tocar fora dele
+      barrierDismissible:
+          false, // Impede que o modal seja fechado ao tocar fora dele
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
@@ -55,9 +56,13 @@ class ReceitaCard extends StatelessWidget {
           ),
           content: RichText(
             text: TextSpan(
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontSize: 16),
               children: [
-                const TextSpan(text: 'Você tem certeza que deseja deletar a receita '),
+                const TextSpan(
+                    text: 'Você tem certeza que deseja deletar a receita '),
                 TextSpan(
                   text: _receita.titulo, // Adicionando o título da receita aqui
                   style: const TextStyle(
@@ -94,7 +99,6 @@ class ReceitaCard extends StatelessWidget {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +156,9 @@ class ReceitaCard extends StatelessWidget {
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
-                                      color: Theme.of(context).colorScheme.secondary,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                     ),
                                   ),
                                 ),
@@ -161,11 +167,13 @@ class ReceitaCard extends StatelessWidget {
                                 children: [
                                   if (mostrarOpcoes)
                                     IconButton(
-                                    icon: const Icon(Icons.delete),
-                                    onPressed: () => _showDeleteConfirmationDialog(context),
-                                    tooltip: 'Deletar receita',
-                                    color: Colors.red,
-                                  ),
+                                      icon: const Icon(Icons.delete),
+                                      onPressed: () =>
+                                          _showDeleteConfirmationDialog(
+                                              context),
+                                      tooltip: 'Deletar receita',
+                                      color: Colors.red,
+                                    ),
                                   if (mostrarOpcoes)
                                     IconButton(
                                       icon: const Icon(Icons.edit),
@@ -173,11 +181,14 @@ class ReceitaCard extends StatelessWidget {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => RegisterRevenue(
+                                            builder: (context) =>
+                                                RegisterRevenue(
                                               usuarioLogado: usuarioLogado,
-                                              onCadastrarReceita: onCadastrarReceita,
+                                              onCadastrarReceita:
+                                                  onCadastrarReceita,
                                               onCriarEtiqueta: onCriarEtiqueta,
-                                              receitaParaEdicao: _receita, // passa a receita para edição
+                                              receitaParaEdicao:
+                                                  _receita, // passa a receita para edição
                                             ),
                                           ),
                                         );

@@ -12,10 +12,13 @@ class Home extends StatefulWidget {
   final void Function(Receita) onCadastrarReceita;
   final void Function(Etiqueta) onCriarEtiqueta;
 
-  Home({super.key, required this.receitas,
+  Home({
+    super.key,
+    required this.receitas,
     required this.usuarioLogado,
     required this.onCadastrarReceita,
-    required this.onCriarEtiqueta,});
+    required this.onCriarEtiqueta,
+  });
 
   @override
   _HomeState createState() => _HomeState();
