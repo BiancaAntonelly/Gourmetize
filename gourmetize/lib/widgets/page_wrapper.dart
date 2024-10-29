@@ -82,6 +82,9 @@ class PageWrapper extends StatelessWidget {
                     fontSize: 15,
                   ),
                 ),
+                onTap: () {
+                  context.go('/perfil');
+                },
               ),
               ListTile(
                 leading: SvgPicture.asset(
