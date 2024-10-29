@@ -31,16 +31,35 @@ class MyAppState extends State<MyApp> {
   ];
   void adicionarUsuario(Usuario novoUsuario) {
     setState(() {
-      int usuarioIndex = usuarios.indexWhere((u) => u.id == novoUsuario.id);
+      // Gera um novo ID, garantindo que não haverá repetição.
+      int novoId = 1; // Começamos com 1
+      if (usuarios.isNotEmpty) {
+        // Se já houver usuários, pegamos o maior ID atual e incrementamos.
+        novoId = usuarios.map((u) => u.id).reduce((a, b) => a > b ? a : b) + 1;
+      }
+
+      // Cria uma nova instância de Usuario com o novo ID.
+      Usuario usuarioComId = Usuario(
+        id: novoId,
+        nome: novoUsuario.nome,
+        email: novoUsuario.email,
+        senha: novoUsuario.senha,
+        receitas: novoUsuario.receitas,
+        etiquetas: novoUsuario.etiquetas,
+      );
+
+      // Verifica se o usuário já existe pelo email.
+      int usuarioIndex =
+          usuarios.indexWhere((u) => u.email == usuarioComId.email);
 
       if (usuarioIndex != -1) {
         // Atualizar usuário existente
-        usuarios[usuarioIndex] = novoUsuario;
-        print('Usuário atualizado: ${novoUsuario.nome}');
+        usuarios[usuarioIndex] = usuarioComId;
+        print('Usuário atualizado: ${usuarioComId.nome}');
       } else {
         // Adicionar novo usuário
-        usuarios.add(novoUsuario);
-        print('Novo usuário adicionado: ${novoUsuario.nome}');
+        usuarios.add(usuarioComId);
+        print('Novo usuário adicionado: ${usuarioComId.nome}');
       }
     });
   }

@@ -21,6 +21,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+    final baseFontSize = screenSize.width * 0.045;
 
     return Scaffold(
       backgroundColor: const Color(0xFF5E3023),
@@ -55,7 +56,7 @@ class _LoginState extends State<Login> {
                     Text(
                       'Gourmetize',
                       style: TextStyle(
-                        fontSize: screenSize.width * 0.05 * 2.5,
+                        fontSize: baseFontSize * 3,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -63,9 +64,9 @@ class _LoginState extends State<Login> {
                   ],
                 ),
                 SizedBox(height: screenSize.height * 0.1),
-                _buildTextFields(),
+                _buildTextFields(baseFontSize),
                 SizedBox(height: screenSize.height * 0.05),
-                _buildButtons(context),
+                _buildButtons(context, baseFontSize),
               ],
             ),
           ),
@@ -74,7 +75,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget _buildTextFields() {
+  Widget _buildTextFields(double baseFontSize) {
     return Column(
       children: [
         _buildCustomTextField(
@@ -82,20 +83,22 @@ class _LoginState extends State<Login> {
           hintText: 'E-mail',
           icon: Icons.email,
           obscureText: false,
+          baseFontSize: baseFontSize,
         ),
-        SizedBox(height: 20),
+        SizedBox(height: baseFontSize * 0.8),
         _buildCustomTextField(
           controller: _passwordController,
           hintText: 'Senha',
           icon: Icons.lock,
           obscureText: true,
+          baseFontSize: baseFontSize,
         ),
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
             ' Esqueci minha senha',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: baseFontSize * 0.9,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
@@ -110,9 +113,10 @@ class _LoginState extends State<Login> {
     required String hintText,
     required IconData icon,
     required bool obscureText,
+    required double baseFontSize,
   }) {
     return Container(
-      height: 50,
+      height: baseFontSize * 3.2,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
@@ -127,9 +131,9 @@ class _LoginState extends State<Login> {
       ),
       child: TextField(
         controller: controller,
-        style: const TextStyle(
-          color: Color(0xFF5E3023),
-          fontSize: 18,
+        style: TextStyle(
+          color: const Color(0xFF5E3023),
+          fontSize: baseFontSize,
         ),
         keyboardType: obscureText
             ? TextInputType.visiblePassword
@@ -137,11 +141,12 @@ class _LoginState extends State<Login> {
         obscureText: obscureText,
         textAlign: TextAlign.start,
         decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Colors.orange),
+          prefixIcon:
+              Icon(icon, color: Colors.orange, size: baseFontSize * 1.4),
           hintText: hintText,
           filled: false,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+          contentPadding: EdgeInsets.symmetric(
+              vertical: baseFontSize * 0.8, horizontal: baseFontSize * 0.5),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide.none,
@@ -151,39 +156,42 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget _buildButtons(BuildContext context) {
+  Widget _buildButtons(BuildContext context, double baseFontSize) {
     return Column(
       children: [
         _buildButton(
           'Entrar',
           () => _login(context),
+          baseFontSize,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: baseFontSize * 0.4),
         _buildButton(
           'Realizar cadastro',
           () => _navigateToSignup(context),
+          baseFontSize,
         ),
       ],
     );
   }
 
-  Widget _buildButton(String text, VoidCallback onPressed) {
+  Widget _buildButton(
+      String text, VoidCallback onPressed, double baseFontSize) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.orange,
-          padding: const EdgeInsets.symmetric(vertical: 15),
+          padding: EdgeInsets.symmetric(vertical: baseFontSize * 0.7),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
         ),
         child: Text(
           text,
-          style: const TextStyle(
-            fontSize: 18,
-            color: Color(0xFF5E3023),
+          style: TextStyle(
+            fontSize: baseFontSize * 0.9,
+            color: const Color(0xFF5E3023),
           ),
         ),
       ),

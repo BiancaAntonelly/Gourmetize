@@ -41,19 +41,21 @@ class _HomeState extends State<Home> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Bem vindos ao Gourmetize',
+              'Bem-vindo ao Gourmetize',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),
-            const Text(
-              'Olá, Fulano! Que bom que você está de volta!',
+            // Corrigido para acessar o nome do usuário logado
+            Text(
+              'Olá, ${widget.usuarioLogado.nome}! Que bom que você está de volta!',
               style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey),
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey,
+              ),
             ),
             const SizedBox(height: 20),
             const StyledText(title: "Receitas"),

@@ -103,7 +103,9 @@ final GoRouter myRouter = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
 
-        return RegisterUser(onAddUsuario: mainAppState!.adicionarUsuario);
+        return RegisterUser(
+            onAddUsuario: mainAppState!.adicionarUsuario,
+            usuarios: mainAppState.usuarios);
       },
     ),
     GoRoute(
