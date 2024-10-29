@@ -19,39 +19,40 @@ class ListaReceitas extends StatelessWidget {
     required this.pertencemAoUsuario,
     required this.usuarioLogado,
     required this.onCadastrarReceita,
-    required this.onCriarEtiqueta,});
+    required this.onCriarEtiqueta,
+  });
 
-  void deletar(Receita receita){
-    if(deleteReceita != null){
-      deleteReceita!(receita); 
+  void deletar(Receita receita) {
+    if (deleteReceita != null) {
+      deleteReceita!(receita);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-     return receitas.isEmpty
+    return receitas.isEmpty
         ? const Center(
-      child: Text(
-        'Nenhuma receita disponível.',
-        style: TextStyle(fontSize: 18),
-      ),
-    )
+            child: Text(
+              'Nenhuma receita disponível.',
+              style: TextStyle(fontSize: 18),
+            ),
+          )
         : Expanded(
-      // O Expanded permite que o ListView ocupe o espaço restante
-      child: ListView.builder(
-        itemCount: receitas.length,
-        itemBuilder: (ctx, index) {
-          final receita = receitas[index];
-          return ReceitaCard(
-            receita: receita,
-            usuarioLogado: usuarioLogado,
-            onCadastrarReceita: onCadastrarReceita,
-            onCriarEtiqueta: onCriarEtiqueta,
-            onDelete: () => deletar(receita), // Passa a função de deleção
-            mostrarOpcoes: pertencemAoUsuario,
+            // O Expanded permite que o ListView ocupe o espaço restante
+            child: ListView.builder(
+              itemCount: receitas.length,
+              itemBuilder: (ctx, index) {
+                final receita = receitas[index];
+                return ReceitaCard(
+                  receita: receita,
+                  usuarioLogado: usuarioLogado,
+                  onCadastrarReceita: onCadastrarReceita,
+                  onCriarEtiqueta: onCriarEtiqueta,
+                  onDelete: () => deletar(receita), // Passa a função de deleção
+                  mostrarOpcoes: pertencemAoUsuario,
+                );
+              },
+            ),
           );
-        },
-      ),
-    );
   }
 }

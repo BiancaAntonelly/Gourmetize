@@ -12,6 +12,7 @@ import 'package:gourmetize/screens/receitas_usuario.dart';
 import '../main.dart';
 
 final GoRouter myRouter = GoRouter(
+  initialLocation: '/login',
   routes: <RouteBase>[
     GoRoute(
       path: '/',
@@ -19,9 +20,20 @@ final GoRouter myRouter = GoRouter(
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
         return Home(
           receitas: mainAppState!.receitas,
-          onCadastrarReceita: mainAppState!.adicionarReceita,
-          onCriarEtiqueta: mainAppState!.criarEtiqueta,
+          onCadastrarReceita: mainAppState.adicionarReceita,
+          onCriarEtiqueta: mainAppState.criarEtiqueta,
           usuarioLogado: mainAppState.usuarioLogado!,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/login',
+      builder: (BuildContext context, GoRouterState state) {
+        final mainAppState = context.findAncestorStateOfType<MyAppState>();
+
+        return Login(
+          usuarios: mainAppState!.usuarios,
+          onLogarUsuario: mainAppState.logarUsuario,
         );
       },
     ),
@@ -40,14 +52,26 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/perfil',
       builder: (BuildContext context, GoRouterState state) {
-        return const Perfil();
+        final mainAppState = context.findAncestorStateOfType<MyAppState>();
+
+        if (mainAppState != null && mainAppState.usuarioLogado != null) {
+          return Perfil(
+              usuarioLogado: mainAppState.usuarioLogado!,
+              onDeslogarUsuario: mainAppState!.deslogarUsuario);
+        } else {
+          return Login(
+              usuarios: mainAppState!.usuarios,
+              onLogarUsuario: mainAppState.logarUsuario);
+        }
       },
     ),
     GoRoute(
       path: '/login',
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
-        return Login(usuarios: mainAppState!.usuarios);
+        return Login(
+            usuarios: mainAppState!.usuarios,
+            onLogarUsuario: mainAppState.logarUsuario);
       },
     ),
     GoRoute(
@@ -77,7 +101,11 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/register',
       builder: (BuildContext context, GoRouterState state) {
-        return RegisterUser();
+        final mainAppState = context.findAncestorStateOfType<MyAppState>();
+
+        return RegisterUser(
+            onAddUsuario: mainAppState!.adicionarUsuario,
+            usuarios: mainAppState.usuarios);
       },
     ),
     GoRoute(

@@ -154,7 +154,7 @@ class ReceitaCard extends StatelessWidget {
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
-                                      color:
+                                      color: 
                                           Theme.of(context).colorScheme.primary,
                                     ),
                                   ),
