@@ -27,13 +27,34 @@ class ListaReceitas extends StatefulWidget {
 }
 
 class _ListaReceitasState extends State<ListaReceitas> {
+  late List<Receita> _receitas;
+
+  @override
+  void initState() {
+    super.initState();
+    _receitas = widget.receitas;
+  }
+
   void onDeletarReceita(Receita receita) {
+    setState(() {
+      _receitas.removeWhere((item) => item.id == receita.id);
+    });
     if (widget.deleteReceita != null) {
       widget.deleteReceita!(receita);
     }
   }
 
   void onCadastrarReceita(Receita receita) {
+    int receitaIndex = _receitas.indexWhere((item) => item.id == receita.id);
+    if (receitaIndex == -1) {
+      setState(() {
+        _receitas.add(receita);
+      });
+    } else {
+      setState(() {
+        _receitas[receitaIndex] = receita;
+      });
+    }
     widget.onCadastrarReceita(receita);
   }
 

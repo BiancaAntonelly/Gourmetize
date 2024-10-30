@@ -61,6 +61,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
       context: context,
       builder: (context) => NovaAvaliacao(
         onSubmit: _addAvaliacao,
+        usuarioLogado: widget.usuarioLogado,
       ),
       backgroundColor: Colors.transparent,
     );

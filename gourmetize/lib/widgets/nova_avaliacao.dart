@@ -5,9 +5,14 @@ import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/widgets/app_button.dart';
 
 class NovaAvaliacao extends StatefulWidget {
+  final Usuario usuarioLogado;
   final void Function(Avaliacao avaliacao) onSubmit;
 
-  const NovaAvaliacao({super.key, required this.onSubmit});
+  const NovaAvaliacao({
+    super.key,
+    required this.onSubmit,
+    required this.usuarioLogado,
+  });
 
   @override
   State<StatefulWidget> createState() => _NovaAvaliacaoState();
@@ -24,7 +29,7 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
       Avaliacao(
         nota: _notaAvaliacao.toInt(),
         comentario: _descricaoController.text,
-        usuario: Usuario(id: 1, nome: 'Ádisson', email: '', senha: ''),
+        usuario: widget.usuarioLogado,
       ),
     );
   }
