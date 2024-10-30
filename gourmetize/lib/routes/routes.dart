@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
-import 'package:gourmetize/screens/register_revenue.dart';
+import 'package:gourmetize/screens/register_recipe.dart';
 import 'package:gourmetize/screens/visualizar_receita.dart';
 import 'package:gourmetize/screens/home.dart';
 import 'package:gourmetize/screens/perfil.dart';

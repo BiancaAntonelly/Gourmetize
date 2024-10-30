@@ -6,7 +6,7 @@ import 'package:gourmetize/widgets/nota_receita.dart';
 
 import '../model/etiqueta.dart';
 import '../model/usuario.dart';
-import '../screens/register_revenue.dart';
+import '../screens/register_recipe.dart';
 
 class ReceitaCard extends StatelessWidget {
   final Receita _receita;
