@@ -130,6 +130,14 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
+                      Text(
+                        "Enviado por ${_receita.usuario.nome}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey,
+                        ),
+                      ),
                       GestureDetector(
                         child: NotaReceita(receita: _receita),
                         onTap: () {

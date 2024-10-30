@@ -53,7 +53,6 @@ class MyAppState extends State<MyApp> {
     ];
 
     receitas = [
-      // Receitas para usuario[0]
       Receita(
         id: Random().nextInt(10000),
         titulo: 'Bolo de chocolate',
@@ -61,6 +60,18 @@ class MyAppState extends State<MyApp> {
         ingredientes: 'Farinha\nOvos\nCenoura\nAçúcar\nLeite condensado',
         preparo: 'Faça a massa do bolo\nColoque no forno\nAguarde 30 min',
         usuario: usuarios[0],
+        avaliacoes: [
+          Avaliacao(
+            nota: 5,
+            comentario: 'Delicioso! Amei o bolo de chocolate.',
+            usuario: usuarios[1],
+          ),
+          Avaliacao(
+            nota: 4,
+            comentario: 'Bolo fofinho e a calda é perfeita!',
+            usuario: usuarios[2],
+          ),
+        ],
       ),
       Receita(
         id: Random().nextInt(10000),
@@ -69,6 +80,18 @@ class MyAppState extends State<MyApp> {
         ingredientes: 'Farinha\nManteiga\nLeite condensado\nLimão',
         preparo: 'Prepare a massa\nFaça o recheio de limão\nLeve à geladeira',
         usuario: usuarios[0],
+        avaliacoes: [
+          Avaliacao(
+            nota: 5,
+            comentario: 'A melhor torta de limão que já comi!',
+            usuario: usuarios[2],
+          ),
+          Avaliacao(
+            nota: 4,
+            comentario: 'Muito saborosa, mas prefiro mais azedinha.',
+            usuario: usuarios[1],
+          ),
+        ],
       ),
       Receita(
         id: Random().nextInt(10000),
@@ -77,8 +100,19 @@ class MyAppState extends State<MyApp> {
         ingredientes: 'Polvilho\nOvos\nQueijo\nLeite\nÓleo',
         preparo: 'Misture os ingredientes\nForme bolinhas\nAsse por 25 min',
         usuario: usuarios[0],
+        avaliacoes: [
+          Avaliacao(
+            nota: 5,
+            comentario: 'Essa receita de pão de queijo é a melhor!',
+            usuario: usuarios[2],
+          ),
+          Avaliacao(
+            nota: 3,
+            comentario: 'Achei bom, mas um pouco seco.',
+            usuario: usuarios[1],
+          ),
+        ],
       ),
-      // Mais receitas para usuario[0]
       Receita(
         id: Random().nextInt(10000),
         titulo: 'Bolo de Cenoura',
@@ -86,6 +120,19 @@ class MyAppState extends State<MyApp> {
         ingredientes: 'Cenoura\nFarinha\nAçúcar\nOvos\nÓleo',
         preparo: 'Misture tudo\nAsse por 40 min',
         usuario: usuarios[0],
+        avaliacoes: [
+          Avaliacao(
+            nota: 3,
+            comentario:
+                'O bolo de cenoura estava bom, mas a calda não agradou.',
+            usuario: usuarios[2],
+          ),
+          Avaliacao(
+            nota: 4,
+            comentario: 'Muito saboroso e fofinho!',
+            usuario: usuarios[1],
+          ),
+        ],
       ),
       Receita(
         id: Random().nextInt(10000),
@@ -94,6 +141,13 @@ class MyAppState extends State<MyApp> {
         ingredientes: 'Farinha\nAçúcar\nManteiga\nChocolate\nOvos',
         preparo: 'Misture os ingredientes\nModele e asse por 12 min',
         usuario: usuarios[0],
+        avaliacoes: [
+          Avaliacao(
+            nota: 5,
+            comentario: 'Perfeito para um lanche rápido!',
+            usuario: usuarios[1],
+          ),
+        ],
       ),
       Receita(
         id: Random().nextInt(10000),
@@ -102,6 +156,18 @@ class MyAppState extends State<MyApp> {
         ingredientes: 'Leite condensado\nLeite\nOvos\nAçúcar',
         preparo: 'Bata tudo e asse em banho-maria por 1h',
         usuario: usuarios[0],
+        avaliacoes: [
+          Avaliacao(
+            nota: 5,
+            comentario: 'Pudim maravilhoso!',
+            usuario: usuarios[2],
+          ),
+          Avaliacao(
+            nota: 4,
+            comentario: 'Muito bom, mas um pouco doce para o meu gosto.',
+            usuario: usuarios[1],
+          ),
+        ],
       ),
 
       // Receitas para usuario[1]
@@ -113,6 +179,13 @@ class MyAppState extends State<MyApp> {
         preparo:
             'Cozinhe o arroz com caldo\nAdicione o frango\nFinalize com queijo',
         usuario: usuarios[1],
+        avaliacoes: [
+          Avaliacao(
+            nota: 4,
+            comentario: 'Muito bom, mas poderia ser um pouco mais salgado.',
+            usuario: usuarios[2],
+          )
+        ],
       ),
       Receita(
         id: Random().nextInt(10000),
@@ -237,88 +310,6 @@ class MyAppState extends State<MyApp> {
     usuarios[2].receitas.add(receitas[15]);
     usuarios[2].receitas.add(receitas[16]);
     usuarios[2].receitas.add(receitas[17]);
-
-   List<Avaliacao> avaliacoes = [
-    Avaliacao(
-      nota: 5,
-      comentario: 'Delicioso! Amei o bolo de chocolate.',
-      usuario: usuarios[1],
-    ),
-    Avaliacao(
-      nota: 4,
-      comentario: 'Muito bom, mas poderia ser um pouco mais salgado.',
-      usuario: usuarios[1],
-    ),
-    Avaliacao(
-      nota: 5,
-      comentario: 'A melhor torta de limão que já comi!',
-      usuario: usuarios[2],
-    ),
-    Avaliacao(
-      nota: 3, comentario: 'O bolo de cenoura estava bom, mas a calda não agradou.',
-      usuario: usuarios[2],
-    ),
-    Avaliacao(
-      nota: 5,
-      comentario: 'Pudim maravilhoso!',
-      usuario: usuarios[0],
-    ),
-    Avaliacao(
-      nota: 4,
-      comentario: 'A salada de frutas estava fresca e saborosa!',
-      usuario: usuarios[1],
-    ),
-    Avaliacao(
-      nota: 2,
-      comentario: 'A sopa estava muito rala.',
-      usuario: usuarios[0],
-    ),
-    Avaliacao(
-      nota: 5,
-      comentario: 'Simplesmente delicioso! Meus filhos amaram.',
-      usuario: usuarios[2],
-    ),
-    Avaliacao(
-      nota: 4,
-      comentario: 'Ótima receita, mas demorei um pouco mais do que o esperado.',
-      usuario: usuarios[0],
-    ),
-    Avaliacao(
-      nota: 3,
-      comentario: 'O sabor é bom, mas a apresentação poderia ser melhor.',
-      usuario: usuarios[1],
-    ),
-    Avaliacao(
-      nota: 5,
-      comentario: 'Perfeito para um lanche rápido!',
-      usuario: usuarios[1],
-    ),
-    Avaliacao(
-      nota: 4,
-      comentario: 'Gostei muito, mas não sou fã de frango.',
-      usuario: usuarios[2],
-    ),
-    Avaliacao(
-      nota: 5,
-      comentario: 'Essa receita de pão de queijo é a melhor!',
-      usuario: usuarios[0],
-    ),
-    Avaliacao(
-      nota: 3,
-      comentario: 'A massa ficou um pouco dura.',
-      usuario: usuarios[2],
-    ),
-    Avaliacao(
-      nota: 4,
-      comentario: 'Receita simples, mas muito saborosa.',
-      usuario: usuarios[1],
-    ),
-    Avaliacao(
-      nota: 5,
-      comentario: 'Uma delícia, fiz para um evento e todos amaram!',
-      usuario: usuarios[2],
-    ),
-  ];
   }
 
   void adicionarUsuario(Usuario novoUsuario) {
