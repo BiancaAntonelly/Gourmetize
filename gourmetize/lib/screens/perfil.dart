@@ -63,7 +63,7 @@ class Perfil extends StatelessWidget {
                 },
                 icon: const Icon(Icons.logout, color: Colors.white),
                 label: Text(
-                  'Deslogar',
+                  'Sair',
                   style: TextStyle(fontSize: screenWidth * 0.05),
                 ),
                 style: ElevatedButton.styleFrom(
