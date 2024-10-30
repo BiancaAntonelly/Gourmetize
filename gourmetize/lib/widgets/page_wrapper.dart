@@ -65,8 +65,7 @@ class PageWrapper extends StatelessWidget {
         child: Container(
           color: Theme.of(context).colorScheme.primary,
           padding: EdgeInsets.zero,
-          child: ListView(
-            padding: EdgeInsets.zero,
+          child: Column(
             children: <Widget>[
               const SizedBox(height: 150),
               ListTile(
@@ -165,6 +164,9 @@ class PageWrapper extends StatelessWidget {
                   context.push('/cadastrar-receita');
                 },
               ),
+
+              Spacer(),
+
               ListTile(
                 leading: SvgPicture.asset(
                   'assets/logout.svg',
@@ -181,7 +183,7 @@ class PageWrapper extends StatelessWidget {
                 onTap: () {
                   context.go('/login');
                 },
-              )
+              ),
             ],
           ),
         ),
