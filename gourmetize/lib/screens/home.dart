@@ -28,6 +28,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final TextEditingController _searchController = TextEditingController();
   late List<Receita> _receitasFiltradas;
+  String _message = '';
 
   @override
   void initState() {
@@ -96,13 +97,15 @@ class _HomeState extends State<Home> {
             const SizedBox(height: 20),
             const StyledText(title: "Receitas"),
             const SizedBox(height: 16),
-            ListaReceitas(
-              usuarioLogado: widget.usuarioLogado,
-              onCadastrarReceita: widget.onCadastrarReceita,
-              onCriarEtiqueta: widget.onCriarEtiqueta,
-              receitas: _receitasFiltradas,
-              deleteReceita: _deleteReceita,
-              pertencemAoUsuario: false,
+            Expanded(
+              child: ListaReceitas(
+                usuarioLogado: widget.usuarioLogado,
+                onCadastrarReceita: widget.onCadastrarReceita,
+                onCriarEtiqueta: widget.onCriarEtiqueta,
+                receitas: _receitasFiltradas,
+                deleteReceita: _deleteReceita,
+                pertencemAoUsuario: false,
+              ),
             ),
           ],
         ),
