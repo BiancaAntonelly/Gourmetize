@@ -16,10 +16,10 @@ class PageWrapper extends StatelessWidget {
 
   const PageWrapper(
       {super.key,
-        required this.body,
-        required this.title,
-        this.floatingActionButton,
-        this.pageWrapperButtonType = PageWrapperButtonType.drawer});
+      required this.body,
+      required this.title,
+      this.floatingActionButton,
+      this.pageWrapperButtonType = PageWrapperButtonType.drawer});
 
   @override
   Widget build(BuildContext context) {
@@ -87,20 +87,6 @@ class PageWrapper extends StatelessWidget {
               ),
               ListTile(
                 leading: SvgPicture.asset(
-                  'assets/home.svg',
-                  width: 28,
-                  height: 28,
-                ),
-                title: const Text(
-                  'Tela inicial',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                  ),
-                ),
-              ),
-              ListTile(
-                leading: SvgPicture.asset(
                   'assets/all_recipies.svg',
                   width: 28,
                   height: 28,
@@ -164,9 +150,7 @@ class PageWrapper extends StatelessWidget {
                   context.push('/cadastrar-receita');
                 },
               ),
-
               Spacer(),
-
               ListTile(
                 leading: SvgPicture.asset(
                   'assets/logout.svg',
