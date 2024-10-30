@@ -48,7 +48,11 @@ class _HomeState extends State<Home> {
     final query = _searchController.text.toLowerCase();
     setState(() {
       _receitasFiltradas = widget.receitas.where((receita) {
-        return receita.titulo.toLowerCase().contains(query);
+        return receita.titulo.toLowerCase().contains(query) ||
+            receita.descricao.toLowerCase().contains(query) ||
+            receita.ingredientes.toLowerCase().contains(query) ||
+            receita.etiquetas
+                .any((item) => item.nome.toLowerCase().contains(query));
       }).toList();
     });
   }
@@ -77,7 +81,9 @@ class _HomeState extends State<Home> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 16), // Espaçamento entre a pesquisa e o texto de boas-vindas
+            const SizedBox(
+              height: 16,
+            ), // Espaçamento entre a pesquisa e o texto de boas-vindas
             Text(
               'Bem-vindo ao Gourmetize',
               style: TextStyle(

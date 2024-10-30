@@ -27,7 +27,6 @@ class ListaReceitas extends StatefulWidget {
 }
 
 class _ListaReceitasState extends State<ListaReceitas> {
-
   void onDeletarReceita(Receita receita) {
     if (widget.deleteReceita != null) {
       widget.deleteReceita!(receita);
@@ -60,7 +59,8 @@ class _ListaReceitasState extends State<ListaReceitas> {
           usuarioLogado: widget.usuarioLogado,
           onCadastrarReceita: onCadastrarReceita,
           onCriarEtiqueta: widget.onCriarEtiqueta,
-          onDelete: () => onDeletarReceita(receita), // Passa a função de deleção
+          onDelete: () =>
+              onDeletarReceita(receita), // Passa a função de deleção
           mostrarOpcoes: widget.pertencemAoUsuario,
         );
       },

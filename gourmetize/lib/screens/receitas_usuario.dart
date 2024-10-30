@@ -40,14 +40,16 @@ class _ReceitasUsuarioState extends State<ReceitasUsuario> {
             const SizedBox(height: 10),
             const StyledText(title: "Minhas Receitas"),
             const SizedBox(height: 16), // Espaçamento entre o título e a lista
-            ListaReceitas(
-              usuarioLogado: widget.usuarioLogado,
-              onCadastrarReceita: widget.onCadastrarReceita,
-              onCriarEtiqueta: widget.onCriarEtiqueta,
-              receitas: widget.usuarioLogado.receitas,
-              deleteReceita: widget.onDeletarReceita,
-              pertencemAoUsuario: true,
-            ),
+            Expanded(
+              child: ListaReceitas(
+                usuarioLogado: widget.usuarioLogado,
+                onCadastrarReceita: widget.onCadastrarReceita,
+                onCriarEtiqueta: widget.onCriarEtiqueta,
+                receitas: widget.usuarioLogado.receitas,
+                deleteReceita: widget.onDeletarReceita,
+                pertencemAoUsuario: true,
+              ),
+            )
           ],
         ),
       ),

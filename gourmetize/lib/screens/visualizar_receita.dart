@@ -121,20 +121,19 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                         ),
                       ),
                       SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            _receita.titulo,
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                          NotaReceita(receita: _receita)
-                        ],
+                      Text(
+                        _receita.titulo,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      GestureDetector(
+                        child: NotaReceita(receita: _receita),
+                        onTap: () {
+                          _tabController.animateTo(1);
+                        },
                       ),
                       SizedBox(height: 20),
                       StyledText(title: 'Descrição'),
