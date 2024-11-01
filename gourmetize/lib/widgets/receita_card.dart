@@ -152,7 +152,7 @@ class ReceitaCard extends StatelessWidget {
                 ),
                 Positioned(
                   bottom: 5,
-                  left: 8,
+                  left: 0,
                   child: Container(
                     padding: const EdgeInsets.only(top: 8, left: 10, right: 10),
                     child: Row(
@@ -186,8 +186,8 @@ class ReceitaCard extends StatelessWidget {
                           ),
                         ),
                       ),
+                      const SizedBox(width: 8),
                       if (mostrarOpcoes)
-                        const SizedBox(width: 8),
                         Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
