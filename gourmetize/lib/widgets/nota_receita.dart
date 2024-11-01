@@ -26,15 +26,6 @@ class NotaReceita extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          _nota?.toStringAsFixed(1) ?? '-',
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.secondary,
-          ),
-        ),
-        SizedBox(
-          width: 8,
-        ),
         RatingStars(
           value: _nota ?? 0,
           onValueChanged: null,
@@ -42,6 +33,12 @@ class NotaReceita extends StatelessWidget {
             Icons.star,
             color: color,
             size: 25,
+            shadows: [
+              Shadow(
+                blurRadius: 6.0,
+                color: Colors.white,  
+              ),
+            ],
           ),
           starSize: 25,
           starCount: 5,
@@ -50,6 +47,22 @@ class NotaReceita extends StatelessWidget {
           valueLabelVisibility: false,
           starColor: Theme.of(context).colorScheme.secondary,
           starOffColor: Theme.of(context).colorScheme.primary,
+        ),
+        SizedBox(
+          width: 8,
+        ),
+        Text(
+          _nota?.toStringAsFixed(1) ?? '-',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.secondary,
+            shadows: [
+              Shadow(
+                blurRadius: 6.0,
+                color: Colors.white,
+              ),
+            ],
+          ),
+          
         ),
       ],
     );
