@@ -1,7 +1,8 @@
-import 'package:gourmetize_app/model/receita.dart';
-import 'package:gourmetize_app/service/receita_service.dart';
-import 'package:gourmetize_app/model/usuario.dart';
-import 'package:gourmetize_app/model/avaliacao.dart';
+import 'package:flutter/material.dart';
+import 'package:gourmetize/model/receita.dart';
+import 'package:gourmetize/service/receita_service.dart';
+import 'package:gourmetize/model/usuario.dart';
+import 'package:gourmetize/model/avaliacao.dart';
 
 class ReceitaProvider with ChangeNotifier {
   final ReceitaService _receitaService = ReceitaService();

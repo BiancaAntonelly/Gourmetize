@@ -29,12 +29,7 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/login',
       builder: (BuildContext context, GoRouterState state) {
-        final mainAppState = context.findAncestorStateOfType<MyAppState>();
-
-        return Login(
-          usuarios: mainAppState!.usuarios,
-          onLogarUsuario: mainAppState.logarUsuario,
-        );
+        return Login();
       },
     ),
     GoRoute(
@@ -60,19 +55,8 @@ final GoRouter myRouter = GoRouter(
               usuarioLogado: mainAppState.usuarioLogado!,
               onDeslogarUsuario: mainAppState!.deslogarUsuario);
         } else {
-          return Login(
-              usuarios: mainAppState!.usuarios,
-              onLogarUsuario: mainAppState.logarUsuario);
+          return Login();
         }
-      },
-    ),
-    GoRoute(
-      path: '/login',
-      builder: (BuildContext context, GoRouterState state) {
-        final mainAppState = context.findAncestorStateOfType<MyAppState>();
-        return Login(
-            usuarios: mainAppState!.usuarios,
-            onLogarUsuario: mainAppState.logarUsuario);
       },
     ),
     GoRoute(
@@ -102,11 +86,7 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/register',
       builder: (BuildContext context, GoRouterState state) {
-        final mainAppState = context.findAncestorStateOfType<MyAppState>();
-
-        return RegisterUser(
-            onAddUsuario: mainAppState!.adicionarUsuario,
-            usuarios: mainAppState.usuarios);
+        return RegisterUser();
       },
     ),
     GoRoute(

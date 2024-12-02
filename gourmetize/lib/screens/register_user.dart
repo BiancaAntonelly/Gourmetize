@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:gourmetize/provider/auth_provider.dart';
+import 'package:provider/provider.dart';
 import '../model/usuario.dart';
 import '../widgets/logo.dart';
 import 'package:go_router/go_router.dart';
 
 class RegisterUser extends StatelessWidget {
-  final List<Usuario> usuarios; // Lista de usuários
-  final void Function(Usuario) onAddUsuario;
-
-  RegisterUser({Key? key, required this.usuarios, required this.onAddUsuario})
-      : super(key: key);
+  RegisterUser({Key? key}) : super(key: key);
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nomeController = TextEditingController();
@@ -152,7 +150,7 @@ class RegisterUser extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
           String email = _emailController.text.trim();
           String nome = _nomeController.text.trim();
           String senha = _senhaController.text.trim();
@@ -163,15 +161,21 @@ class RegisterUser extends StatelessWidget {
             _showMessage(context, 'As senhas não coincidem.');
             return;
           }
+          try {
+            await Provider.of<AuthProvider>(context).register(
+              Usuario.semId(
+                nome: nome,
+                email: email,
+                senha: senha,
+              ),
+            );
 
-          if (usuarios.any((usuario) => usuario.email == email)) {
+            _showMessage(context, 'Usuário registrado com sucesso!');
+          } catch (e) {
             _showMessage(context, 'Este e-mail já está em uso.');
-            return;
           }
 
-          onAddUsuario(Usuario.semId(nome: nome, email: email, senha: senha));
           _limparCampos();
-          _showMessage(context, 'Usuário registrado com sucesso!');
 
           context.go('/login');
         },

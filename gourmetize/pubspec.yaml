@@ -39,6 +39,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_rating_stars: ^1.1.0
   flutter_tags: ^1.0.0-nullsafety.1
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_launcher_icons: ^0.10.0

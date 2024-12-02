@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gourmetize/provider/auth_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/widgets/logo.dart';
 
 class Login extends StatefulWidget {
-  final List<Usuario> usuarios;
-  final void Function(Usuario) onLogarUsuario;
-
-  const Login({Key? key, required this.usuarios, required this.onLogarUsuario})
-      : super(key: key);
+  const Login({Key? key}) : super(key: key);
 
   @override
   _LoginState createState() => _LoginState();
@@ -198,7 +195,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void _login(BuildContext context) {
+  void _login(BuildContext context) async {
     final email = _emailController.text;
     final senha = _passwordController.text;
 
@@ -209,19 +206,15 @@ class _LoginState extends State<Login> {
       return;
     }
 
-    final usuario = widget.usuarios.firstWhere(
-      (usuario) => usuario.email == email && usuario.senha == senha,
-      orElse: () => Usuario(id: -1, nome: '', email: '', senha: ''),
-    );
+    try {
+      await Provider.of<AuthProvider>(context, listen: false)
+          .login(email, senha);
 
-    if (usuario.id == -1) {
+      context.go('/');
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('E-mail ou senha incorretos')),
       );
-    } else {
-      widget.onLogarUsuario(usuario);
-
-      context.go('/');
     }
   }
 
