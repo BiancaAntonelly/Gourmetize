@@ -9,7 +9,7 @@ class Usuario {
   List<Receita> receitas;
   List<Etiqueta> etiquetas;
 
-  // Construtor padrão que exige o id
+  
   Usuario({
     required this.id,
     required this.nome,
@@ -20,7 +20,6 @@ class Usuario {
   })  : receitas = receitas ?? [],
         etiquetas = etiquetas ?? [];
 
-  // Construtor nomeado sem o ID
   Usuario.semId({
     required this.nome,
     required this.email,
@@ -30,4 +29,31 @@ class Usuario {
   })  : id = 0, // ou outro valor padrão, se desejar
         receitas = receitas ?? [],
         etiquetas = etiquetas ?? [];
+
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'nome': nome,
+      'email': email,
+      'senha': senha,
+      'receitas': receitas.map((receita) => receita.toJson()).toList(),
+      'etiquetas': etiquetas.map((etiqueta) => etiqueta.toJson()).toList(),
+    };
+  }
+
+  factory Usuario.fromJson(Map<String, dynamic> json) {
+    return Usuario(
+      id: json['id'],
+      nome: json['nome'],
+      email: json['email'],
+      senha: json['senha'],
+      receitas: (json['receitas'] as List<dynamic>)
+          .map((receita) => Receita.fromJson(receita))
+          .toList(),
+      etiquetas: (json['etiquetas'] as List<dynamic>)
+          .map((etiqueta) => Etiqueta.fromJson(etiqueta))
+          .toList(),
+    );
+  }
 }
