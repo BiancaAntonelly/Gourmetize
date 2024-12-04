@@ -1,35 +1,58 @@
 import 'package:flutter/material.dart';
-import 'package:gourmetize/model/receita.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gourmetize/widgets/etiquetas_receita.dart';
-import 'package:gourmetize/widgets/nota_receita.dart';
-
+import 'package:provider/provider.dart';
+import '../model/receita.dart';
 import '../model/etiqueta.dart';
 import '../model/usuario.dart';
 import '../screens/register_recipe.dart';
+import '../widgets/nota_receita.dart';
 
-class ReceitaCard extends StatelessWidget {
-  final Receita _receita;
+import '../provider/receita_provider.dart';
+
+class ReceitaCard extends StatefulWidget {
+  final Receita receita;
   final VoidCallback? onDelete;
   final bool mostrarOpcoes;
+  final bool podeFavoritar;
   final Usuario usuarioLogado;
   final void Function(Receita) onCadastrarReceita;
   final void Function(Etiqueta) onCriarEtiqueta;
 
   const ReceitaCard({
     super.key,
-    required Receita receita,
+    required this.receita,
     this.onDelete,
     required this.usuarioLogado,
+    required this.podeFavoritar,
     required this.onCadastrarReceita,
     required this.onCriarEtiqueta,
     this.mostrarOpcoes = false,
-  }) : _receita = receita;
+  });
+
+  @override
+  _ReceitaCardState createState() => _ReceitaCardState();
+}
+
+class _ReceitaCardState extends State<ReceitaCard> {
+
+  bool _isFavorited = false;
+
+   @override
+  void initState() {
+    super.initState();
+    _isFavorited = Provider.of(context, listen: false).isFavorita(widget.receita, widget.usuarioLogado);
+  }
+
+  void _toggleFavorito() {
+    setState(() {
+      _isFavorited = !_isFavorited;
+    });
+    Provider.of<ReceitaProvider>(context, listen: false).toggleFavorita(widget.receita, widget.usuarioLogado);
+  }
+
 
   List<String> _obterIngredientesEmLista() {
-    return _receita.ingredientes
-        .split('\n')
-        .toList();
+    return widget.receita.ingredientes.split('\n').toList();
   }
 
   Future<void> _showDeleteConfirmationDialog(BuildContext context) async {
@@ -60,7 +83,7 @@ class ReceitaCard extends StatelessWidget {
               children: [
                 const TextSpan(text: 'Você tem certeza que deseja deletar a receita '),
                 TextSpan(
-                  text: _receita.titulo,
+                  text: widget.receita.titulo,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.red,
@@ -78,7 +101,7 @@ class ReceitaCard extends StatelessWidget {
             TextButton(
               child: const Text('Deletar', style: TextStyle(color: Colors.red)),
               onPressed: () {
-                if (onDelete != null) onDelete!();
+                if (widget.onDelete != null) widget.onDelete!();
                 Navigator.of(context).pop();
               },
             ),
@@ -89,11 +112,11 @@ class ReceitaCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+   Widget build(BuildContext context) {
     final ingredientes = _obterIngredientesEmLista();
 
     return GestureDetector(
-      onTap: () => context.push('/visualizar-receita', extra: _receita),
+      onTap: () => context.push('/visualizar-receita', extra: widget.receita),
       child: Card(
         margin: const EdgeInsets.all(8.0),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -119,7 +142,7 @@ class ReceitaCard extends StatelessWidget {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      children: _receita.etiquetas.map((etiqueta) {
+                      children: widget.receita.etiquetas.map((etiqueta) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4.0),
                           child: Chip(
@@ -135,7 +158,7 @@ class ReceitaCard extends StatelessWidget {
                   bottom: 30,
                   left: 8,
                   child: Text(
-                    _receita.titulo,
+                    widget.receita.titulo,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -157,7 +180,7 @@ class ReceitaCard extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8, left: 10, right: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: [NotaReceita(receita: _receita)],
+                      children: [NotaReceita(receita: widget.receita)],
                     ),
                 )),
                 Positioned(
@@ -165,7 +188,7 @@ class ReceitaCard extends StatelessWidget {
                   right: 8,
                   child: Row(
                     children: [
-                      if (mostrarOpcoes)
+                      if (widget.mostrarOpcoes)
                          Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
@@ -177,17 +200,17 @@ class ReceitaCard extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => RegisterRevenue(
-                                usuarioLogado: usuarioLogado,
-                                onCadastrarReceita: onCadastrarReceita,
-                                onCriarEtiqueta: onCriarEtiqueta,
-                                receitaParaEdicao: _receita,
+                                usuarioLogado: widget.usuarioLogado,
+                                onCadastrarReceita: widget.onCadastrarReceita,
+                                onCriarEtiqueta: widget.onCriarEtiqueta,
+                                receitaParaEdicao: widget.receita,
                               ),
                             ),
                           ),
                         ),
                       ),
                       const SizedBox(width: 8),
-                      if (mostrarOpcoes)
+                      if (widget.mostrarOpcoes)
                         Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
@@ -197,7 +220,19 @@ class ReceitaCard extends StatelessWidget {
                             icon: const Icon(Icons.delete, color: Colors.red),
                             onPressed: () => _showDeleteConfirmationDialog(context),
                           ),
-                        )
+                        ),
+                      const SizedBox(width: 8),
+                        if (widget.podeFavoritar)
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            child:  IconButton(
+                              icon: Icon(_isFavorited ? Icons.favorite : Icons.favorite_border),
+                              onPressed:_toggleFavorito,
+                            ),
+                          )
                        
                     ],
                   ),
@@ -226,7 +261,7 @@ class ReceitaCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                _receita.descricao,
+                widget.receita.descricao,
                 style: TextStyle(fontSize: 14, color: Colors.grey[800]),
               ),
             ),
@@ -235,4 +270,5 @@ class ReceitaCard extends StatelessWidget {
       ),
     );
   }
+
 }

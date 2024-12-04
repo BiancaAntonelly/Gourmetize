@@ -8,7 +8,9 @@ class ReceitaProvider with ChangeNotifier {
   final ReceitaService _receitaService = ReceitaService();
 
   List<Receita> _receitas = [];
+  List<Receita> _favoritas = [];
   List<Receita> get receitas => [..._receitas];
+  List<Receita> get favoritas => [..._favoritas];
 
   Future<void> buscarReceitas() async {
     _receitas = await _receitaService.buscarReceitas();
@@ -33,4 +35,20 @@ class ReceitaProvider with ChangeNotifier {
     _receitas[index] = receita;
     notifyListeners();
   }
+
+  Future<void> toggleFavorita(Receita receita, Usuario usuario) async {
+    if (_favoritas.contains(receita)) {
+      await _receitaService.favoritarReceita(receita, usuario);
+      _favoritas.remove(receita);
+    } else {
+      await _receitaService.desfavoritarReceita(receita, usuario);
+      _favoritas.add(receita);
+    }
+    notifyListeners();
+  }
+
+  bool isFavorita(Receita receita) {
+    return _favoritas.contains(receita);
+  }
+
 }
