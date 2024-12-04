@@ -9,6 +9,7 @@ class AuthService {
     final response = await http.post(
       Uri.parse(_baseUrl),
       body: jsonEncode({'email': email, 'password': password}),
+      headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode != 201) {
