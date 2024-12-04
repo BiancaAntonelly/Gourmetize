@@ -14,14 +14,21 @@ class AuthProvider with ChangeNotifier {
   Usuario? get usuarioLogado => _usuarioLogado;
 
   Future<Usuario> login(String email, String password) async {
-    _token = await _authService.auth(email, password);
 
-    _usuarioLogado = await _usuarioService.getSelf(_token!);
+    _usuarioLogado= Usuario(
+      id: 1,
+      nome: "Mock User",
+      email: "m",
+      senha: "m",
+      receitas: [],
+      etiquetas: [],
+    );
+    _token = 'mocked_token_123';
 
     notifyListeners();
-
     return _usuarioLogado!;
   }
+
 
   Future<Usuario> register(Usuario usuario) async {
     _usuarioLogado = await _usuarioService.createUsuario(usuario);

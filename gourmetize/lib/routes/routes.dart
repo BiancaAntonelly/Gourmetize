@@ -23,7 +23,6 @@ final GoRouter myRouter = GoRouter(
           receitas: mainAppState!.receitas,
           onCadastrarReceita: mainAppState.adicionarReceita,
           onCriarEtiqueta: mainAppState.criarEtiqueta,
-          usuarioLogado: mainAppState.usuarioLogado!,
         );
       },
     ),
@@ -41,7 +40,6 @@ final GoRouter myRouter = GoRouter(
           receitas: mainAppState!.receitas,
           onCadastrarReceita: mainAppState.adicionarReceita,
           onCriarEtiqueta: mainAppState.criarEtiqueta,
-          usuarioLogado: mainAppState.usuarioLogado!,
           onDeletarReceita: mainAppState.deletarReceita,
         );
       },
@@ -82,7 +80,6 @@ final GoRouter myRouter = GoRouter(
         return RegisterRevenue(
           onCadastrarReceita: mainAppState!.adicionarReceita,
           onCriarEtiqueta: mainAppState.criarEtiqueta,
-          usuarioLogado: mainAppState.usuarioLogado!,
         );
       },
     ),
@@ -94,7 +91,6 @@ final GoRouter myRouter = GoRouter(
         return RegisterRevenue(
           onCadastrarReceita: mainAppState!.adicionarReceita,
           onCriarEtiqueta: mainAppState.criarEtiqueta,
-          usuarioLogado: mainAppState.usuarioLogado!,
           receitaParaEdicao: receitaParaEdicao,
         );
       },

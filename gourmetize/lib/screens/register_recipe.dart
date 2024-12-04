@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/receita.dart';
-import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/widgets/page_wrapper.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/auth_provider.dart';
 
 class RegisterRevenueExtraProps {
   final Receita? receitaParaEdicao;
@@ -18,14 +20,12 @@ class RegisterRevenueExtraProps {
 }
 
 class RegisterRevenue extends StatefulWidget {
-  final Usuario usuarioLogado;
   final void Function(Receita) onCadastrarReceita;
   final void Function(Etiqueta) onCriarEtiqueta;
   final Receita? receitaParaEdicao;
 
   const RegisterRevenue({
     super.key,
-    required this.usuarioLogado,
     required this.onCadastrarReceita,
     required this.onCriarEtiqueta,
     this.receitaParaEdicao,
@@ -60,7 +60,16 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
   void _addEtiqueta(String nome) {
     if (nome.isEmpty) return;
 
-    Etiqueta etiqueta = Etiqueta(nome: nome, usuario: widget.usuarioLogado);
+    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado;
+
+    if (usuarioLogado == null) {
+      // Se o usuário não estiver logado, mostramos uma mensagem de erro
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Usuário não está logado.')),
+      );
+      return; // Não continua a criação da etiqueta
+    }
+    Etiqueta etiqueta = Etiqueta(nome: nome, usuario: usuarioLogado);
 
     setState(() {
       _etiquetas.add(etiqueta);
@@ -72,6 +81,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
   }
 
   void _onSubmit() {
+    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
     if (_formKey.currentState!.validate()) {
       Receita receita = Receita(
         id: widget.receitaParaEdicao?.id ?? Random().nextInt(10000),
@@ -79,7 +89,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
         descricao: descricaoController.text,
         ingredientes: ingredientesController.text,
         preparo: preparoController.text,
-        usuario: widget.usuarioLogado,
+        usuario: usuarioLogado,
         etiquetas: _etiquetas,
         avaliacoes: widget.receitaParaEdicao?.avaliacoes ?? [],
       );
@@ -92,6 +102,8 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
 
   @override
   Widget build(BuildContext context) {
+    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
+
     return PageWrapper(
       title:
           '${widget.receitaParaEdicao != null ? 'Editar' : 'Cadastrar'} Receita',
@@ -269,7 +281,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 8.0,
-                  children: widget.usuarioLogado.etiquetas.map((tag) {
+                  children: usuarioLogado.etiquetas.map((tag) {
                     return ChoiceChip(
                       label: Text(tag.nome),
                       selected: _etiquetas.contains(tag),
