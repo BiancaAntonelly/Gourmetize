@@ -80,6 +80,7 @@ class _ListaReceitasState extends State<ListaReceitas> {
           usuarioLogado: widget.usuarioLogado,
           onCadastrarReceita: onCadastrarReceita,
           onCriarEtiqueta: widget.onCriarEtiqueta,
+          podeFavoritar: true,
           onDelete: () =>
               onDeletarReceita(receita), // Passa a função de deleção
           mostrarOpcoes: widget.pertencemAoUsuario,

@@ -272,6 +272,11 @@ class ReceitaService {
     return receitas;
   }
 
+  Future<List<Receita>> buscarReceitasFavoritas(Usuario usuario) async {
+    // Implementar
+    return [];
+  }
+
   Future<void> adicionarReceita(Receita receita) async {
     // Implementar
   }
@@ -281,6 +286,14 @@ class ReceitaService {
   }
 
   Future<void> atualizarReceita(Receita receita) async {
+    // Implementar
+  }
+
+  Future<void> favoritarReceita(Receita receita, Usuario usuario) async {
+    // Implementar
+  }
+
+  Future<void> desfavoritarReceita(Receita receita, Usuario usuario) async {
     // Implementar
   }
 }

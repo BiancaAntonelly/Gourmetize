@@ -8,6 +8,7 @@ import 'package:gourmetize/screens/perfil.dart';
 import 'package:gourmetize/screens/login.dart';
 import 'package:gourmetize/screens/register_user.dart';
 import 'package:gourmetize/screens/receitas_usuario.dart';
+import 'package:gourmetize/screens/receitas_favoritas.dart';
 
 import '../main.dart';
 
@@ -37,6 +38,21 @@ final GoRouter myRouter = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
         return ReceitasUsuario(
+          receitas: mainAppState!.receitas,
+          onCadastrarReceita: mainAppState.adicionarReceita,
+          onCriarEtiqueta: mainAppState.criarEtiqueta,
+          usuarioLogado: mainAppState.usuarioLogado!,
+          onDeletarReceita: mainAppState.deletarReceita,
+        );
+      },
+    ),
+     GoRoute(
+      path: '/receitas-favoritas',
+      builder: (BuildContext context, GoRouterState state) {
+        final mainAppState = context.findAncestorStateOfType<MyAppState>();
+        // TO DO: remover essa passagem de parametros quando integrar os Providers
+        // Essas funções devem ser chamadas ao provider
+        return ReceitasFavoritas(
           receitas: mainAppState!.receitas,
           onCadastrarReceita: mainAppState.adicionarReceita,
           onCriarEtiqueta: mainAppState.criarEtiqueta,

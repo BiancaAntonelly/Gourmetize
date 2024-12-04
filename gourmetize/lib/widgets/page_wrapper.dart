@@ -137,6 +137,23 @@ class PageWrapper extends StatelessWidget {
                 leading: Padding(
                   padding: const EdgeInsets.only(left: 36.0),
                   child: SvgPicture.asset(
+                    'assets/my_recipes.svg',
+                    width: 21,
+                    height: 16,
+                  ),
+                ),
+                title: const Text(
+                  'Receitas favoritas',
+                  style: TextStyle(color: Colors.white, fontSize: 13),
+                ),
+                onTap: () {
+                  context.go('/receitas-favoritas');
+                },
+              ),
+              ListTile(
+                leading: Padding(
+                  padding: const EdgeInsets.only(left: 36.0),
+                  child: SvgPicture.asset(
                     'assets/register_recipe.svg',
                     width: 24,
                     height: 24,
