@@ -44,12 +44,12 @@ class Usuario {
       nome: json['nome'],
       email: json['email'],
       senha: json['senha'],
-      receitas: json['receitas']
+      receitas: json['receitas'] != null
           ? (json['receitas'] as List<dynamic>)
               .map((receita) => Receita.fromJson(receita))
               .toList()
           : [],
-      etiquetas: json['etiquetas']
+      etiquetas: json['etiquetas'] != null
           ? (json['etiquetas'] as List<dynamic>)
               .map((etiqueta) => Etiqueta.fromJson(etiqueta))
               .toList()

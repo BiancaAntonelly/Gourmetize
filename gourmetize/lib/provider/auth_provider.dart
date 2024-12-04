@@ -7,16 +7,12 @@ class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
   final UsuarioService _usuarioService = UsuarioService();
 
-  String? _token;
   Usuario? _usuarioLogado;
 
-  String? get token => _token;
   Usuario? get usuarioLogado => _usuarioLogado;
 
   Future<Usuario> login(String email, String password) async {
-    _token = await _authService.auth(email, password);
-
-    _usuarioLogado = await _usuarioService.getSelf(_token!);
+    _usuarioLogado = await _authService.login(email, password);
 
     notifyListeners();
 
@@ -24,10 +20,6 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<Usuario> register(Usuario usuario) async {
-    _usuarioLogado = await _usuarioService.createUsuario(usuario);
-
-    notifyListeners();
-
-    return _usuarioLogado!;
+    return _usuarioService.createUsuario(usuario);
   }
 }
