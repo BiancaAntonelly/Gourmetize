@@ -8,7 +8,7 @@ import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/model/avaliacao.dart';
 
 class ReceitaService {
-  final String baseUrl = 'http://127.0.0.1:8080/receitas';
+  final String baseUrl = 'http://10.0.2.2:8080/receitas';
 
   Future<List<Receita>> buscarReceitas() async {
     // Mockado por enquanto
@@ -298,12 +298,13 @@ class ReceitaService {
 
   Future<void> adicionarReceita(Receita receita) async {
     try {
-      final url = Uri.parse('$baseUrl/receitas');
+      final url = Uri.parse('$baseUrl');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(receita.toJson()),
       );
+      print("Receita a ser adicionada: $receita");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         print("Receita adicionada com sucesso.");

@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../model/etiqueta.dart';
 import '../model/receita.dart';
-import '../model/usuario.dart';
 import '../provider/auth_provider.dart';
 import '../widgets/page_wrapper.dart';
 import '../widgets/styled_text.dart';

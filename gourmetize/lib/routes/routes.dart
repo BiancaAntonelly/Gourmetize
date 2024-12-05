@@ -48,8 +48,6 @@ final GoRouter myRouter = GoRouter(
       path: '/receitas-favoritas',
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
-        // TO DO: remover essa passagem de parametros quando integrar os Providers
-        // Essas funções devem ser chamadas ao provider
         return ReceitasFavoritas(
           receitas: mainAppState!.receitas,
           onCadastrarReceita: mainAppState.adicionarReceita,

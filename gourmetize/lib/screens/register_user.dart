@@ -175,6 +175,8 @@ class RegisterUser extends StatelessWidget {
             print(e);
 
             _showMessage(context, 'Este e-mail já está em uso.');
+
+            throw (e);
           }
 
           _limparCampos();
