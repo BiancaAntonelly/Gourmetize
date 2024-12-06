@@ -2,9 +2,10 @@ import 'dart:convert';
 
 import 'package:gourmetize/model/usuario.dart';
 import 'package:http/http.dart' as http;
+import 'package:gourmetize/config/app_config.dart';
 
 class UsuarioService {
-  final String _baseUrl = 'http://10.0.2.2:8080/usuario';
+  final String _baseUrl =  AppConfig.baseUrl + '/usuario';
 
   Future<Usuario> createUsuario(Usuario usuario) async {
     final response = await http.post(

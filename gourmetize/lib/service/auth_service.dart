@@ -2,9 +2,10 @@ import 'dart:convert';
 
 import 'package:gourmetize/model/usuario.dart';
 import 'package:http/http.dart' as http;
+import 'package:gourmetize/config/app_config.dart';
 
 class AuthService {
-  final String _baseUrl = 'http://10.0.2.2:8080/auth';
+  final String _baseUrl =  AppConfig.baseUrl + '/auth';
 
   Future<Usuario> login(String email, String password) async {
     final response = await http.post(
@@ -12,7 +13,7 @@ class AuthService {
       body: jsonEncode({'email': email, 'password': password}),
       headers: {'Content-Type': 'application/json'},
     );
-
+    
     if (response.statusCode != 200) {
       throw Exception("Credenciais inválidas");
     }

@@ -40,7 +40,7 @@ class _ReceitaCardState extends State<ReceitaCard> {
    @override
   void initState() {
     super.initState();
-    _isFavorited = Provider.of(context, listen: false).isFavorita(widget.receita, widget.usuarioLogado);
+    _isFavorited = Provider.of<ReceitaProvider>(context, listen: false).isFavorita(widget.receita);
   }
 
   void _toggleFavorito() {

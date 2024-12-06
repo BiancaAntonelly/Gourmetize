@@ -6,9 +6,10 @@ import 'dart:convert';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/model/avaliacao.dart';
+import 'package:gourmetize/config/app_config.dart';
 
 class ReceitaService {
-  final String baseUrl = 'http://10.0.2.2:8080/receitas';
+  final String baseUrl = AppConfig.baseUrl + '/receitas';
 
   Future<List<Receita>> buscarReceitas() async {
     // Mockado por enquanto

@@ -52,7 +52,6 @@ final GoRouter myRouter = GoRouter(
           receitas: mainAppState!.receitas,
           onCadastrarReceita: mainAppState.adicionarReceita,
           onCriarEtiqueta: mainAppState.criarEtiqueta,
-          usuarioLogado: mainAppState.usuarioLogado!,
           onDeletarReceita: mainAppState.deletarReceita,
         );
       },
