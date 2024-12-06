@@ -4,7 +4,6 @@ import 'package:gourmetize/provider/receita_provider.dart';
 import 'package:provider/provider.dart';
 import '../model/etiqueta.dart';
 import '../model/receita.dart';
-import '../model/usuario.dart';
 import '../widgets/page_wrapper.dart';
 import '../widgets/styled_text.dart';
 import '../widgets/lista_receitas.dart';

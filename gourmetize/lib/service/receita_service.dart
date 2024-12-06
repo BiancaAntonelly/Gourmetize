@@ -1,26 +1,17 @@
-import 'dart:math';
-
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/model/usuario.dart';
-import 'package:gourmetize/model/avaliacao.dart';
 import 'package:gourmetize/config/app_config.dart';
 
 class ReceitaService {
   final String baseUrl = AppConfig.baseUrl + '/receitas';
 
   Future<List<Receita>> buscarReceitas() async {
-    print("buscarReceitas no service");
-    print('$baseUrl');
-
     try {
       final url = Uri.parse('$baseUrl');
       final response = await http.get(url);
-
-      print("Response status: ${response.statusCode}");
-      print("Response body (raw): ${response.body}");
 
       if (response.statusCode == 200) {
 
@@ -42,10 +33,6 @@ class ReceitaService {
   }
 
   Future<List<Receita>> buscarReceitasFavoritas(Usuario usuario) async {
-
-    print("buscarReceitasFavoritas no service");
-    print('$baseUrl/favoritas/${usuario.id}');
-
     try {
       final url = Uri.parse('$baseUrl/favoritas/${usuario.id}');
       final response = await http.get(url);
@@ -127,16 +114,6 @@ class ReceitaService {
   }
 
   Future<void> favoritarReceita(Receita receita, Usuario usuario) async {
-
-    print("favoritar receita");
-    print(receita.titulo);
-    print(usuario.nome);
-
-    print("Usuario: ${usuario.id}");
-    print("Receita: ${receita.id}");
-  
-    print("$baseUrl/favoritas/${usuario.id}/${receita.id}");
-
     try {
       final url = Uri.parse('$baseUrl/favoritas/${usuario.id}/${receita.id}');
       final response = await http.post(url);
@@ -154,15 +131,6 @@ class ReceitaService {
   }
 
   Future<void> desfavoritarReceita(Receita receita, Usuario usuario) async {
-
-    print("desfavoritar receita");
-    print(receita.titulo);
-    print(usuario.nome);
-    print("Usuario: ${usuario.id}");
-    print("Receita: ${receita.id}");
-
-    print("$baseUrl/favoritas/${usuario.id}/${receita.id}");
-
     try {
       final url = Uri.parse('$baseUrl/favoritas/${usuario.id}/${receita.id}');
       final response = await http.delete(url);

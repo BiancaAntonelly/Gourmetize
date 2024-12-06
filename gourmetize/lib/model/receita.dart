@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:gourmetize/model/avaliacao.dart';
 import 'package:gourmetize/model/etiqueta.dart';
 

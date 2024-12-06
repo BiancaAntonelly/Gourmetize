@@ -26,7 +26,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final TextEditingController _searchController = TextEditingController();
   late List<Receita> _receitasFiltradas;
-  String _message = '';
 
   @override
   void initState() {
