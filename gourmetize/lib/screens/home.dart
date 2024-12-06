@@ -26,14 +26,13 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final TextEditingController _searchController = TextEditingController();
   late List<Receita> _receitasFiltradas;
-  String _message = '';
 
   @override
   void initState() {
     super.initState();
     _searchController.addListener(_filterReceitas);
-    // Chama o método para carregar as receitas no início
-    context.read<ReceitaProvider>().buscarReceitas();
+    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
+    context.read<ReceitaProvider>().buscarReceitas(usuarioLogado);
   }
 
   @override

@@ -3,18 +3,45 @@ import 'dart:convert';
 
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/model/usuario.dart';
+import 'package:gourmetize/config/app_config.dart';
 
 class ReceitaService {
-  final String baseUrl = 'http://10.0.2.2:8080/receitas';
+  final String baseUrl = AppConfig.baseUrl + '/receitas';
 
-  Future<List<Receita>> buscarReceitasFavoritas(Usuario usuario) async {
+  Future<List<Receita>> buscarReceitas() async {
     try {
-      final url = Uri.parse('$baseUrl/receitas/favoritas/${usuario.id}');
+      final url = Uri.parse('$baseUrl');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
+
+        final String utf8Body = utf8.decode(response.bodyBytes);
+        final List<dynamic> data = jsonDecode(utf8Body);
         return data.map((json) => Receita.fromJson(json)).toList();
+
+      } else if (response.statusCode == 404) {
+        print("Nenhuma receita encontrada.");
+        return [];
+      } else {
+        print("Erro ao buscar receitas: ${response.statusCode}");
+        return [];
+      }
+    } catch (e) {
+      print("Erro ao buscar receitas: $e");
+      return [];
+    }
+  }
+
+  Future<List<Receita>> buscarReceitasFavoritas(Usuario usuario) async {
+    try {
+      final url = Uri.parse('$baseUrl/favoritas/${usuario.id}');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final String utf8Body = utf8.decode(response.bodyBytes);
+        final List<dynamic> data = jsonDecode(utf8Body);
+        return data.map((json) => Receita.fromJson(json)).toList();
+
       } else if (response.statusCode == 404) {
         print("Usuário não encontrado.");
         return [];
@@ -50,7 +77,7 @@ class ReceitaService {
 
   Future<void> removerReceita(Receita receita) async {
     try {
-      final url = Uri.parse('$baseUrl/receitas/${receita.id}');
+      final url = Uri.parse('$baseUrl/${receita.id}');
       final response = await http.delete(url);
 
       if (response.statusCode == 204) {
@@ -67,7 +94,7 @@ class ReceitaService {
 
   Future<void> atualizarReceita(Receita receita) async {
     try {
-      final url = Uri.parse('$baseUrl/receitas/${receita.id}');
+      final url = Uri.parse('$baseUrl/${receita.id}');
       final response = await http.put(
         url,
         headers: {'Content-Type': 'application/json'},
@@ -88,7 +115,7 @@ class ReceitaService {
 
   Future<void> favoritarReceita(Receita receita, Usuario usuario) async {
     try {
-      final url = Uri.parse('$baseUrl/receitas/favoritas/${usuario.id}/${receita.id}');
+      final url = Uri.parse('$baseUrl/favoritas/${usuario.id}/${receita.id}');
       final response = await http.post(url);
 
       if (response.statusCode == 200) {
@@ -105,7 +132,7 @@ class ReceitaService {
 
   Future<void> desfavoritarReceita(Receita receita, Usuario usuario) async {
     try {
-      final url = Uri.parse('$baseUrl/receitas/favoritas/${usuario.id}/${receita.id}');
+      final url = Uri.parse('$baseUrl/favoritas/${usuario.id}/${receita.id}');
       final response = await http.delete(url);
 
       if (response.statusCode == 200) {
@@ -117,16 +144,6 @@ class ReceitaService {
       }
     } catch (e) {
       print("Erro ao desfavoritar a receita: $e");
-    }
-  }
-  Future<List<Receita>> buscarReceitas() async {
-    final response = await http.get(Uri.parse('https://api.exemplo.com/receitas'));
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data.map((e) => Receita.fromJson(e)).toList();
-    } else {
-      throw Exception('Falha ao carregar receitas');
     }
   }
 }

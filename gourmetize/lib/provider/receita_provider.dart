@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/service/receita_service.dart';
 import 'package:gourmetize/model/usuario.dart';
-import 'package:gourmetize/model/avaliacao.dart';
 
 class ReceitaProvider with ChangeNotifier {
   final ReceitaService _receitaService = ReceitaService();
@@ -12,8 +11,9 @@ class ReceitaProvider with ChangeNotifier {
   List<Receita> get receitas => [..._receitas];
   List<Receita> get favoritas => [..._favoritas];
 
-  Future<void> buscarReceitas() async {
+  Future<void> buscarReceitas(Usuario usuario) async {
     _receitas = await _receitaService.buscarReceitas();
+    _favoritas = await _receitaService.buscarReceitasFavoritas(usuario);
     notifyListeners();
   }
 
@@ -37,18 +37,21 @@ class ReceitaProvider with ChangeNotifier {
   }
 
   Future<void> toggleFavorita(Receita receita, Usuario usuario) async {
-    if (_favoritas.contains(receita)) {
+    if (!isFavorita(receita)) {
       await _receitaService.favoritarReceita(receita, usuario);
-      _favoritas.remove(receita);
+      _favoritas.add(receita);
+    
     } else {
       await _receitaService.desfavoritarReceita(receita, usuario);
-      _favoritas.add(receita);
+      
+      _favoritas.remove(receita);
     }
     notifyListeners();
   }
 
   bool isFavorita(Receita receita) {
-    return _favoritas.contains(receita);
+    final isFavorite = _favoritas.any((favorita) => favorita.id == receita.id);
+    return isFavorite;
   }
 
 }

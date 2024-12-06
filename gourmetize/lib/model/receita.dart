@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:gourmetize/model/avaliacao.dart';
 import 'package:gourmetize/model/etiqueta.dart';
 
@@ -44,19 +42,22 @@ class Receita {
   factory Receita.fromJson(Map<String, dynamic> json) {
     return Receita(
       id: json['id'],
-      titulo: json['titulo'],
-      descricao: json['descricao'],
-      ingredientes: json['ingredientes'],
-      preparo: json['preparo'],
+      titulo: json['titulo'] ?? '',
+      descricao: json['descricao'] ?? '',
+      ingredientes: json['ingredientes'] ?? '',
+      preparo: json['preparo'] ?? '',
       usuario: Usuario.fromJson(json['usuario']),
-      avaliacoes: (json['avaliacoes'] as List<dynamic>)
-          .map((avaliacao) => Avaliacao.fromJson(avaliacao))
-          .toList(),
-      etiquetas: (json['etiquetas'] as List<dynamic>)
-          .map((etiqueta) => Etiqueta.fromJson(etiqueta))
-          .toList(),
+      avaliacoes: (json['avaliacoes'] as List<dynamic>?)
+              ?.map((avaliacao) => Avaliacao.fromJson(avaliacao))
+              .toList() ??
+          [],
+      etiquetas: (json['etiquetas'] as List<dynamic>?)
+              ?.map((etiqueta) => Etiqueta.fromJson(etiqueta))
+              .toList() ??
+          [],
     );
   }
+
 
   @override
   String toString() {

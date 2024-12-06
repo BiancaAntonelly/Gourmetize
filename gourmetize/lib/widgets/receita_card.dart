@@ -40,7 +40,7 @@ class _ReceitaCardState extends State<ReceitaCard> {
    @override
   void initState() {
     super.initState();
-    _isFavorited = Provider.of(context, listen: false).isFavorita(widget.receita, widget.usuarioLogado);
+    _isFavorited = Provider.of<ReceitaProvider>(context, listen: false).isFavorita(widget.receita);
   }
 
   void _toggleFavorito() {
@@ -228,7 +228,7 @@ class _ReceitaCardState extends State<ReceitaCard> {
                               color: Colors.white,
                             ),
                             child:  IconButton(
-                              icon: Icon(_isFavorited ? Icons.favorite : Icons.favorite_border),
+                              icon: Icon(_isFavorited ? Icons.favorite : Icons.favorite_border, color: Colors.red,),
                               onPressed:_toggleFavorito,
                             ),
                           )
