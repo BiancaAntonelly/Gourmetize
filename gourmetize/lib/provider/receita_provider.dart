@@ -38,20 +38,11 @@ class ReceitaProvider with ChangeNotifier {
   }
 
   Future<void> toggleFavorita(Receita receita, Usuario usuario) async {
-
-    print("toggleFavorita no provider");
-
     if (_favoritas.contains(receita)) {
-
-      print("a receita estava nos favoritos. Então estou removendo");
-
       await _receitaService.favoritarReceita(receita, usuario);
       _favoritas.remove(receita);
 
     } else {
-
-      print("a receita não estava nos favoritos, então estou adicionando");
-
       await _receitaService.desfavoritarReceita(receita, usuario);
       _favoritas.add(receita);
     }

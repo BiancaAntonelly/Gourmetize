@@ -22,8 +22,7 @@ final GoRouter myRouter = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
         return Home(
-          receitas: mainAppState!.receitas,
-          onCadastrarReceita: mainAppState.adicionarReceita,
+          onCadastrarReceita: mainAppState!.adicionarReceita,
           onCriarEtiqueta: mainAppState.criarEtiqueta,
         );
       },

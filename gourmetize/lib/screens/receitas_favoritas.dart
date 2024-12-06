@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gourmetize/provider/auth_provider.dart';
+import 'package:gourmetize/provider/receita_provider.dart';
 import 'package:provider/provider.dart';
 import '../model/etiqueta.dart';
 import '../model/receita.dart';
@@ -27,6 +28,14 @@ class ReceitasFavoritas extends StatefulWidget {
 }
 
 class _ReceitasFavoritasState extends State<ReceitasFavoritas> {
+
+  @override
+  void initState() {
+    super.initState();
+    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
+    context.read<ReceitaProvider>().buscarReceitas(usuarioLogado);
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -43,16 +52,20 @@ class _ReceitasFavoritasState extends State<ReceitasFavoritas> {
             const StyledText(title: "Receitas Favoritas"),
             const SizedBox(height: 16),
             
-             Expanded(
-              child: ListaReceitas(
-                usuarioLogado: usuarioLogado,
-                onCadastrarReceita: widget.onCadastrarReceita,
-                onCriarEtiqueta: widget.onCriarEtiqueta,
-                receitas: usuarioLogado.receitas,
-                deleteReceita: widget.onDeletarReceita,
-                pertencemAoUsuario: false,
+              Expanded(
+              child: Consumer<ReceitaProvider>(
+                builder: (context, receitaProvider, child) {
+                  return  ListaReceitas(
+                    usuarioLogado: usuarioLogado,
+                    onCadastrarReceita: widget.onCadastrarReceita,
+                    onCriarEtiqueta: widget.onCriarEtiqueta,
+                    receitas: receitaProvider.favoritas,
+                    deleteReceita: widget.onDeletarReceita,
+                    pertencemAoUsuario: false,
+              	  );
+                },
               ),
-            )
+            ),
           ],
         ),
       ),
