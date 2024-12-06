@@ -94,7 +94,6 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
         etiquetas: _etiquetas,
         avaliacoes: widget.receitaParaEdicao?.avaliacoes ?? [],
       );
-      print('Receita enviada: ${receita.toString()}');
 
       final receitaProvider = Provider.of<ReceitaProvider>(context, listen: false);
 

@@ -19,6 +19,7 @@ class MyApp extends StatefulWidget {
   MyAppState createState() => MyAppState();
 }
 
+
 class MyAppState extends State<MyApp> {
   List<Usuario> usuarios = [];
   Usuario? usuarioLogado;

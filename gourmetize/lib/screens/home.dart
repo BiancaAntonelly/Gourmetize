@@ -6,17 +6,15 @@ import '../provider/auth_provider.dart';
 import '../widgets/page_wrapper.dart';
 import '../widgets/styled_text.dart';
 import '../widgets/lista_receitas.dart';
-
+import '../provider/receita_provider.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
-  final List<Receita> receitas;
   final void Function(Receita) onCadastrarReceita;
   final void Function(Etiqueta) onCriarEtiqueta;
 
   Home({
     super.key,
-    required this.receitas,
     required this.onCadastrarReceita,
     required this.onCriarEtiqueta,
   });
@@ -33,9 +31,9 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    _receitasFiltradas = widget.receitas;
-
     _searchController.addListener(_filterReceitas);
+    // Chama o método para carregar as receitas no início
+    context.read<ReceitaProvider>().buscarReceitas();
   }
 
   @override
@@ -47,26 +45,24 @@ class _HomeState extends State<Home> {
   void _filterReceitas() {
     final query = _searchController.text.toLowerCase();
     setState(() {
-      _receitasFiltradas = widget.receitas.where((receita) {
+      _receitasFiltradas = context.read<ReceitaProvider>().receitas.where((receita) {
         return receita.titulo.toLowerCase().contains(query) ||
             receita.descricao.toLowerCase().contains(query) ||
             receita.ingredientes.toLowerCase().contains(query) ||
-            receita.etiquetas
-                .any((item) => item.nome.toLowerCase().contains(query));
+            receita.etiquetas.any((item) => item.nome.toLowerCase().contains(query));
       }).toList();
     });
   }
 
   void _deleteReceita(Receita receita) {
     setState(() {
-      widget.receitas.remove(receita);
+      context.read<ReceitaProvider>().removerReceita(receita); // Deleta a receita
       _filterReceitas(); // Atualiza a lista filtrada após deletar
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Acessando o usuarioLogado através do AuthProvider
     final usuarioLogado = Provider.of<AuthProvider>(context).usuarioLogado;
 
     if (usuarioLogado == null) {
@@ -88,9 +84,7 @@ class _HomeState extends State<Home> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(
-              height: 16,
-            ), // Espaçamento entre a pesquisa e o texto de boas-vindas
+            const SizedBox(height: 16),
             Text(
               'Bem-vindo ao Gourmetize',
               style: TextStyle(
@@ -111,13 +105,18 @@ class _HomeState extends State<Home> {
             const StyledText(title: "Receitas"),
             const SizedBox(height: 16),
             Expanded(
-              child: ListaReceitas(
-                usuarioLogado: usuarioLogado,
-                onCadastrarReceita: widget.onCadastrarReceita,
-                onCriarEtiqueta: widget.onCriarEtiqueta,
-                receitas: _receitasFiltradas,
-                deleteReceita: _deleteReceita,
-                pertencemAoUsuario: false,
+              child: Consumer<ReceitaProvider>(
+                builder: (context, receitaProvider, child) {
+                  _receitasFiltradas = receitaProvider.receitas;
+                  return ListaReceitas(
+                    usuarioLogado: usuarioLogado,
+                    onCadastrarReceita: widget.onCadastrarReceita,
+                    onCriarEtiqueta: widget.onCriarEtiqueta,
+                    receitas: _receitasFiltradas,
+                    deleteReceita: _deleteReceita,
+                    pertencemAoUsuario: false,
+                  );
+                },
               ),
             ),
           ],
