@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gourmetize/model/avaliacao.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/model/usuario.dart';
+import 'package:gourmetize/provider/auth_provider.dart';
 import 'package:gourmetize/widgets/etiquetas_receita.dart';
 import 'package:gourmetize/widgets/page_wrapper.dart';
 import 'package:gourmetize/widgets/avaliacao_card.dart';
@@ -9,6 +10,7 @@ import 'package:gourmetize/widgets/nota_receita.dart';
 import 'package:gourmetize/widgets/nova_avaliacao.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gourmetize/widgets/styled_text.dart';
+import 'package:provider/provider.dart';
 
 class VisualizarReceita extends StatefulWidget {
   final Receita receita;
@@ -29,6 +31,8 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   late TabController _tabController;
   late Receita _receita;
   int _selectedTabIndex = 0;
+
+  
 
   @override
   void initState() {
@@ -86,6 +90,9 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
 
   @override
   Widget build(BuildContext context) {
+
+    final usuarioLogado = Provider.of<AuthProvider>(context).usuarioLogado!;
+
     return PageWrapper(
       title: 'Receita',
       pageWrapperButtonType: PageWrapperButtonType.back,

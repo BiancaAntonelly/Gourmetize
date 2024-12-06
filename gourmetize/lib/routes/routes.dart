@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
+import 'package:gourmetize/provider/auth_provider.dart';
 import 'package:gourmetize/screens/register_recipe.dart';
 import 'package:gourmetize/screens/visualizar_receita.dart';
 import 'package:gourmetize/screens/home.dart';
@@ -9,6 +10,7 @@ import 'package:gourmetize/screens/login.dart';
 import 'package:gourmetize/screens/register_user.dart';
 import 'package:gourmetize/screens/receitas_usuario.dart';
 import 'package:gourmetize/screens/receitas_favoritas.dart';
+import 'package:provider/provider.dart';
 
 import '../main.dart';
 
@@ -64,7 +66,7 @@ final GoRouter myRouter = GoRouter(
         if (mainAppState != null && mainAppState.usuarioLogado != null) {
           return Perfil(
               usuarioLogado: mainAppState.usuarioLogado!,
-              onDeslogarUsuario: mainAppState!.deslogarUsuario);
+              onDeslogarUsuario: mainAppState.deslogarUsuario);
         } else {
           return Login();
         }
@@ -101,10 +103,10 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/visualizar-receita',
       builder: (BuildContext context, GoRouterState state) {
-        final mainAppState = context.findAncestorStateOfType<MyAppState>();
+        final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
         return VisualizarReceita(
           receita: state.extra as Receita,
-          usuarioLogado: mainAppState!.usuarioLogado!,
+          usuarioLogado: usuarioLogado,
         );
       },
     )

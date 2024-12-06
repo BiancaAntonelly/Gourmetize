@@ -228,7 +228,7 @@ class _ReceitaCardState extends State<ReceitaCard> {
                               color: Colors.white,
                             ),
                             child:  IconButton(
-                              icon: Icon(_isFavorited ? Icons.favorite : Icons.favorite_border),
+                              icon: Icon(_isFavorited ? Icons.favorite : Icons.favorite_border, color: Colors.red,),
                               onPressed:_toggleFavorito,
                             ),
                           )

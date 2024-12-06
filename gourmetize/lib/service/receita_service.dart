@@ -42,7 +42,7 @@ class ReceitaService {
 
     List<Receita> receitas = [
       Receita(
-        id: Random().nextInt(10000),
+        id: 1,
         titulo: 'Bolo de chocolate',
         descricao: 'Bolo de cenoura com calda de chocolate delicioso!',
         ingredientes: 'Farinha\nOvos\nCenoura\nAçúcar\nLeite condensado',
@@ -62,7 +62,7 @@ class ReceitaService {
         ],
       ),
       Receita(
-        id: Random().nextInt(10000),
+        id: 2,
         titulo: 'Torta de Limão',
         descricao: 'Torta com recheio cremoso de limão e base crocante.',
         ingredientes: 'Farinha\nManteiga\nLeite condensado\nLimão',
@@ -82,7 +82,7 @@ class ReceitaService {
         ],
       ),
       Receita(
-        id: Random().nextInt(10000),
+        id: 3,
         titulo: 'Pão de Queijo',
         descricao: 'Delicioso pão de queijo mineiro!',
         ingredientes: 'Polvilho\nOvos\nQueijo\nLeite\nÓleo',
@@ -356,8 +356,18 @@ class ReceitaService {
   }
 
   Future<void> favoritarReceita(Receita receita, Usuario usuario) async {
+
+    print("favoritar receita");
+    print(receita.titulo);
+    print(usuario.nome);
+
+    print("Usuario: ${usuario.id}");
+    print("Receita: ${receita.id}");
+  
+    print("$baseUrl/favoritas/${usuario.id}/${receita.id}");
+
     try {
-      final url = Uri.parse('$baseUrl/receitas/favoritas/${usuario.id}/${receita.id}');
+      final url = Uri.parse('$baseUrl/favoritas/${usuario.id}/${receita.id}');
       final response = await http.post(url);
 
       if (response.statusCode == 200) {
@@ -373,8 +383,17 @@ class ReceitaService {
   }
 
   Future<void> desfavoritarReceita(Receita receita, Usuario usuario) async {
+
+    print("desfavoritar receita");
+    print(receita.titulo);
+    print(usuario.nome);
+    print("Usuario: ${usuario.id}");
+    print("Receita: ${receita.id}");
+
+    print("$baseUrl/favoritas/${usuario.id}/${receita.id}");
+
     try {
-      final url = Uri.parse('$baseUrl/receitas/favoritas/${usuario.id}/${receita.id}');
+      final url = Uri.parse('$baseUrl/favoritas/${usuario.id}/${receita.id}');
       final response = await http.delete(url);
 
       if (response.statusCode == 200) {

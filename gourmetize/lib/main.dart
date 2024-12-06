@@ -57,7 +57,7 @@ class MyAppState extends State<MyApp> {
 
     receitas = [
       Receita(
-        id: Random().nextInt(10000),
+        id: 1,
         titulo: 'Bolo de chocolate',
         descricao: 'Bolo de cenoura com calda de chocolate delicioso!',
         ingredientes: 'Farinha\nOvos\nCenoura\nAçúcar\nLeite condensado',
@@ -411,7 +411,7 @@ class MyAppState extends State<MyApp> {
     return ChangeNotifierProvider(
       create: (ctx) => AuthProvider(),
       child: ChangeNotifierProvider(
-        create: (ctx) => ReceitaProvider(),  // Adiciona o ReceitaProvider aqui
+        create: (ctx) => ReceitaProvider(), 
         child: MaterialApp.router(
           routerConfig: myRouter,
           theme: ThemeData(
