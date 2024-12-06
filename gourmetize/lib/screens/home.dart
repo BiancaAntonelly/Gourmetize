@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../model/etiqueta.dart';
 import '../model/receita.dart';
-import '../model/usuario.dart';
+import '../provider/auth_provider.dart';
 import '../widgets/page_wrapper.dart';
 import '../widgets/styled_text.dart';
 import '../widgets/lista_receitas.dart';
 
+import 'package:provider/provider.dart';
+
 class Home extends StatefulWidget {
   final List<Receita> receitas;
-  final Usuario usuarioLogado;
   final void Function(Receita) onCadastrarReceita;
   final void Function(Etiqueta) onCriarEtiqueta;
 
   Home({
     super.key,
     required this.receitas,
-    required this.usuarioLogado,
     required this.onCadastrarReceita,
     required this.onCriarEtiqueta,
   });
@@ -66,6 +66,13 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    // Acessando o usuarioLogado através do AuthProvider
+    final usuarioLogado = Provider.of<AuthProvider>(context).usuarioLogado;
+
+    if (usuarioLogado == null) {
+      return Center(child: Text('Usuário não está logado'));
+    }
+
     return PageWrapper(
       title: '',
       body: Padding(
@@ -93,7 +100,7 @@ class _HomeState extends State<Home> {
               ),
             ),
             Text(
-              'Olá, ${widget.usuarioLogado.nome}! Que bom que você está de volta!',
+              'Olá, ${usuarioLogado.nome}! Que bom que você está de volta!',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -105,7 +112,7 @@ class _HomeState extends State<Home> {
             const SizedBox(height: 16),
             Expanded(
               child: ListaReceitas(
-                usuarioLogado: widget.usuarioLogado,
+                usuarioLogado: usuarioLogado,
                 onCadastrarReceita: widget.onCadastrarReceita,
                 onCriarEtiqueta: widget.onCriarEtiqueta,
                 receitas: _receitasFiltradas,

@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/receita.dart';
-import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/widgets/page_wrapper.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/auth_provider.dart';
+import '../provider/receita_provider.dart';
 
 class RegisterRevenueExtraProps {
   final Receita? receitaParaEdicao;
@@ -18,14 +21,12 @@ class RegisterRevenueExtraProps {
 }
 
 class RegisterRevenue extends StatefulWidget {
-  final Usuario usuarioLogado;
   final void Function(Receita) onCadastrarReceita;
   final void Function(Etiqueta) onCriarEtiqueta;
   final Receita? receitaParaEdicao;
 
   const RegisterRevenue({
     super.key,
-    required this.usuarioLogado,
     required this.onCadastrarReceita,
     required this.onCriarEtiqueta,
     this.receitaParaEdicao,
@@ -60,7 +61,16 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
   void _addEtiqueta(String nome) {
     if (nome.isEmpty) return;
 
-    Etiqueta etiqueta = Etiqueta(nome: nome, usuario: widget.usuarioLogado);
+    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado;
+
+    if (usuarioLogado == null) {
+      // Se o usuário não estiver logado, mostramos uma mensagem de erro
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Usuário não está logado.')),
+      );
+      return; // Não continua a criação da etiqueta
+    }
+    Etiqueta etiqueta = Etiqueta(nome: nome, usuario: usuarioLogado);
 
     setState(() {
       _etiquetas.add(etiqueta);
@@ -72,19 +82,27 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
   }
 
   void _onSubmit() {
+    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
     if (_formKey.currentState!.validate()) {
       Receita receita = Receita(
-        id: widget.receitaParaEdicao?.id ?? Random().nextInt(10000),
+        id: widget.receitaParaEdicao?.id,
         titulo: tituloController.text,
         descricao: descricaoController.text,
         ingredientes: ingredientesController.text,
         preparo: preparoController.text,
-        usuario: widget.usuarioLogado,
+        usuario: usuarioLogado,
         etiquetas: _etiquetas,
         avaliacoes: widget.receitaParaEdicao?.avaliacoes ?? [],
       );
+      print('Receita enviada: ${receita.toString()}');
 
-      widget.onCadastrarReceita(receita);
+      final receitaProvider = Provider.of<ReceitaProvider>(context, listen: false);
+
+      if (widget.receitaParaEdicao != null) {
+        receitaProvider.atualizarReceita(receita);
+      } else {
+        receitaProvider.adicionarReceita(receita);
+      }
 
       context.pop(receita);
     }
@@ -92,9 +110,11 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
 
   @override
   Widget build(BuildContext context) {
+    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
+
     return PageWrapper(
       title:
-          '${widget.receitaParaEdicao != null ? 'Editar' : 'Cadastrar'} Receita',
+      '${widget.receitaParaEdicao != null ? 'Editar' : 'Cadastrar'} Receita',
       pageWrapperButtonType: PageWrapperButtonType.back,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -156,7 +176,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                   maxLines: 4,
                   decoration: InputDecoration(
                     hintText:
-                        'Informe os ingredientes separados por uma quebra de linha',
+                    'Informe os ingredientes separados por uma quebra de linha',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
@@ -195,7 +215,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                   style: TextStyle(fontSize: 16),
                   decoration: InputDecoration(
                     hintText:
-                        'Informe uma breve descrição para ser mostrada na listagem de receitas',
+                    'Informe uma breve descrição para ser mostrada na listagem de receitas',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
@@ -234,7 +254,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                   maxLines: 4,
                   decoration: InputDecoration(
                     hintText:
-                        'Informe o modo de preparo da sua receita separando os passos por uma quebra de linha',
+                    'Informe o modo de preparo da sua receita separando os passos por uma quebra de linha',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
@@ -269,7 +289,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 8.0,
-                  children: widget.usuarioLogado.etiquetas.map((tag) {
+                  children: usuarioLogado.etiquetas.map((tag) {
                     return ChoiceChip(
                       label: Text(tag.nome),
                       selected: _etiquetas.contains(tag),
@@ -317,22 +337,22 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                 const SizedBox(height: 24),
                 Center(
                     child: ElevatedButton(
-                  onPressed: _onSubmit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  child: Text(
-                    widget.receitaParaEdicao == null
-                        ? 'Cadastrar Receita'
-                        : 'Atualizar Receita',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
-                )),
+                      onPressed: _onSubmit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: Text(
+                        widget.receitaParaEdicao == null
+                            ? 'Cadastrar Receita'
+                            : 'Atualizar Receita',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    )),
               ],
             ),
           ),

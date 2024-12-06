@@ -162,7 +162,7 @@ class RegisterUser extends StatelessWidget {
             return;
           }
           try {
-            await Provider.of<AuthProvider>(context).register(
+            await Provider.of<AuthProvider>(context, listen: false).register(
               Usuario.semId(
                 nome: nome,
                 email: email,
@@ -172,7 +172,11 @@ class RegisterUser extends StatelessWidget {
 
             _showMessage(context, 'Usuário registrado com sucesso!');
           } catch (e) {
+            print(e);
+
             _showMessage(context, 'Este e-mail já está em uso.');
+
+            throw (e);
           }
 
           _limparCampos();

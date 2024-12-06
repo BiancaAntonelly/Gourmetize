@@ -3,12 +3,13 @@ import 'dart:math';
 import 'package:gourmetize/model/usuario.dart';
 
 class Avaliacao {
-  final int id = Random().nextInt(10000);
+  int id;
   int nota;
   String comentario;
   Usuario usuario;
 
   Avaliacao({
+    this.id = 0,
     required this.nota,
     required this.comentario,
     required this.usuario,

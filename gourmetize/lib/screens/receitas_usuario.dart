@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../model/etiqueta.dart';
 import '../model/receita.dart';
-import '../model/usuario.dart';
+import '../provider/auth_provider.dart';
 import '../widgets/page_wrapper.dart';
 import '../widgets/styled_text.dart';
 import '../widgets/lista_receitas.dart';
-
 class ReceitasUsuario extends StatefulWidget {
   final List<Receita> receitas;
-  final Usuario usuarioLogado;
   final void Function(Receita) onCadastrarReceita;
   final void Function(Receita) onDeletarReceita;
   final void Function(Etiqueta) onCriarEtiqueta;
@@ -17,7 +16,6 @@ class ReceitasUsuario extends StatefulWidget {
   ReceitasUsuario({
     super.key,
     required this.receitas,
-    required this.usuarioLogado,
     required this.onCadastrarReceita,
     required this.onDeletarReceita,
     required this.onCriarEtiqueta,
@@ -30,6 +28,8 @@ class ReceitasUsuario extends StatefulWidget {
 class _ReceitasUsuarioState extends State<ReceitasUsuario> {
   @override
   Widget build(BuildContext context) {
+    final usuarioLogado = Provider.of<AuthProvider>(context).usuarioLogado!;
+
     return PageWrapper(
       title: '',
       body: Padding(
@@ -42,14 +42,14 @@ class _ReceitasUsuarioState extends State<ReceitasUsuario> {
             const SizedBox(height: 16), // Espaçamento entre o título e a lista
             Expanded(
               child: ListaReceitas(
-                usuarioLogado: widget.usuarioLogado,
+                usuarioLogado: usuarioLogado,
                 onCadastrarReceita: widget.onCadastrarReceita,
                 onCriarEtiqueta: widget.onCriarEtiqueta,
-                receitas: widget.usuarioLogado.receitas,
+                receitas: usuarioLogado.receitas,
                 deleteReceita: widget.onDeletarReceita,
                 pertencemAoUsuario: true,
               ),
-            )
+            ),
           ],
         ),
       ),

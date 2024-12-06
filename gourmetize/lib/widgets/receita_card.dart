@@ -200,7 +200,6 @@ class _ReceitaCardState extends State<ReceitaCard> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => RegisterRevenue(
-                                usuarioLogado: widget.usuarioLogado,
                                 onCadastrarReceita: widget.onCadastrarReceita,
                                 onCriarEtiqueta: widget.onCriarEtiqueta,
                                 receitaParaEdicao: widget.receita,

@@ -6,7 +6,7 @@ import 'package:gourmetize/model/etiqueta.dart';
 import 'usuario.dart';
 
 class Receita {
-  final int id;
+  final int? id;
   String titulo;
   String descricao;
   String ingredientes;
@@ -56,6 +56,11 @@ class Receita {
           .map((etiqueta) => Etiqueta.fromJson(etiqueta))
           .toList(),
     );
+  }
+
+  @override
+  String toString() {
+    return 'Receita{id: $id, titulo: $titulo, descricao: $descricao, ingredientes: $ingredientes, preparo: $preparo, usuario: ${usuario.nome}, etiquetas: $etiquetas, avaliacoes: $avaliacoes}';
   }
 
 }

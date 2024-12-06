@@ -9,7 +9,6 @@ class Usuario {
   List<Receita> receitas;
   List<Etiqueta> etiquetas;
 
-  
   Usuario({
     required this.id,
     required this.nome,
@@ -30,15 +29,12 @@ class Usuario {
         receitas = receitas ?? [],
         etiquetas = etiquetas ?? [];
 
-
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'id': id == 0 ? null : id,
       'nome': nome,
       'email': email,
       'senha': senha,
-      'receitas': receitas.map((receita) => receita.toJson()).toList(),
-      'etiquetas': etiquetas.map((etiqueta) => etiqueta.toJson()).toList(),
     };
   }
 
@@ -48,12 +44,16 @@ class Usuario {
       nome: json['nome'],
       email: json['email'],
       senha: json['senha'],
-      receitas: (json['receitas'] as List<dynamic>)
-          .map((receita) => Receita.fromJson(receita))
-          .toList(),
-      etiquetas: (json['etiquetas'] as List<dynamic>)
-          .map((etiqueta) => Etiqueta.fromJson(etiqueta))
-          .toList(),
+      receitas: json['receitas'] != null
+          ? (json['receitas'] as List<dynamic>)
+              .map((receita) => Receita.fromJson(receita))
+              .toList()
+          : [],
+      etiquetas: json['etiquetas'] != null
+          ? (json['etiquetas'] as List<dynamic>)
+              .map((etiqueta) => Etiqueta.fromJson(etiqueta))
+              .toList()
+          : [],
     );
   }
 }

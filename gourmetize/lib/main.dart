@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:gourmetize/model/avaliacao.dart';
 import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/usuario.dart';
+import 'package:gourmetize/provider/auth_provider.dart';
+import 'package:gourmetize/provider/receita_provider.dart';
 import 'package:gourmetize/routes/routes.dart';
 import 'package:gourmetize/model/receita.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -124,7 +127,7 @@ class MyAppState extends State<MyApp> {
           Avaliacao(
             nota: 3,
             comentario:
-                'O bolo de cenoura estava bom, mas a calda não agradou.',
+            'O bolo de cenoura estava bom, mas a calda não agradou.',
             usuario: usuarios[2],
           ),
           Avaliacao(
@@ -177,7 +180,7 @@ class MyAppState extends State<MyApp> {
         descricao: 'Risoto cremoso com frango desfiado.',
         ingredientes: 'Arroz\nFrango\nCaldo de galinha\nQueijo\nCebola',
         preparo:
-            'Cozinhe o arroz com caldo\nAdicione o frango\nFinalize com queijo',
+        'Cozinhe o arroz com caldo\nAdicione o frango\nFinalize com queijo',
         usuario: usuarios[1],
         avaliacoes: [
           Avaliacao(
@@ -193,7 +196,7 @@ class MyAppState extends State<MyApp> {
         descricao: 'Sopa nutritiva com vários legumes frescos.',
         ingredientes: 'Cenoura\nBatata\nChuchu\nAbóbora\nCaldo de carne',
         preparo:
-            'Cozinhe todos os legumes\nBata metade no liquidificador\nMisture tudo',
+        'Cozinhe todos os legumes\nBata metade no liquidificador\nMisture tudo',
         usuario: usuarios[1],
       ),
       Receita(
@@ -219,7 +222,7 @@ class MyAppState extends State<MyApp> {
         descricao: 'Chili apimentado com carne e feijão.',
         ingredientes: 'Carne moída\nFeijão\nTomate\nCebola\nPimenta',
         preparo:
-            'Cozinhe a carne\nAdicione os ingredientes e cozinhe por 30 min',
+        'Cozinhe a carne\nAdicione os ingredientes e cozinhe por 30 min',
         usuario: usuarios[1],
       ),
       Receita(
@@ -237,9 +240,9 @@ class MyAppState extends State<MyApp> {
         titulo: 'Frango à Parmegiana',
         descricao: 'Frango empanado com molho de tomate e queijo.',
         ingredientes:
-            'Peito de frango\nFarinha de rosca\nQueijo\nMolho de tomate',
+        'Peito de frango\nFarinha de rosca\nQueijo\nMolho de tomate',
         preparo:
-            'Empane o frango\nFrite e coloque o molho e queijo\nAsse por 20 min',
+        'Empane o frango\nFrite e coloque o molho e queijo\nAsse por 20 min',
         usuario: usuarios[2],
       ),
       Receita(
@@ -330,7 +333,7 @@ class MyAppState extends State<MyApp> {
     );
 
     int usuarioIndex =
-        usuarios.indexWhere((u) => u.email == usuarioComId.email);
+    usuarios.indexWhere((u) => u.email == usuarioComId.email);
 
     setState(() {
       if (usuarioIndex != -1) {
@@ -358,7 +361,7 @@ class MyAppState extends State<MyApp> {
   void adicionarReceita(Receita receita) {
     int receitaIndex = receitas.indexWhere((r) => r.id == receita.id);
     int receitaIndexUsuario =
-        usuarioLogado!.receitas.indexWhere((r) => r.id == receita.id);
+    usuarioLogado!.receitas.indexWhere((r) => r.id == receita.id);
 
     print(receitaIndex);
 
@@ -405,24 +408,30 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: myRouter,
-      theme: ThemeData(
-        primaryColor: const Color(0xFF4D281E),
-        secondaryHeaderColor: const Color(0xFFFFCC00),
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.brown,
-        ).copyWith(
-          primary: const Color(0xFF4D281E),
-          secondary: const Color(0xFFFFCC00),
-          surface: Colors.white,
-          onPrimary: Colors.white,
-          onSecondary: Colors.black,
-        ),
-        textTheme: const TextTheme(
-          bodySmall: TextStyle(fontSize: 16.0, color: Color(0xFF4D281E)),
-          bodyMedium: TextStyle(fontSize: 20.0, color: Color(0xFF4D281E)),
-          bodyLarge: TextStyle(fontSize: 24.0, color: Color(0xFF4D281E)),
+    return ChangeNotifierProvider(
+      create: (ctx) => AuthProvider(),
+      child: ChangeNotifierProvider(
+        create: (ctx) => ReceitaProvider(),  // Adiciona o ReceitaProvider aqui
+        child: MaterialApp.router(
+          routerConfig: myRouter,
+          theme: ThemeData(
+            primaryColor: const Color(0xFF4D281E),
+            secondaryHeaderColor: const Color(0xFFFFCC00),
+            colorScheme: ColorScheme.fromSwatch(
+              primarySwatch: Colors.brown,
+            ).copyWith(
+              primary: const Color(0xFF4D281E),
+              secondary: const Color(0xFFFFCC00),
+              surface: Colors.white,
+              onPrimary: Colors.white,
+              onSecondary: Colors.black,
+            ),
+            textTheme: const TextTheme(
+              bodySmall: TextStyle(fontSize: 16.0, color: Color(0xFF4D281E)),
+              bodyMedium: TextStyle(fontSize: 20.0, color: Color(0xFF4D281E)),
+              bodyLarge: TextStyle(fontSize: 24.0, color: Color(0xFF4D281E)),
+            ),
+          ),
         ),
       ),
     );
