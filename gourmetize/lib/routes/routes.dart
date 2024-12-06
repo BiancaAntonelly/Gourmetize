@@ -20,10 +20,8 @@ final GoRouter myRouter = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
         return Home(
-          receitas: mainAppState!.receitas,
-          onCadastrarReceita: mainAppState.adicionarReceita,
+          onCadastrarReceita: mainAppState!.adicionarReceita,
           onCriarEtiqueta: mainAppState.criarEtiqueta,
-          usuarioLogado: mainAppState.usuarioLogado!,
         );
       },
     ),
@@ -41,7 +39,6 @@ final GoRouter myRouter = GoRouter(
           receitas: mainAppState!.receitas,
           onCadastrarReceita: mainAppState.adicionarReceita,
           onCriarEtiqueta: mainAppState.criarEtiqueta,
-          usuarioLogado: mainAppState.usuarioLogado!,
           onDeletarReceita: mainAppState.deletarReceita,
         );
       },
@@ -50,8 +47,6 @@ final GoRouter myRouter = GoRouter(
       path: '/receitas-favoritas',
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
-        // TO DO: remover essa passagem de parametros quando integrar os Providers
-        // Essas funções devem ser chamadas ao provider
         return ReceitasFavoritas(
           receitas: mainAppState!.receitas,
           onCadastrarReceita: mainAppState.adicionarReceita,
@@ -82,7 +77,6 @@ final GoRouter myRouter = GoRouter(
         return RegisterRevenue(
           onCadastrarReceita: mainAppState!.adicionarReceita,
           onCriarEtiqueta: mainAppState.criarEtiqueta,
-          usuarioLogado: mainAppState.usuarioLogado!,
         );
       },
     ),
@@ -94,7 +88,6 @@ final GoRouter myRouter = GoRouter(
         return RegisterRevenue(
           onCadastrarReceita: mainAppState!.adicionarReceita,
           onCriarEtiqueta: mainAppState.criarEtiqueta,
-          usuarioLogado: mainAppState.usuarioLogado!,
           receitaParaEdicao: receitaParaEdicao,
         );
       },
