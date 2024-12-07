@@ -1,11 +1,12 @@
 import 'dart:convert';
 
+import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/usuario.dart';
 import 'package:http/http.dart' as http;
 import 'package:gourmetize/config/app_config.dart';
 
 class UsuarioService {
-  final String _baseUrl =  AppConfig.baseUrl + '/usuario';
+  final String _baseUrl = AppConfig.baseUrl + '/usuario';
 
   Future<Usuario> createUsuario(Usuario usuario) async {
     final response = await http.post(
@@ -21,16 +22,17 @@ class UsuarioService {
     return Usuario.fromJson(jsonDecode(response.body));
   }
 
-  Future<Usuario> getSelf(String token) async {
+  Future<List<Etiqueta>> getEtiquetas(int usuarioId) async {
     final response = await http.get(
-      Uri.parse("${_baseUrl}/me"),
-      headers: {'Authorization': 'Bearer ${token}'},
+      Uri.parse("$_baseUrl/$usuarioId/etiquetas"),
     );
 
-    if (response.statusCode != 201) {
-      throw Exception("Ocorreu um erro ao recuperar o usuário");
+    if (response.statusCode != 200) {
+      throw Exception("Erro ao recuperar etiquetas");
     }
 
-    return Usuario.fromJson(jsonDecode(response.body));
+    final List<dynamic> list = jsonDecode(response.body);
+
+    return list.map((e) => Etiqueta.fromJson(e)).toList();
   }
 }

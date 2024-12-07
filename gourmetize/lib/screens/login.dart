@@ -199,6 +199,8 @@ class _LoginState extends State<Login> {
     final email = _emailController.text;
     final senha = _passwordController.text;
 
+    print('in');
+
     if (email.isEmpty || senha.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Por favor, insira o e-mail e a senha')),
@@ -210,8 +212,12 @@ class _LoginState extends State<Login> {
       await Provider.of<AuthProvider>(context, listen: false)
           .login(email, senha);
 
+      print('ok');
+
       context.go('/');
     } catch (e) {
+      print(e);
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('E-mail ou senha incorretos')),
       );

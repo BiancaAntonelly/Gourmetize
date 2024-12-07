@@ -45,7 +45,7 @@ final GoRouter myRouter = GoRouter(
         );
       },
     ),
-     GoRoute(
+    GoRoute(
       path: '/receitas-favoritas',
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
@@ -75,10 +75,7 @@ final GoRouter myRouter = GoRouter(
       path: '/cadastrar-receita',
       builder: (BuildContext context, GoRouterState state) {
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
-        return RegisterRevenue(
-          onCadastrarReceita: mainAppState!.adicionarReceita,
-          onCriarEtiqueta: mainAppState.criarEtiqueta,
-        );
+        return RegisterRevenue();
       },
     ),
     GoRoute(
@@ -86,11 +83,7 @@ final GoRouter myRouter = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         final receitaParaEdicao = state.extra as Receita;
         final mainAppState = context.findAncestorStateOfType<MyAppState>();
-        return RegisterRevenue(
-          onCadastrarReceita: mainAppState!.adicionarReceita,
-          onCriarEtiqueta: mainAppState.criarEtiqueta,
-          receitaParaEdicao: receitaParaEdicao,
-        );
+        return RegisterRevenue(receitaParaEdicao: receitaParaEdicao);
       },
     ),
     GoRoute(
@@ -102,7 +95,8 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/visualizar-receita',
       builder: (BuildContext context, GoRouterState state) {
-        final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
+        final usuarioLogado =
+            Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
         return VisualizarReceita(
           receita: state.extra as Receita,
           usuarioLogado: usuarioLogado,

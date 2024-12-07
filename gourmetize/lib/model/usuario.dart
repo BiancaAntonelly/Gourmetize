@@ -5,7 +5,7 @@ class Usuario {
   int id;
   String nome;
   String email;
-  String senha;
+  String? senha;
   List<Receita> receitas;
   List<Etiqueta> etiquetas;
 
@@ -43,7 +43,7 @@ class Usuario {
       id: json['id'],
       nome: json['nome'],
       email: json['email'],
-      senha: json['senha'],
+      senha: null,
       receitas: json['receitas'] != null
           ? (json['receitas'] as List<dynamic>)
               .map((receita) => Receita.fromJson(receita))

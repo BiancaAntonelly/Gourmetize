@@ -34,22 +34,22 @@ class ReceitaCard extends StatefulWidget {
 }
 
 class _ReceitaCardState extends State<ReceitaCard> {
-
   bool _isFavorited = false;
 
-   @override
+  @override
   void initState() {
     super.initState();
-    _isFavorited = Provider.of<ReceitaProvider>(context, listen: false).isFavorita(widget.receita);
+    _isFavorited = Provider.of<ReceitaProvider>(context, listen: false)
+        .isFavorita(widget.receita);
   }
 
   void _toggleFavorito() {
     setState(() {
       _isFavorited = !_isFavorited;
     });
-    Provider.of<ReceitaProvider>(context, listen: false).toggleFavorita(widget.receita, widget.usuarioLogado);
+    Provider.of<ReceitaProvider>(context, listen: false)
+        .toggleFavorita(widget.receita, widget.usuarioLogado);
   }
-
 
   List<String> _obterIngredientesEmLista() {
     return widget.receita.ingredientes.split('\n').toList();
@@ -79,9 +79,13 @@ class _ReceitaCardState extends State<ReceitaCard> {
           ),
           content: RichText(
             text: TextSpan(
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontSize: 16),
               children: [
-                const TextSpan(text: 'Você tem certeza que deseja deletar a receita '),
+                const TextSpan(
+                    text: 'Você tem certeza que deseja deletar a receita '),
                 TextSpan(
                   text: widget.receita.titulo,
                   style: const TextStyle(
@@ -95,7 +99,8 @@ class _ReceitaCardState extends State<ReceitaCard> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+              child:
+                  const Text('Cancelar', style: TextStyle(color: Colors.grey)),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
@@ -112,7 +117,7 @@ class _ReceitaCardState extends State<ReceitaCard> {
   }
 
   @override
-   Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     final ingredientes = _obterIngredientesEmLista();
 
     return GestureDetector(
@@ -146,7 +151,10 @@ class _ReceitaCardState extends State<ReceitaCard> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4.0),
                           child: Chip(
-                            label: Text(etiqueta.nome, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                            label: Text(etiqueta.nome,
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary)),
                             backgroundColor: Colors.white,
                           ),
                         );
@@ -174,40 +182,39 @@ class _ReceitaCardState extends State<ReceitaCard> {
                   ),
                 ),
                 Positioned(
-                  bottom: 5,
-                  left: 0,
-                  child: Container(
-                    padding: const EdgeInsets.only(top: 8, left: 10, right: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [NotaReceita(receita: widget.receita)],
-                    ),
-                )),
+                    bottom: 5,
+                    left: 0,
+                    child: Container(
+                      padding:
+                          const EdgeInsets.only(top: 8, left: 10, right: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [NotaReceita(receita: widget.receita)],
+                      ),
+                    )),
                 Positioned(
                   bottom: 8,
                   right: 8,
                   child: Row(
                     children: [
                       if (widget.mostrarOpcoes)
-                         Container(
+                        Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.white,
                           ),
-                          child:  IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.yellow),
-                          onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RegisterRevenue(
-                                onCadastrarReceita: widget.onCadastrarReceita,
-                                onCriarEtiqueta: widget.onCriarEtiqueta,
-                                receitaParaEdicao: widget.receita,
+                          child: IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.yellow),
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RegisterRevenue(
+                                  receitaParaEdicao: widget.receita,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
                       const SizedBox(width: 8),
                       if (widget.mostrarOpcoes)
                         Container(
@@ -215,24 +222,29 @@ class _ReceitaCardState extends State<ReceitaCard> {
                             shape: BoxShape.circle,
                             color: Colors.white,
                           ),
-                          child:  IconButton(
+                          child: IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => _showDeleteConfirmationDialog(context),
+                            onPressed: () =>
+                                _showDeleteConfirmationDialog(context),
                           ),
                         ),
                       const SizedBox(width: 8),
-                        if (widget.podeFavoritar)
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
+                      if (widget.podeFavoritar)
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              _isFavorited
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: Colors.red,
                             ),
-                            child:  IconButton(
-                              icon: Icon(_isFavorited ? Icons.favorite : Icons.favorite_border, color: Colors.red,),
-                              onPressed:_toggleFavorito,
-                            ),
-                          )
-                       
+                            onPressed: _toggleFavorito,
+                          ),
+                        )
                     ],
                   ),
                 ),
@@ -248,7 +260,8 @@ class _ReceitaCardState extends State<ReceitaCard> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: Chip(
-                        label: Text(ingrediente, style: TextStyle(color: Colors.white)),
+                        label: Text(ingrediente,
+                            style: TextStyle(color: Colors.white)),
                         backgroundColor: Theme.of(context).colorScheme.primary,
                       ),
                     );
@@ -269,5 +282,4 @@ class _ReceitaCardState extends State<ReceitaCard> {
       ),
     );
   }
-
 }

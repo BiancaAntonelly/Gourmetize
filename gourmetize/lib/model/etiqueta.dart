@@ -3,15 +3,15 @@ import 'dart:math';
 import 'package:gourmetize/model/usuario.dart';
 
 class Etiqueta {
-  final int id = Random().nextInt(10000);
+  final int id;
   String nome;
   Usuario usuario;
 
-  Etiqueta({required this.nome, required this.usuario});
+  Etiqueta({this.id = 0, required this.nome, required this.usuario});
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'id': id == 0 ? null : id,
       'nome': nome,
       'usuario': usuario.toJson(),
     };
@@ -19,6 +19,7 @@ class Etiqueta {
 
   factory Etiqueta.fromJson(Map<String, dynamic> json) {
     return Etiqueta(
+      id: json['id'],
       nome: json['nome'],
       usuario: Usuario.fromJson(json['usuario']),
     );

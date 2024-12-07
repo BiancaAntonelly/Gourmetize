@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/provider/auth_provider.dart';
+import 'package:gourmetize/provider/etiquetas_provider.dart';
 import 'package:gourmetize/provider/receita_provider.dart';
 import 'package:gourmetize/routes/routes.dart';
 import 'package:gourmetize/model/receita.dart';
@@ -15,7 +16,6 @@ class MyApp extends StatefulWidget {
   @override
   MyAppState createState() => MyAppState();
 }
-
 
 class MyAppState extends State<MyApp> {
   List<Usuario> usuarios = [];
@@ -45,7 +45,7 @@ class MyAppState extends State<MyApp> {
     );
 
     int usuarioIndex =
-    usuarios.indexWhere((u) => u.email == usuarioComId.email);
+        usuarios.indexWhere((u) => u.email == usuarioComId.email);
 
     setState(() {
       if (usuarioIndex != -1) {
@@ -73,7 +73,7 @@ class MyAppState extends State<MyApp> {
   void adicionarReceita(Receita receita) {
     int receitaIndex = receitas.indexWhere((r) => r.id == receita.id);
     int receitaIndexUsuario =
-    usuarioLogado!.receitas.indexWhere((r) => r.id == receita.id);
+        usuarioLogado!.receitas.indexWhere((r) => r.id == receita.id);
 
     print(receitaIndex);
 
@@ -123,25 +123,28 @@ class MyAppState extends State<MyApp> {
     return ChangeNotifierProvider(
       create: (ctx) => AuthProvider(),
       child: ChangeNotifierProvider(
-        create: (ctx) => ReceitaProvider(), 
-        child: MaterialApp.router(
-          routerConfig: myRouter,
-          theme: ThemeData(
-            primaryColor: const Color(0xFF4D281E),
-            secondaryHeaderColor: const Color(0xFFFFCC00),
-            colorScheme: ColorScheme.fromSwatch(
-              primarySwatch: Colors.brown,
-            ).copyWith(
-              primary: const Color(0xFF4D281E),
-              secondary: const Color(0xFFFFCC00),
-              surface: Colors.white,
-              onPrimary: Colors.white,
-              onSecondary: Colors.black,
-            ),
-            textTheme: const TextTheme(
-              bodySmall: TextStyle(fontSize: 16.0, color: Color(0xFF4D281E)),
-              bodyMedium: TextStyle(fontSize: 20.0, color: Color(0xFF4D281E)),
-              bodyLarge: TextStyle(fontSize: 24.0, color: Color(0xFF4D281E)),
+        create: (ctx) => ReceitaProvider(),
+        child: ChangeNotifierProvider(
+          create: (ctx) => EtiquetasProvider(),
+          child: MaterialApp.router(
+            routerConfig: myRouter,
+            theme: ThemeData(
+              primaryColor: const Color(0xFF4D281E),
+              secondaryHeaderColor: const Color(0xFFFFCC00),
+              colorScheme: ColorScheme.fromSwatch(
+                primarySwatch: Colors.brown,
+              ).copyWith(
+                primary: const Color(0xFF4D281E),
+                secondary: const Color(0xFFFFCC00),
+                surface: Colors.white,
+                onPrimary: Colors.white,
+                onSecondary: Colors.black,
+              ),
+              textTheme: const TextTheme(
+                bodySmall: TextStyle(fontSize: 16.0, color: Color(0xFF4D281E)),
+                bodyMedium: TextStyle(fontSize: 20.0, color: Color(0xFF4D281E)),
+                bodyLarge: TextStyle(fontSize: 24.0, color: Color(0xFF4D281E)),
+              ),
             ),
           ),
         ),
