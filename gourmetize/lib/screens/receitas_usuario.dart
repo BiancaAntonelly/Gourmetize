@@ -76,8 +76,13 @@ class _ReceitasUsuarioState extends State<ReceitasUsuario> {
             Expanded(
               child: ListaReceitas(
                 usuarioLogado: usuarioLogado,
-                onCadastrarReceita: widget.onCadastrarReceita,
-                onCriarEtiqueta: widget.onCriarEtiqueta,
+                onCadastrarReceita: (receita) {
+                  context.push('/editar-receita', extra: receita).then((value) {
+                    if (value != null && value is Receita) {
+                      _carregarReceitas();
+                    }
+                  });
+                },                onCriarEtiqueta: widget.onCriarEtiqueta,
                 receitas: _receitasUser,
                 deleteReceita: widget.onDeletarReceita,
                 pertencemAoUsuario: true,
