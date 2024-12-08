@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gourmetize/model/avaliacao.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/model/usuario.dart';
+import 'package:gourmetize/provider/avaliacao_provider.dart';
 import 'package:gourmetize/widgets/etiquetas_receita.dart';
 import 'package:gourmetize/widgets/page_wrapper.dart';
 import 'package:gourmetize/widgets/avaliacao_card.dart';
@@ -9,6 +10,7 @@ import 'package:gourmetize/widgets/nota_receita.dart';
 import 'package:gourmetize/widgets/nova_avaliacao.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gourmetize/widgets/styled_text.dart';
+import 'package:provider/provider.dart';
 
 class VisualizarReceita extends StatefulWidget {
   final Receita receita;
@@ -35,10 +37,27 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
     super.initState();
     _receita = widget.receita;
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+
     _tabController.addListener(() {
       setState(() {
         _selectedTabIndex = _tabController.index;
       });
+    });
+
+    _carregarAvaliacoes(); // Adiciona a chamada para carregar as avaliações
+  }
+
+  Future<void> _carregarAvaliacoes() async {
+    final avaliacaoProvider =
+        Provider.of<AvaliacaoProvider>(context, listen: false);
+
+    final avaliacoes =
+        await avaliacaoProvider.getAvaliacoesPorReceita(_receita.id ?? 0);
+    print(
+        'Avaliações carregadas: $avaliacoes'); // Debug: Verifica os dados carregados
+
+    setState(() {
+      _receita.avaliacoes = avaliacoes;
     });
   }
 
