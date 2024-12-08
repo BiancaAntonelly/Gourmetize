@@ -30,8 +30,6 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   late Receita _receita;
   int _selectedTabIndex = 0;
 
-  
-
   @override
   void initState() {
     super.initState();
@@ -62,8 +60,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
     showModalBottomSheet(
       context: context,
       builder: (context) => NovaAvaliacao(
-        onSubmit: _addAvaliacao,
-        usuarioLogado: widget.usuarioLogado,
+        receita: _receita,
       ),
       backgroundColor: Colors.transparent,
     );
@@ -88,7 +85,6 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
 
   @override
   Widget build(BuildContext context) {
-
     return PageWrapper(
       title: 'Receita',
       pageWrapperButtonType: PageWrapperButtonType.back,

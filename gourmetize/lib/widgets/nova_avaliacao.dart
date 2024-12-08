@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:gourmetize/model/avaliacao.dart';
+import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/model/usuario.dart';
+import 'package:gourmetize/provider/auth_provider.dart';
 import 'package:gourmetize/provider/avaliacao_provider.dart';
 import 'package:gourmetize/widgets/app_button.dart';
 import 'package:provider/provider.dart';
 
 class NovaAvaliacao extends StatefulWidget {
-  final Usuario usuarioLogado;
-  final void Function(Avaliacao avaliacao) onSubmit;
+  final Receita receita;
 
   const NovaAvaliacao({
     super.key,
-    required this.onSubmit,
-    required this.usuarioLogado,
+    required this.receita,
   });
 
   @override
@@ -48,8 +48,9 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
         Avaliacao(
           nota: _notaAvaliacao.toInt(),
           comentario: _descricaoController.text,
-          usuario: widget
-              .usuarioLogado, // Certifique-se de que `usuarioLogado` está disponível
+          usuario: Provider.of<AuthProvider>(context, listen: false)
+              .usuarioLogado!, // Certifique-se de que `usuarioLogado` está disponível
+          receita: widget.receita,
         ),
       );
 
