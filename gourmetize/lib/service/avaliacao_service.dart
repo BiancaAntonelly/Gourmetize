@@ -54,7 +54,7 @@ class AvaliacaoService {
   // Buscar todas as avaliações de uma receita
   Future<List<Avaliacao>> getAvaliacoesPorReceita(int receitaId) async {
     try {
-      final url = Uri.parse('$baseUrl/receita/$receitaId');
+      final url = Uri.parse('$baseUrl/$receitaId');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
