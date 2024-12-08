@@ -146,4 +146,26 @@ class ReceitaService {
       print("Erro ao desfavoritar a receita: $e");
     }
   }
+  Future<List<Receita>> buscarReceitasPorUsuario(Usuario usuario) async {
+    try {
+      final url = Uri.parse('$baseUrl/usuario/${usuario.id}');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final String utf8Body = utf8.decode(response.bodyBytes);
+        final List<dynamic> data = jsonDecode(utf8Body);
+        return data.map((json) => Receita.fromJson(json)).toList();
+
+      } else if (response.statusCode == 404) {
+        print("Usuário não encontrado.");
+        return [];
+      } else {
+        print("Erro ao buscar receitas favoritas: ${response.statusCode}");
+        return [];
+      }
+    } catch (e) {
+      print("Erro ao buscar receitas favoritas: $e");
+      return [];
+    }
+  }
 }

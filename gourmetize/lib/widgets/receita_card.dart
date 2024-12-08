@@ -100,14 +100,29 @@ class _ReceitaCardState extends State<ReceitaCard> {
           actions: <Widget>[
             TextButton(
               child:
-                  const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+              const Text('Cancelar', style: TextStyle(color: Colors.grey)),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
               child: const Text('Deletar', style: TextStyle(color: Colors.red)),
-              onPressed: () {
-                if (widget.onDelete != null) widget.onDelete!();
-                Navigator.of(context).pop();
+              onPressed: () async {
+                try {
+                  await Provider.of<ReceitaProvider>(context, listen: false)
+                      .removerReceita(widget.receita);
+                  if (widget.onDelete != null) widget.onDelete!();
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Receita deletada com sucesso!')),
+                  );
+                } catch (error) {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Erro ao deletar a receita: $error'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               },
             ),
           ],
@@ -115,6 +130,7 @@ class _ReceitaCardState extends State<ReceitaCard> {
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
