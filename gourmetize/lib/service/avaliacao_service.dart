@@ -8,10 +8,10 @@ import 'package:http/http.dart' as http;
 class AvaliacaoService {
   final String baseUrl = AppConfig.baseUrl + '/avaliacoes';
 
-  // Criar uma avaliação
-  Future<void> criarAvaliacao(Avaliacao avaliacao) async {
+// Criar uma avaliação para uma receita
+  Future<Avaliacao> criarAvaliacaoParaReceita(Avaliacao avaliacao) async {
     try {
-      final url = Uri.parse('$baseUrl/');
+      final url = Uri.parse('$baseUrl');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
@@ -19,35 +19,17 @@ class AvaliacaoService {
       );
 
       if (response.statusCode == 200) {
-        print("Avaliação criada com sucesso.");
+        final String utf8Body = utf8.decode(response.bodyBytes);
+        final Map<String, dynamic> json = jsonDecode(utf8Body);
+        return Avaliacao.fromJson(json); // Retorna o objeto Avaliacao criado
       } else {
-        print("Erro ao criar avaliação: ${response.statusCode}");
+        throw Exception(
+            "Erro ao criar avaliação para receita: ${response.statusCode}");
       }
     } catch (e) {
-      print("Erro ao criar avaliação: $e");
+      throw Exception("Erro ao criar avaliação para receita: $e");
     }
   }
-// Criar uma avaliação para uma receita
-Future<Avaliacao> criarAvaliacaoParaReceita(int receitaId, Avaliacao avaliacao) async {
-  try {
-    final url = Uri.parse('$baseUrl/receita/$receitaId');
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(avaliacao.toJson()),
-    );
-
-    if (response.statusCode == 200) {
-      final String utf8Body = utf8.decode(response.bodyBytes);
-      final Map<String, dynamic> json = jsonDecode(utf8Body);
-      return Avaliacao.fromJson(json); // Retorna o objeto Avaliacao criado
-    } else {
-      throw Exception("Erro ao criar avaliação para receita: ${response.statusCode}");
-    }
-  } catch (e) {
-    throw Exception("Erro ao criar avaliação para receita: $e");
-  }
-}
 
   // Buscar todas as avaliações
   Future<List<Avaliacao>> buscarTodasAvaliacoes() async {
@@ -151,6 +133,4 @@ Future<Avaliacao> criarAvaliacaoParaReceita(int receitaId, Avaliacao avaliacao) 
       print("Erro ao deletar avaliação: $e");
     }
   }
-
- 
 }

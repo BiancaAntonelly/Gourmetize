@@ -9,6 +9,7 @@ class UsuarioService {
   final String _baseUrl = AppConfig.baseUrl + '/usuario';
 
   Future<Usuario> createUsuario(Usuario usuario) async {
+    print(usuario.toJson());
     final response = await http.post(
       Uri.parse(_baseUrl),
       body: jsonEncode(usuario.toJson()),

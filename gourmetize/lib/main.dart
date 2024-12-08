@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/provider/auth_provider.dart';
+import 'package:gourmetize/provider/avaliacao_provider.dart';
 import 'package:gourmetize/provider/etiquetas_provider.dart';
 import 'package:gourmetize/provider/receita_provider.dart';
 import 'package:gourmetize/routes/routes.dart';
@@ -126,24 +127,30 @@ class MyAppState extends State<MyApp> {
         create: (ctx) => ReceitaProvider(),
         child: ChangeNotifierProvider(
           create: (ctx) => EtiquetasProvider(),
-          child: MaterialApp.router(
-            routerConfig: myRouter,
-            theme: ThemeData(
-              primaryColor: const Color(0xFF4D281E),
-              secondaryHeaderColor: const Color(0xFFFFCC00),
-              colorScheme: ColorScheme.fromSwatch(
-                primarySwatch: Colors.brown,
-              ).copyWith(
-                primary: const Color(0xFF4D281E),
-                secondary: const Color(0xFFFFCC00),
-                surface: Colors.white,
-                onPrimary: Colors.white,
-                onSecondary: Colors.black,
-              ),
-              textTheme: const TextTheme(
-                bodySmall: TextStyle(fontSize: 16.0, color: Color(0xFF4D281E)),
-                bodyMedium: TextStyle(fontSize: 20.0, color: Color(0xFF4D281E)),
-                bodyLarge: TextStyle(fontSize: 24.0, color: Color(0xFF4D281E)),
+          child: ChangeNotifierProvider(
+            create: (ctx) => AvaliacaoProvider(),
+            child: MaterialApp.router(
+              routerConfig: myRouter,
+              theme: ThemeData(
+                primaryColor: const Color(0xFF4D281E),
+                secondaryHeaderColor: const Color(0xFFFFCC00),
+                colorScheme: ColorScheme.fromSwatch(
+                  primarySwatch: Colors.brown,
+                ).copyWith(
+                  primary: const Color(0xFF4D281E),
+                  secondary: const Color(0xFFFFCC00),
+                  surface: Colors.white,
+                  onPrimary: Colors.white,
+                  onSecondary: Colors.black,
+                ),
+                textTheme: const TextTheme(
+                  bodySmall:
+                      TextStyle(fontSize: 16.0, color: Color(0xFF4D281E)),
+                  bodyMedium:
+                      TextStyle(fontSize: 20.0, color: Color(0xFF4D281E)),
+                  bodyLarge:
+                      TextStyle(fontSize: 24.0, color: Color(0xFF4D281E)),
+                ),
               ),
             ),
           ),

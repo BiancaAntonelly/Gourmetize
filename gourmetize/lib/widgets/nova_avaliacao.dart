@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:gourmetize/model/avaliacao.dart';
 import 'package:gourmetize/model/usuario.dart';
+import 'package:gourmetize/provider/avaliacao_provider.dart';
 import 'package:gourmetize/widgets/app_button.dart';
+import 'package:provider/provider.dart';
 
 class NovaAvaliacao extends StatefulWidget {
   final Usuario usuarioLogado;
@@ -21,17 +23,53 @@ class NovaAvaliacao extends StatefulWidget {
 class _NovaAvaliacaoState extends State<NovaAvaliacao> {
   double _notaAvaliacao = 0;
   final TextEditingController _descricaoController = TextEditingController();
+  void _onSubmit() async {
+    // Valida se a nota foi preenchida
+    if (_notaAvaliacao == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Por favor, insira uma nota para a avaliação')),
+      );
+      return;
+    }
 
-  void _onSubmit() {
-    if (_notaAvaliacao == 0) return;
+    // Valida se a descrição foi preenchida (opcional)
+    if (_descricaoController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor, insira um comentário')),
+      );
+      return;
+    }
 
-    widget.onSubmit(
-      Avaliacao(
-        nota: _notaAvaliacao.toInt(),
-        comentario: _descricaoController.text,
-        usuario: widget.usuarioLogado,
-      ),
-    );
+    try {
+      // Tenta criar a avaliação
+      await Provider.of<AvaliacaoProvider>(context, listen: false)
+          .createAvaliacaoParaReceita(
+        Avaliacao(
+          nota: _notaAvaliacao.toInt(),
+          comentario: _descricaoController.text,
+          usuario: widget
+              .usuarioLogado, // Certifique-se de que `usuarioLogado` está disponível
+        ),
+      );
+
+      // Mensagem de sucesso
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Avaliação enviada com sucesso!')),
+      );
+
+      print('ok');
+
+      // Navega ou reseta a tela após o envio
+      Navigator.pop(context);
+    } catch (e) {
+      // Mensagem de erro
+      print(e);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro ao enviar a avaliação')),
+      );
+    }
   }
 
   void _onNotaChange(double nota) {

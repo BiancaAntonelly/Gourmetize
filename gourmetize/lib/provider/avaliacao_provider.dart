@@ -4,7 +4,7 @@ import 'package:gourmetize/service/avaliacao_service.dart';
 
 import 'package:flutter/material.dart';
 
-class ReceitasProvider with ChangeNotifier {
+class AvaliacaoProvider with ChangeNotifier {
   List<Avaliacao> _avaliacoes = [];
   final AvaliacaoService _avaliacoesService = AvaliacaoService();
 
@@ -12,9 +12,10 @@ class ReceitasProvider with ChangeNotifier {
   List<Avaliacao> get avaliacoes => [..._avaliacoes];
 
   // Criar uma avaliação para uma receita
-  Future<Avaliacao> createAvaliacaoParaReceita(int receitaId, Avaliacao avaliacao) async {
+  Future<Avaliacao> createAvaliacaoParaReceita(Avaliacao avaliacao) async {
     try {
-      final created = await _avaliacoesService.criarAvaliacaoParaReceita(receitaId, avaliacao);
+      final created =
+          await _avaliacoesService.criarAvaliacaoParaReceita(avaliacao);
       _avaliacoes.add(created);
       notifyListeners(); // Notifica os listeners sobre a atualização
       return created;
