@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../model/etiqueta.dart';
 import '../model/receita.dart';
 import '../provider/auth_provider.dart';
+import '../provider/receita_provider.dart';
 import '../widgets/page_wrapper.dart';
 import '../widgets/styled_text.dart';
 import '../widgets/lista_receitas.dart';
@@ -24,28 +25,60 @@ class ReceitasUsuario extends StatefulWidget {
   @override
   _ReceitasUsuarioState createState() => _ReceitasUsuarioState();
 }
-
 class _ReceitasUsuarioState extends State<ReceitasUsuario> {
+  bool _isLoading = true;
+  late List<Receita> _receitasUser;
+
+  @override
+  void initState() {
+    _carregarReceitas();
+    super.initState();
+    _carregarReceitas();
+  }
+
+
+  Future<void> _carregarReceitas() async {
+    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
+    try {
+      final receitas = await context.read<ReceitaProvider>().buscarReceitasPorUsuario(usuarioLogado);
+      setState(() {
+        _receitasUser = receitas;
+        _isLoading = false;
+      });
+    } catch (error) {
+      setState(() {
+        _isLoading = false;
+      });
+      print("Erro ao carregar receitas do usuário: $error");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final usuarioLogado = Provider.of<AuthProvider>(context).usuarioLogado!;
+    final usuarioLogado = Provider.of<AuthProvider>(context).usuarioLogado;
+
+    if (usuarioLogado == null) {
+      return Center(child: Text('Usuário não está logado'));
+    }
 
     return PageWrapper(
       title: '',
-      body: Padding(
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
             const StyledText(title: "Minhas Receitas"),
-            const SizedBox(height: 16), // Espaçamento entre o título e a lista
+            const SizedBox(height: 16),
             Expanded(
               child: ListaReceitas(
                 usuarioLogado: usuarioLogado,
                 onCadastrarReceita: widget.onCadastrarReceita,
                 onCriarEtiqueta: widget.onCriarEtiqueta,
-                receitas: usuarioLogado.receitas,
+                receitas: _receitasUser,
                 deleteReceita: widget.onDeletarReceita,
                 pertencemAoUsuario: true,
               ),

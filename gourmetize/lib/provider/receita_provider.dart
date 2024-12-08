@@ -8,8 +8,10 @@ class ReceitaProvider with ChangeNotifier {
 
   List<Receita> _receitas = [];
   List<Receita> _favoritas = [];
+  List<Receita> _receitasUser = [];
   List<Receita> get receitas => [..._receitas];
   List<Receita> get favoritas => [..._favoritas];
+  List<Receita> get receitasUser => [..._receitasUser];
 
   Future<void> buscarReceitas(Usuario usuario) async {
     _receitas = await _receitaService.buscarReceitas();
@@ -52,6 +54,12 @@ class ReceitaProvider with ChangeNotifier {
   bool isFavorita(Receita receita) {
     final isFavorite = _favoritas.any((favorita) => favorita.id == receita.id);
     return isFavorite;
+  }
+
+  Future<List<Receita>> buscarReceitasPorUsuario(Usuario usuario) async {
+    _receitasUser = await _receitaService.buscarReceitasPorUsuario(usuario);
+    notifyListeners();
+    return _receitasUser; // Retorna a lista de receitas.
   }
 
 }
