@@ -1,33 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../model/etiqueta.dart';
-import '../model/receita.dart';
 import '../provider/auth_provider.dart';
 import '../provider/receita_provider.dart';
 import '../widgets/page_wrapper.dart';
 import '../widgets/styled_text.dart';
 import '../widgets/lista_receitas.dart';
-class ReceitasUsuario extends StatefulWidget {
-  final List<Receita> receitas;
-  final void Function(Receita) onCadastrarReceita;
-  final void Function(Receita) onDeletarReceita;
-  final void Function(Etiqueta) onCriarEtiqueta;
 
+class ReceitasUsuario extends StatefulWidget {
   ReceitasUsuario({
     super.key,
-    required this.receitas,
-    required this.onCadastrarReceita,
-    required this.onDeletarReceita,
-    required this.onCriarEtiqueta,
   });
 
   @override
   _ReceitasUsuarioState createState() => _ReceitasUsuarioState();
 }
+
 class _ReceitasUsuarioState extends State<ReceitasUsuario> {
   bool _isLoading = true;
-  late List<Receita> _receitasUser;
 
   @override
   void initState() {
@@ -36,14 +26,17 @@ class _ReceitasUsuarioState extends State<ReceitasUsuario> {
     _carregarReceitas();
   }
 
-
   Future<void> _carregarReceitas() async {
-    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
+    final usuarioLogado =
+        Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
     try {
-      final receitas = await context.read<ReceitaProvider>().buscarReceitasPorUsuario(usuarioLogado);
-      setState(() {
-        _receitasUser = receitas;
-        _isLoading = false;
+      await context
+          .read<ReceitaProvider>()
+          .buscarReceitasPorUsuario(usuarioLogado)
+          .then((value) {
+        setState(() {
+          _isLoading = false;
+        });
       });
     } catch (error) {
       setState(() {
@@ -55,6 +48,7 @@ class _ReceitasUsuarioState extends State<ReceitasUsuario> {
 
   @override
   Widget build(BuildContext context) {
+    final receitas = Provider.of<ReceitaProvider>(context).receitasUser;
     final usuarioLogado = Provider.of<AuthProvider>(context).usuarioLogado;
 
     if (usuarioLogado == null) {
@@ -63,9 +57,7 @@ class _ReceitasUsuarioState extends State<ReceitasUsuario> {
 
     return PageWrapper(
       title: '',
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Padding(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,17 +67,9 @@ class _ReceitasUsuarioState extends State<ReceitasUsuario> {
             const SizedBox(height: 16),
             Expanded(
               child: ListaReceitas(
-                usuarioLogado: usuarioLogado,
-                onCadastrarReceita: (receita) {
-                  context.push('/editar-receita', extra: receita).then((value) {
-                    if (value != null && value is Receita) {
-                      _carregarReceitas();
-                    }
-                  });
-                },                onCriarEtiqueta: widget.onCriarEtiqueta,
-                receitas: _receitasUser,
-                deleteReceita: widget.onDeletarReceita,
+                receitas: receitas,
                 pertencemAoUsuario: true,
+                isLoading: _isLoading,
               ),
             ),
           ],

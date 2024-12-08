@@ -1,40 +1,36 @@
-import 'package:gourmetize/model/avaliacao.dart';
 import 'package:gourmetize/model/etiqueta.dart';
 
 import 'usuario.dart';
 
 class Receita {
-  final int? id;
+  final int id;
   String titulo;
   String descricao;
   String ingredientes;
   String preparo;
   Usuario usuario;
-  List<Avaliacao> avaliacoes;
+  double? mediaAvaliacao;
   List<Etiqueta> etiquetas;
 
   Receita({
-    required this.id,
+    this.id = 0,
     required this.titulo,
     required this.descricao,
     required this.ingredientes,
     required this.preparo,
+    this.mediaAvaliacao,
     required this.usuario,
-    List<Avaliacao>? avaliacoes,
     List<Etiqueta>? etiquetas,
-  })  : avaliacoes = avaliacoes ?? [],
-        etiquetas = etiquetas ?? [];
-
+  }) : etiquetas = etiquetas ?? [];
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'id': id == 0 ? null : id,
       'titulo': titulo,
       'descricao': descricao,
       'ingredientes': ingredientes,
       'preparo': preparo,
       'usuario': usuario.toJson(),
-      'avaliacoes': avaliacoes.map((avaliacao) => avaliacao.toJson()).toList(),
       'etiquetas': etiquetas.map((etiqueta) => etiqueta.toJson()).toList(),
     };
   }
@@ -47,10 +43,7 @@ class Receita {
       ingredientes: json['ingredientes'] ?? '',
       preparo: json['preparo'] ?? '',
       usuario: Usuario.fromJson(json['usuario']),
-      avaliacoes: (json['avaliacoes'] as List<dynamic>?)
-              ?.map((avaliacao) => Avaliacao.fromJson(avaliacao))
-              .toList() ??
-          [],
+      mediaAvaliacao: json['mediaAvaliacao'],
       etiquetas: (json['etiquetas'] as List<dynamic>?)
               ?.map((etiqueta) => Etiqueta.fromJson(etiqueta))
               .toList() ??
@@ -58,10 +51,8 @@ class Receita {
     );
   }
 
-
   @override
   String toString() {
-    return 'Receita{id: $id, titulo: $titulo, descricao: $descricao, ingredientes: $ingredientes, preparo: $preparo, usuario: ${usuario.nome}, etiquetas: $etiquetas, avaliacoes: $avaliacoes}';
+    return 'Receita{id: $id, titulo: $titulo, descricao: $descricao, ingredientes: $ingredientes, preparo: $preparo, usuario: ${usuario.nome}, etiquetas: $etiquetas}';
   }
-
 }

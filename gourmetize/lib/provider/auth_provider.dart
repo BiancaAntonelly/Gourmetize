@@ -22,4 +22,10 @@ class AuthProvider with ChangeNotifier {
   Future<Usuario> register(Usuario usuario) async {
     return _usuarioService.createUsuario(usuario);
   }
+
+  void logout() {
+    _usuarioLogado = null;
+
+    notifyListeners();
+  }
 }

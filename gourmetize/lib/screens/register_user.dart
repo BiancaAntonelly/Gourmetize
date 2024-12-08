@@ -5,13 +5,19 @@ import '../model/usuario.dart';
 import '../widgets/logo.dart';
 import 'package:go_router/go_router.dart';
 
-class RegisterUser extends StatelessWidget {
+class RegisterUser extends StatefulWidget {
   RegisterUser({Key? key}) : super(key: key);
 
+  @override
+  State<RegisterUser> createState() => _RegisterUserState();
+}
+
+class _RegisterUserState extends State<RegisterUser> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
   final TextEditingController _senhaConfirmController = TextEditingController();
+  bool _isLoadingRegister = false;
 
   void _limparCampos() {
     _nomeController.clear();
@@ -162,6 +168,10 @@ class RegisterUser extends StatelessWidget {
             return;
           }
           try {
+            setState(() {
+              _isLoadingRegister = true;
+            });
+
             await Provider.of<AuthProvider>(context, listen: false).register(
               Usuario.semId(
                 nome: nome,
@@ -177,6 +187,10 @@ class RegisterUser extends StatelessWidget {
             _showMessage(context, 'Este e-mail já está em uso.');
 
             throw (e);
+          } finally {
+            setState(() {
+              _isLoadingRegister = false;
+            });
           }
 
           _limparCampos();
@@ -190,13 +204,21 @@ class RegisterUser extends StatelessWidget {
             borderRadius: BorderRadius.circular(30),
           ),
         ),
-        child: Text(
-          'Registrar-se',
-          style: TextStyle(
-            fontSize: screenSize.width * 0.05,
-            color: const Color(0xFF5E3023),
-          ),
-        ),
+        child: _isLoadingRegister
+            ? SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
+              )
+            : Text(
+                'Registrar-se',
+                style: TextStyle(
+                  fontSize: screenSize.width * 0.05,
+                  color: const Color(0xFF5E3023),
+                ),
+              ),
       ),
     );
   }

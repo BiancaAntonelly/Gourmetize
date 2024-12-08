@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gourmetize/model/avaliacao.dart';
 import 'package:gourmetize/model/receita.dart';
-import 'package:gourmetize/model/usuario.dart';
+import 'package:gourmetize/provider/auth_provider.dart';
 import 'package:gourmetize/provider/avaliacao_provider.dart';
 import 'package:gourmetize/widgets/etiquetas_receita.dart';
 import 'package:gourmetize/widgets/page_wrapper.dart';
@@ -14,12 +13,10 @@ import 'package:provider/provider.dart';
 
 class VisualizarReceita extends StatefulWidget {
   final Receita receita;
-  final Usuario usuarioLogado;
 
   VisualizarReceita({
     super.key,
     required this.receita,
-    required this.usuarioLogado,
   });
 
   @override
@@ -31,6 +28,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   late TabController _tabController;
   late Receita _receita;
   int _selectedTabIndex = 0;
+  bool _isLoadingAvaliacoes = true;
 
   @override
   void initState() {
@@ -47,17 +45,14 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
     _carregarAvaliacoes(); // Adiciona a chamada para carregar as avaliações
   }
 
-  Future<void> _carregarAvaliacoes() async {
+  void _carregarAvaliacoes() {
     final avaliacaoProvider =
         Provider.of<AvaliacaoProvider>(context, listen: false);
 
-    final avaliacoes =
-        await avaliacaoProvider.getAvaliacoesPorReceita(_receita.id ?? 0);
-    print(
-        'Avaliações carregadas: $avaliacoes'); // Debug: Verifica os dados carregados
-
-    setState(() {
-      _receita.avaliacoes = avaliacoes;
+    avaliacaoProvider.getAvaliacoes(widget.receita.id).then((value) {
+      setState(() {
+        _isLoadingAvaliacoes = false;
+      });
     });
   }
 
@@ -67,28 +62,22 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
     super.dispose();
   }
 
-  void _addAvaliacao(Avaliacao avaliacao) {
-    setState(() {
-      _receita.avaliacoes.add(avaliacao);
-    });
+  void openAvaliacao() {
+    final usuarioLogado =
+        Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
+    final avaliacao = Provider.of<AvaliacaoProvider>(context, listen: false)
+        .avaliacoes
+        .where((item) => item.usuario.id == usuarioLogado.id)
+        .firstOrNull;
 
-    context.pop();
-  }
-
-  void openNovaAvaliacao() {
     showModalBottomSheet(
       context: context,
       builder: (context) => NovaAvaliacao(
         receita: _receita,
+        avaliacao: avaliacao,
       ),
       backgroundColor: Colors.transparent,
     );
-  }
-
-  bool get _ususarioHasAvaliacao {
-    return _receita.avaliacoes
-        .where((avaliacao) => avaliacao.usuario.id == widget.usuarioLogado.id)
-        .isNotEmpty;
   }
 
   void _openEditar() async {
@@ -104,6 +93,9 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
 
   @override
   Widget build(BuildContext context) {
+    final usuarioLogado = Provider.of<AuthProvider>(context).usuarioLogado!;
+    final avaliacoes = Provider.of<AvaliacaoProvider>(context).avaliacoes;
+
     return PageWrapper(
       title: 'Receita',
       pageWrapperButtonType: PageWrapperButtonType.back,
@@ -189,28 +181,36 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                     children: [
                       StyledText(title: 'Avaliações'),
                       SizedBox(height: 20),
-                      _receita.avaliacoes.isEmpty
-                          ? const Center(
-                              child: Text(
-                                'Nenhuma avaliação disponível.',
-                                style: TextStyle(fontSize: 18),
+                      _isLoadingAvaliacoes
+                          ? Expanded(
+                              child: Center(
+                                child: CircularProgressIndicator(),
                               ),
                             )
-                          : Expanded(
-                              child: ListView.builder(
-                                itemCount: _receita.avaliacoes.length,
-                                itemBuilder: (context, index) => Column(
-                                  children: [
-                                    AvaliacaoCard(
-                                      avaliacao: _receita.avaliacoes[index],
+                          : avaliacoes.isEmpty
+                              ? const Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      'Nenhuma avaliação disponível.',
+                                      style: TextStyle(fontSize: 18),
                                     ),
-                                    SizedBox(
-                                      height: 16,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
+                                  ),
+                                )
+                              : Expanded(
+                                  child: ListView.builder(
+                                    itemCount: avaliacoes.length,
+                                    itemBuilder: (context, index) => Column(
+                                      children: [
+                                        AvaliacaoCard(
+                                          avaliacao: avaliacoes[index],
+                                        ),
+                                        SizedBox(
+                                          height: 16,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
                     ],
                   ),
                 ),
@@ -219,7 +219,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
           ),
         ],
       ),
-      floatingActionButton: widget.usuarioLogado.id == _receita.usuario.id
+      floatingActionButton: usuarioLogado.id == _receita.usuario.id
           ? (_selectedTabIndex == 0
               ? (FloatingActionButton(
                   onPressed: _openEditar,
@@ -228,9 +228,9 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                   backgroundColor: Theme.of(context).colorScheme.primary,
                 ))
               : null)
-          : (_selectedTabIndex == 1 && !_ususarioHasAvaliacao
+          : (_selectedTabIndex == 1 && !_isLoadingAvaliacoes
               ? FloatingActionButton(
-                  onPressed: openNovaAvaliacao,
+                  onPressed: openAvaliacao,
                   child: Icon(Icons.star,
                       color: Theme.of(context).colorScheme.secondary),
                   backgroundColor: Theme.of(context).colorScheme.primary,

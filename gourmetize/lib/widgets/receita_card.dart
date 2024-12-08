@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gourmetize/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
 import '../model/receita.dart';
-import '../model/etiqueta.dart';
-import '../model/usuario.dart';
 import '../screens/register_recipe.dart';
 import '../widgets/nota_receita.dart';
 
@@ -11,21 +10,13 @@ import '../provider/receita_provider.dart';
 
 class ReceitaCard extends StatefulWidget {
   final Receita receita;
-  final VoidCallback? onDelete;
   final bool mostrarOpcoes;
   final bool podeFavoritar;
-  final Usuario usuarioLogado;
-  final void Function(Receita) onCadastrarReceita;
-  final void Function(Etiqueta) onCriarEtiqueta;
 
   const ReceitaCard({
     super.key,
     required this.receita,
-    this.onDelete,
-    required this.usuarioLogado,
     required this.podeFavoritar,
-    required this.onCadastrarReceita,
-    required this.onCriarEtiqueta,
     this.mostrarOpcoes = false,
   });
 
@@ -34,21 +25,16 @@ class ReceitaCard extends StatefulWidget {
 }
 
 class _ReceitaCardState extends State<ReceitaCard> {
-  bool _isFavorited = false;
-
   @override
   void initState() {
     super.initState();
-    _isFavorited = Provider.of<ReceitaProvider>(context, listen: false)
-        .isFavorita(widget.receita);
   }
 
   void _toggleFavorito() {
-    setState(() {
-      _isFavorited = !_isFavorited;
-    });
-    Provider.of<ReceitaProvider>(context, listen: false)
-        .toggleFavorita(widget.receita, widget.usuarioLogado);
+    Provider.of<ReceitaProvider>(context, listen: false).toggleFavorita(
+      widget.receita,
+      Provider.of<AuthProvider>(context, listen: false).usuarioLogado!,
+    );
   }
 
   List<String> _obterIngredientesEmLista() {
@@ -100,7 +86,7 @@ class _ReceitaCardState extends State<ReceitaCard> {
           actions: <Widget>[
             TextButton(
               child:
-              const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+                  const Text('Cancelar', style: TextStyle(color: Colors.grey)),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
@@ -109,7 +95,6 @@ class _ReceitaCardState extends State<ReceitaCard> {
                 try {
                   await Provider.of<ReceitaProvider>(context, listen: false)
                       .removerReceita(widget.receita);
-                  if (widget.onDelete != null) widget.onDelete!();
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Receita deletada com sucesso!')),
@@ -131,9 +116,10 @@ class _ReceitaCardState extends State<ReceitaCard> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
+    final isFavorite =
+        Provider.of<ReceitaProvider>(context).isFavorita(widget.receita);
     final ingredientes = _obterIngredientesEmLista();
 
     return GestureDetector(
@@ -253,7 +239,7 @@ class _ReceitaCardState extends State<ReceitaCard> {
                           ),
                           child: IconButton(
                             icon: Icon(
-                              _isFavorited
+                              isFavorite
                                   ? Icons.favorite
                                   : Icons.favorite_border,
                               color: Colors.red,

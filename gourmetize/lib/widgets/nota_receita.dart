@@ -7,27 +7,13 @@ class NotaReceita extends StatelessWidget {
 
   NotaReceita({super.key, required this.receita});
 
-  double? get _nota {
-    if (receita.avaliacoes.length == 0) {
-      return null;
-    }
-
-    int soma = 0;
-
-    receita.avaliacoes.forEach((avaliacao) {
-      soma += avaliacao.nota;
-    });
-
-    return soma / receita.avaliacoes.length;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         RatingStars(
-          value: _nota ?? 0,
+          value: receita.mediaAvaliacao ?? 0,
           onValueChanged: null,
           starBuilder: (index, color) => Icon(
             Icons.star,
@@ -36,7 +22,7 @@ class NotaReceita extends StatelessWidget {
             shadows: [
               Shadow(
                 blurRadius: 6.0,
-                color: Colors.white,  
+                color: Colors.white,
               ),
             ],
           ),
@@ -52,7 +38,7 @@ class NotaReceita extends StatelessWidget {
           width: 8,
         ),
         Text(
-          _nota?.toStringAsFixed(1) ?? '-',
+          receita.mediaAvaliacao?.toStringAsFixed(1) ?? '-',
           style: TextStyle(
             color: Theme.of(context).colorScheme.secondary,
             shadows: [
@@ -62,7 +48,6 @@ class NotaReceita extends StatelessWidget {
               ),
             ],
           ),
-          
         ),
       ],
     );

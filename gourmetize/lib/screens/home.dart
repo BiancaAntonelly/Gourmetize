@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../model/etiqueta.dart';
 import '../model/receita.dart';
 import '../provider/auth_provider.dart';
 import '../widgets/page_wrapper.dart';
@@ -10,13 +9,8 @@ import '../provider/receita_provider.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
-  final void Function(Receita) onCadastrarReceita;
-  final void Function(Etiqueta) onCriarEtiqueta;
-
   Home({
     super.key,
-    required this.onCadastrarReceita,
-    required this.onCriarEtiqueta,
   });
 
   @override
@@ -25,14 +19,24 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final TextEditingController _searchController = TextEditingController();
-  late List<Receita> _receitasFiltradas;
+  String _query = "";
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(_filterReceitas);
-    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
-    context.read<ReceitaProvider>().buscarReceitas(usuarioLogado);
+    _searchController.addListener(() {
+      setState(() {
+        _query = _searchController.text.toLowerCase();
+      });
+    });
+    final usuarioLogado =
+        Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
+    context.read<ReceitaProvider>().buscarReceitas(usuarioLogado).then((value) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
 
   @override
@@ -41,27 +45,22 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
-  void _filterReceitas() {
-    final query = _searchController.text.toLowerCase();
-    setState(() {
-      _receitasFiltradas = context.read<ReceitaProvider>().receitas.where((receita) {
-        return receita.titulo.toLowerCase().contains(query) ||
-            receita.descricao.toLowerCase().contains(query) ||
-            receita.ingredientes.toLowerCase().contains(query) ||
-            receita.etiquetas.any((item) => item.nome.toLowerCase().contains(query));
-      }).toList();
-    });
-  }
+  List<Receita> _filterReceitas(List<Receita> receitas) {
+    print(receitas);
 
-  void _deleteReceita(Receita receita) {
-    setState(() {
-      context.read<ReceitaProvider>().removerReceita(receita); // Deleta a receita
-      _filterReceitas(); // Atualiza a lista filtrada após deletar
-    });
+    return receitas.where((receita) {
+      return receita.titulo.toLowerCase().contains(_query) ||
+          receita.descricao.toLowerCase().contains(_query) ||
+          receita.ingredientes.toLowerCase().contains(_query) ||
+          receita.etiquetas
+              .any((item) => item.nome.toLowerCase().contains(_query));
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
+    final receitasFiltradas =
+        _filterReceitas(Provider.of<ReceitaProvider>(context).receitas);
     final usuarioLogado = Provider.of<AuthProvider>(context).usuarioLogado;
 
     if (usuarioLogado == null) {
@@ -104,18 +103,10 @@ class _HomeState extends State<Home> {
             const StyledText(title: "Receitas"),
             const SizedBox(height: 16),
             Expanded(
-              child: Consumer<ReceitaProvider>(
-                builder: (context, receitaProvider, child) {
-                  _receitasFiltradas = receitaProvider.receitas;
-                  return ListaReceitas(
-                    usuarioLogado: usuarioLogado,
-                    onCadastrarReceita: widget.onCadastrarReceita,
-                    onCriarEtiqueta: widget.onCriarEtiqueta,
-                    receitas: _receitasFiltradas,
-                    deleteReceita: _deleteReceita,
-                    pertencemAoUsuario: false,
-                  );
-                },
+              child: ListaReceitas(
+                pertencemAoUsuario: false,
+                receitas: receitasFiltradas,
+                isLoading: _isLoading,
               ),
             ),
           ],

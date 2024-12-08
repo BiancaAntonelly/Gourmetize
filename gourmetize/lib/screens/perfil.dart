@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:gourmetize/model/usuario.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gourmetize/provider/auth_provider.dart';
 import 'package:gourmetize/widgets/page_wrapper.dart';
+import 'package:provider/provider.dart';
 
 class Perfil extends StatelessWidget {
-  final void Function() onDeslogarUsuario;
-  final Usuario usuarioLogado;
-
   const Perfil({
     super.key,
-    required this.usuarioLogado,
-    required this.onDeslogarUsuario,
   });
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final usuarioLogado = authProvider.usuarioLogado!;
+
     // Obter largura e altura da tela
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -58,8 +57,8 @@ class Perfil extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.15),
               child: ElevatedButton.icon(
                 onPressed: () {
-                  onDeslogarUsuario();
                   context.go('/login');
+                  authProvider.logout();
                 },
                 icon: const Icon(Icons.logout, color: Colors.white),
                 label: Text(

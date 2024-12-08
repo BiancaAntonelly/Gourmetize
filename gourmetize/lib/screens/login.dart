@@ -14,6 +14,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoadingLogin = false;
 
   @override
   Widget build(BuildContext context) {
@@ -160,6 +161,7 @@ class _LoginState extends State<Login> {
           'Entrar',
           () => _login(context),
           baseFontSize,
+          isLoading: _isLoadingLogin,
         ),
         SizedBox(height: baseFontSize * 0.4),
         _buildButton(
@@ -171,8 +173,8 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget _buildButton(
-      String text, VoidCallback onPressed, double baseFontSize) {
+  Widget _buildButton(String text, VoidCallback onPressed, double baseFontSize,
+      {bool isLoading = false}) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
@@ -184,13 +186,21 @@ class _LoginState extends State<Login> {
             borderRadius: BorderRadius.circular(30),
           ),
         ),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: baseFontSize * 0.9,
-            color: const Color(0xFF5E3023),
-          ),
-        ),
+        child: isLoading
+            ? SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
+              )
+            : Text(
+                text,
+                style: TextStyle(
+                  fontSize: baseFontSize * 0.9,
+                  color: const Color(0xFF5E3023),
+                ),
+              ),
       ),
     );
   }
@@ -209,6 +219,10 @@ class _LoginState extends State<Login> {
     }
 
     try {
+      setState(() {
+        _isLoadingLogin = true;
+      });
+
       await Provider.of<AuthProvider>(context, listen: false)
           .login(email, senha);
 
@@ -221,6 +235,10 @@ class _LoginState extends State<Login> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('E-mail ou senha incorretos')),
       );
+    } finally {
+      setState(() {
+        _isLoadingLogin = false;
+      });
     }
   }
 

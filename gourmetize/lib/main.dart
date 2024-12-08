@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gourmetize/model/etiqueta.dart';
-import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/provider/auth_provider.dart';
 import 'package:gourmetize/provider/avaliacao_provider.dart';
 import 'package:gourmetize/provider/etiquetas_provider.dart';
 import 'package:gourmetize/provider/receita_provider.dart';
 import 'package:gourmetize/routes/routes.dart';
-import 'package:gourmetize/model/receita.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -19,106 +16,6 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  List<Usuario> usuarios = [];
-  Usuario? usuarioLogado;
-  List<Receita> receitas = [];
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  void adicionarUsuario(Usuario novoUsuario) {
-    int novoId = 1; // Começamos com 1
-    if (usuarios.isNotEmpty) {
-      // Se já houver usuários, pegamos o maior ID atual e incrementamos.
-      novoId = usuarios.map((u) => u.id).reduce((a, b) => a > b ? a : b) + 1;
-    }
-
-    // Cria uma nova instância de Usuario com o novo ID.
-    Usuario usuarioComId = Usuario(
-      id: novoId,
-      nome: novoUsuario.nome,
-      email: novoUsuario.email,
-      senha: novoUsuario.senha,
-      receitas: novoUsuario.receitas,
-      etiquetas: novoUsuario.etiquetas,
-    );
-
-    int usuarioIndex =
-        usuarios.indexWhere((u) => u.email == usuarioComId.email);
-
-    setState(() {
-      if (usuarioIndex != -1) {
-        usuarios[usuarioIndex] = usuarioComId;
-        print('Usuário atualizado: ${usuarioComId.nome}');
-      } else {
-        usuarios.add(usuarioComId);
-      }
-    });
-  }
-
-  void logarUsuario(Usuario usuario) {
-    setState(() {
-      usuarioLogado = usuario;
-    });
-    print('Usuário logado: ${usuario.nome}');
-  }
-
-  void deslogarUsuario() {
-    setState(() {
-      usuarioLogado = null;
-    });
-  }
-
-  void adicionarReceita(Receita receita) {
-    int receitaIndex = receitas.indexWhere((r) => r.id == receita.id);
-    int receitaIndexUsuario =
-        usuarioLogado!.receitas.indexWhere((r) => r.id == receita.id);
-
-    print(receitaIndex);
-
-    setState(() {
-      if (receitaIndex != -1) {
-        receitas[receitaIndex] = receita;
-        receitas[receitaIndexUsuario] = receita;
-      } else {
-        receitas.add(receita);
-        usuarioLogado!.receitas.add(receita);
-      }
-    });
-  }
-
-  void deletarReceita(Receita receita) {
-    setState(() {
-      receitas.removeWhere((r) => r.id == receita.id);
-    });
-  }
-
-  void criarEtiqueta(Etiqueta etiqueta) {
-    print(usuarioLogado!.nome);
-
-    if (usuarioLogado == null) {
-      return;
-    }
-
-    setState(() {
-      usuarioLogado!.etiquetas.add(etiqueta);
-    });
-  }
-
-  void adicionarEtiquetaAReceita(Receita receita, Etiqueta etiqueta) {
-    int index = receitas.indexWhere((item) => item.id == receita.id);
-
-    if (index == -1) {
-      return;
-    }
-
-    setState(() {
-      receitas[index].etiquetas.add(etiqueta);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(

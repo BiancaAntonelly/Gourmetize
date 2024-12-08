@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:gourmetize/config/app_config.dart';
 import 'package:gourmetize/model/avaliacao.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 class AvaliacaoService {
   final String baseUrl = AppConfig.baseUrl + '/avaliacoes';
@@ -95,7 +93,7 @@ class AvaliacaoService {
   }
 
   // Atualizar uma avaliação
-  Future<void> atualizarAvaliacao(Avaliacao avaliacao) async {
+  Future<Avaliacao> atualizarAvaliacao(Avaliacao avaliacao) async {
     try {
       final url = Uri.parse('$baseUrl/${avaliacao.id}');
       final response = await http.put(
@@ -106,13 +104,15 @@ class AvaliacaoService {
 
       if (response.statusCode == 200) {
         print("Avaliação atualizada com sucesso.");
+
+        return Avaliacao.fromJson(jsonDecode(response.body));
       } else if (response.statusCode == 404) {
-        print("Avaliação não encontrada.");
+        throw Exception("Avaliação não encontrada.");
       } else {
-        print("Erro ao atualizar avaliação: ${response.statusCode}");
+        throw Exception("Erro ao atualizar avaliação: ${response.statusCode}");
       }
     } catch (e) {
-      print("Erro ao atualizar avaliação: $e");
+      throw Exception("Erro ao atualizar avaliação");
     }
   }
 

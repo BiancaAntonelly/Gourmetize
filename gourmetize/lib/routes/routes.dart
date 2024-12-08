@@ -1,7 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
-import 'package:gourmetize/provider/auth_provider.dart';
 import 'package:gourmetize/screens/register_recipe.dart';
 import 'package:gourmetize/screens/visualizar_receita.dart';
 import 'package:gourmetize/screens/home.dart';
@@ -10,9 +9,6 @@ import 'package:gourmetize/screens/login.dart';
 import 'package:gourmetize/screens/register_user.dart';
 import 'package:gourmetize/screens/receitas_usuario.dart';
 import 'package:gourmetize/screens/receitas_favoritas.dart';
-import 'package:provider/provider.dart';
-
-import '../main.dart';
 
 final GoRouter myRouter = GoRouter(
   initialLocation: '/login',
@@ -20,11 +16,7 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
-        final mainAppState = context.findAncestorStateOfType<MyAppState>();
-        return Home(
-          onCadastrarReceita: mainAppState!.adicionarReceita,
-          onCriarEtiqueta: mainAppState.criarEtiqueta,
-        );
+        return Home();
       },
     ),
     GoRoute(
@@ -36,45 +28,24 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/receitas-usuario',
       builder: (BuildContext context, GoRouterState state) {
-        final mainAppState = context.findAncestorStateOfType<MyAppState>();
-        return ReceitasUsuario(
-          receitas: mainAppState!.receitas,
-          onCadastrarReceita: mainAppState.adicionarReceita,
-          onCriarEtiqueta: mainAppState.criarEtiqueta,
-          onDeletarReceita: mainAppState.deletarReceita,
-        );
+        return ReceitasUsuario();
       },
     ),
     GoRoute(
       path: '/receitas-favoritas',
       builder: (BuildContext context, GoRouterState state) {
-        final mainAppState = context.findAncestorStateOfType<MyAppState>();
-        return ReceitasFavoritas(
-          receitas: mainAppState!.receitas,
-          onCadastrarReceita: mainAppState.adicionarReceita,
-          onCriarEtiqueta: mainAppState.criarEtiqueta,
-          onDeletarReceita: mainAppState.deletarReceita,
-        );
+        return ReceitasFavoritas();
       },
     ),
     GoRoute(
       path: '/perfil',
       builder: (BuildContext context, GoRouterState state) {
-        final mainAppState = context.findAncestorStateOfType<MyAppState>();
-
-        if (mainAppState != null && mainAppState.usuarioLogado != null) {
-          return Perfil(
-              usuarioLogado: mainAppState.usuarioLogado!,
-              onDeslogarUsuario: mainAppState.deslogarUsuario);
-        } else {
-          return Login();
-        }
+        return Perfil();
       },
     ),
     GoRoute(
       path: '/cadastrar-receita',
       builder: (BuildContext context, GoRouterState state) {
-        final mainAppState = context.findAncestorStateOfType<MyAppState>();
         return RegisterRevenue();
       },
     ),
@@ -82,7 +53,6 @@ final GoRouter myRouter = GoRouter(
       path: '/editar-receita',
       builder: (BuildContext context, GoRouterState state) {
         final receitaParaEdicao = state.extra as Receita;
-        final mainAppState = context.findAncestorStateOfType<MyAppState>();
         return RegisterRevenue(receitaParaEdicao: receitaParaEdicao);
       },
     ),
@@ -95,11 +65,10 @@ final GoRouter myRouter = GoRouter(
     GoRoute(
       path: '/visualizar-receita',
       builder: (BuildContext context, GoRouterState state) {
-        final usuarioLogado =
-            Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
+        final receita = state.extra as Receita;
+
         return VisualizarReceita(
-          receita: state.extra as Receita,
-          usuarioLogado: usuarioLogado,
+          receita: receita,
         );
       },
     )

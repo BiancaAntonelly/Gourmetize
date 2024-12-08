@@ -42,11 +42,10 @@ class ReceitaProvider with ChangeNotifier {
     if (!isFavorita(receita)) {
       await _receitaService.favoritarReceita(receita, usuario);
       _favoritas.add(receita);
-    
     } else {
       await _receitaService.desfavoritarReceita(receita, usuario);
-      
-      _favoritas.remove(receita);
+
+      _favoritas.removeWhere((item) => item.id == receita.id);
     }
     notifyListeners();
   }
@@ -62,4 +61,11 @@ class ReceitaProvider with ChangeNotifier {
     return _receitasUser; // Retorna a lista de receitas.
   }
 
+  void atualizarNota(Receita receita, double nota) {
+    final index = _receitas.indexWhere((e) => e.id == receita.id);
+
+    _receitas[index].mediaAvaliacao = nota;
+
+    notifyListeners();
+  }
 }

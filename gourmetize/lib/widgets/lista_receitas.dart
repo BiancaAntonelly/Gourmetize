@@ -2,64 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/widgets/receita_card.dart';
 
-import '../model/etiqueta.dart';
-import '../model/usuario.dart';
-
 class ListaReceitas extends StatefulWidget {
-  final List<Receita> receitas;
-  final void Function(Receita receita)? deleteReceita;
   final bool pertencemAoUsuario;
-  final Usuario usuarioLogado;
-  final void Function(Receita) onCadastrarReceita;
-  final void Function(Etiqueta) onCriarEtiqueta;
+  final List<Receita> receitas;
+  final bool isLoading;
 
-  ListaReceitas({
-    required this.receitas,
-    this.deleteReceita,
-    required this.pertencemAoUsuario,
-    required this.usuarioLogado,
-    required this.onCadastrarReceita,
-    required this.onCriarEtiqueta,
-  });
+  ListaReceitas(
+      {required this.pertencemAoUsuario,
+      required this.receitas,
+      this.isLoading = false});
 
   @override
   State<StatefulWidget> createState() => _ListaReceitasState();
 }
 
 class _ListaReceitasState extends State<ListaReceitas> {
-  late List<Receita> _receitas;
-
-  @override
-  void initState() {
-    super.initState();
-    _receitas = widget.receitas;
-  }
-
-  void onDeletarReceita(Receita receita) {
-    setState(() {
-      _receitas.removeWhere((item) => item.id == receita.id);
-    });
-    if (widget.deleteReceita != null) {
-      widget.deleteReceita!(receita);
-    }
-  }
-
-  void onCadastrarReceita(Receita receita) {
-    int receitaIndex = _receitas.indexWhere((item) => item.id == receita.id);
-    if (receitaIndex == -1) {
-      setState(() {
-        _receitas.add(receita);
-      });
-    } else {
-      setState(() {
-        _receitas[receitaIndex] = receita;
-      });
-    }
-    widget.onCadastrarReceita(receita);
-  }
-
   @override
   Widget build(BuildContext context) {
+    if (widget.isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     // Se a lista de receitas estiver vazia, exibe a mensagem
     if (widget.receitas.isEmpty) {
       return const Center(
@@ -77,12 +42,7 @@ class _ListaReceitasState extends State<ListaReceitas> {
         final receita = widget.receitas[index];
         return ReceitaCard(
           receita: receita,
-          usuarioLogado: widget.usuarioLogado,
-          onCadastrarReceita: onCadastrarReceita,
-          onCriarEtiqueta: widget.onCriarEtiqueta,
           podeFavoritar: true,
-          onDelete: () =>
-              onDeletarReceita(receita), // Passa a função de deleção
           mostrarOpcoes: widget.pertencemAoUsuario,
         );
       },

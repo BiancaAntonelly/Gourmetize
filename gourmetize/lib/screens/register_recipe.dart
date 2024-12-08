@@ -11,11 +11,9 @@ import '../provider/receita_provider.dart';
 
 class RegisterRevenueExtraProps {
   final Receita? receitaParaEdicao;
-  final void Function(Receita) onCadastrarReceita;
 
   const RegisterRevenueExtraProps({
     this.receitaParaEdicao,
-    required this.onCadastrarReceita,
   });
 }
 
@@ -38,14 +36,21 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<Etiqueta> _etiquetas = [];
   final TextEditingController etiquetaController = TextEditingController();
+  bool _isLoadingEtiquetas = true;
 
   @override
   void initState() {
     super.initState();
 
-    Provider.of<EtiquetasProvider>(context, listen: false).getEtiquetas(
+    Provider.of<EtiquetasProvider>(context, listen: false)
+        .getEtiquetas(
       Provider.of<AuthProvider>(context, listen: false).usuarioLogado!.id,
-    );
+    )
+        .then((value) {
+      setState(() {
+        _isLoadingEtiquetas = false;
+      });
+    });
 
     if (widget.receitaParaEdicao != null) {
       tituloController.text = widget.receitaParaEdicao!.titulo;
@@ -88,14 +93,13 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
         Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
     if (_formKey.currentState!.validate()) {
       Receita receita = Receita(
-        id: widget.receitaParaEdicao?.id,
+        id: widget.receitaParaEdicao?.id ?? 0,
         titulo: tituloController.text,
         descricao: descricaoController.text,
         ingredientes: ingredientesController.text,
         preparo: preparoController.text,
         usuario: usuarioLogado,
         etiquetas: _etiquetas,
-        avaliacoes: widget.receitaParaEdicao?.avaliacoes ?? [],
       );
 
       final receitaProvider =
@@ -290,53 +294,60 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8.0,
-                  children: etiquetas.map((tag) {
-                    return ChoiceChip(
-                      label: Text(tag.nome),
-                      selected: _etiquetas.contains(tag),
-                      backgroundColor: Colors.white,
-                      selectedColor: Theme.of(context).colorScheme.primary,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      onSelected: (selected) {
-                        setState(() {
-                          selected
-                              ? _etiquetas.add(tag)
-                              : _etiquetas.remove(tag);
-                        });
-                      },
-                      side: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 1,
+                _isLoadingEtiquetas
+                    ? Padding(
+                        padding: EdgeInsets.all(8),
+                        child: CircularProgressIndicator(),
+                      )
+                    : Wrap(
+                        spacing: 8.0,
+                        children: etiquetas.map((tag) {
+                          return ChoiceChip(
+                            label: Text(tag.nome),
+                            selected: _etiquetas.contains(tag),
+                            backgroundColor: Colors.white,
+                            selectedColor:
+                                Theme.of(context).colorScheme.primary,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            onSelected: (selected) {
+                              setState(() {
+                                selected
+                                    ? _etiquetas.add(tag)
+                                    : _etiquetas.remove(tag);
+                              });
+                            },
+                            side: BorderSide(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 1,
+                            ),
+                          );
+                        }).toList(),
                       ),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: etiquetaController,
-                  style: TextStyle(fontSize: 16),
-                  decoration: InputDecoration(
-                    hintText: 'Adicione uma etiqueta',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                if (!_isLoadingEtiquetas) const SizedBox(height: 8),
+                if (!_isLoadingEtiquetas)
+                  TextFormField(
+                    controller: etiquetaController,
+                    style: TextStyle(fontSize: 16),
+                    decoration: InputDecoration(
+                      hintText: 'Adicione uma etiqueta',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.primary),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 2),
+                      ),
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 2),
-                    ),
+                    onFieldSubmitted: _addEtiqueta,
                   ),
-                  onFieldSubmitted: _addEtiqueta,
-                ),
                 const SizedBox(height: 24),
                 Center(
                     child: ElevatedButton(
