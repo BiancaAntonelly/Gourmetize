@@ -84,6 +84,22 @@ class PageWrapper extends StatelessWidget {
                 onTap: () {
                   context.go('/perfil');
                 },
+              ),    ListTile(
+                leading: Padding(
+                  padding: const EdgeInsets.only(left: 36.0),
+                  child: SvgPicture.asset(
+                    'assets/register_recipe.svg',
+                    width: 24,
+                    height: 24,
+                  ),
+                ),
+                title: const Text(
+                  'Meu carrinho',
+                  style: TextStyle(color: Colors.white, fontSize: 13),
+                ),
+                onTap: () {
+                  context.push('/meu-carrinho');
+                },
               ),
               ListTile(
                 leading: SvgPicture.asset(

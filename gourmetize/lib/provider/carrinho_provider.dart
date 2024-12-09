@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/carrinho.dart'; // Importando o modelo Carrinho
+import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/service/carrinho_service.dart'; // Importando o serviço para manipulação do Carrinho
 
 class CarrinhoProvider with ChangeNotifier {
@@ -23,19 +24,25 @@ class CarrinhoProvider with ChangeNotifier {
       print("Erro ao buscar carrinho: $e");
     }
   }
+Future<void> adicionarIngrediente(String ingrediente, Usuario usuario) async {
+  print("Entrou aqui");
 
-  // Método para adicionar um ingrediente ao carrinho
-  Future<void> adicionarIngrediente(String ingrediente) async {
-    if (_carrinho != null) {
-      // Inicializa a lista de ingredientes caso seja null
-      _carrinho!.ingredientes ??= [];
+  // Inicializa o carrinho se for null, passando o usuário
+  _carrinho ??= Carrinho(usuario: usuario, ingredientes: []);
 
-      _carrinho!.ingredientes.add(ingrediente); // Adiciona o ingrediente
-      await _carrinhoService
-          .atualizarCarrinho(_carrinho!); // Atualiza o carrinho no servidor
-      notifyListeners(); // Notifica os listeners sobre a atualização
-    }
-  }
+  // Inicializa a lista de ingredientes se for null
+  _carrinho!.ingredientes ??= [];
+
+  // Adiciona o ingrediente à lista
+  _carrinho!.ingredientes.add(ingrediente);
+
+  // Atualiza o carrinho no servidor
+  await _carrinhoService.atualizarCarrinho(_carrinho!);
+
+  // Notifica os listeners sobre a atualização
+  notifyListeners();
+}
+
 
   // Método para limpar o carrinho
   Future<void> limparCarrinho() async {

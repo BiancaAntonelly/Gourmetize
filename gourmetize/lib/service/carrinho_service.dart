@@ -2,11 +2,6 @@ import 'dart:convert';
 import 'package:gourmetize/config/app_config.dart';
 import 'package:gourmetize/model/carrinho.dart';
 import 'package:http/http.dart' as http;
-import 'package:gourmetize/config/app_config.dart';
-import 'dart:convert';
-import 'package:gourmetize/config/app_config.dart';
-import 'package:gourmetize/model/carrinho.dart';
-import 'package:http/http.dart' as http;
 
 class CarrinhoService {
   final String _baseUrl = AppConfig.baseUrl + '/carrinho';
@@ -24,6 +19,7 @@ class CarrinhoService {
 
   // Método para atualizar o carrinho no backend
   Future<void> atualizarCarrinho(Carrinho carrinho) async {
+    print("entrou aqui = serive ");
     try {
       final response = await http.put(
         Uri.parse('$_baseUrl/${carrinho.usuario.id}'),
