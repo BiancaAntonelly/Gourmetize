@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
+import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/provider/auth_provider.dart';
 import 'package:gourmetize/provider/avaliacao_provider.dart';
 import 'package:gourmetize/provider/carrinho_provider.dart';
@@ -31,6 +32,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   int _selectedTabIndex = 0;
   bool _isLoadingAvaliacoes = true;
   List<String> _carrinho = [];
+  late Usuario usuarioLogado;
   @override
   void initState() {
     super.initState();
@@ -42,6 +44,8 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
         _selectedTabIndex = _tabController.index;
       });
     });
+    usuarioLogado =
+        Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
 
     _carregarAvaliacoes(); // Adiciona a chamada para carregar as avaliações
   }
@@ -64,8 +68,6 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   }
 
   void openAvaliacao() {
-    final usuarioLogado =
-        Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
     final avaliacao = Provider.of<AvaliacaoProvider>(context, listen: false)
         .avaliacoes
         .where((item) => item.usuario.id == usuarioLogado.id)
@@ -94,7 +96,6 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
 
   @override
   Widget build(BuildContext context) {
-    final usuarioLogado = Provider.of<AuthProvider>(context).usuarioLogado!;
     final avaliacoes = Provider.of<AvaliacaoProvider>(context).avaliacoes;
 
     return PageWrapper(
@@ -178,7 +179,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                                         ingrediente,
                                         style: TextStyle(fontSize: 18),
                                       ),
-                                      if (widget.usuarioLogado.id !=
+                                      if (usuarioLogado.id !=
                                           _receita.usuario.id)
                                         IconButton(
                                           icon: Icon(Icons.add_shopping_cart),
@@ -276,12 +277,11 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   }
 
   void _adicionarAoCarrinho(String ingrediente) {
-    final usuarioId =
-        widget.usuarioLogado.id.toString(); // Identificador do usuário
+    final usuarioId = usuarioLogado.id.toString(); // Identificador do usuário
 
     // Adiciona o ingrediente ao carrinho
     Provider.of<CarrinhoProvider>(context, listen: false)
-        .adicionarIngrediente(ingrediente, widget.usuarioLogado)
+        .adicionarIngrediente(ingrediente, usuarioLogado)
         .then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('$ingrediente adicionado ao carrinho!')),
@@ -294,10 +294,6 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   }
 
   void _removerDoCarrinho(String ingrediente) {
-    final usuarioId =
-        widget.usuarioLogado.id.toString(); // Identificador do usuário
-
-    // Remove o ingrediente do carrinho
     Provider.of<CarrinhoProvider>(context, listen: false)
         .removerIngrediente(ingrediente)
         .then((_) {
@@ -310,65 +306,64 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
       );
     });
   }
-void _abrirCarrinho() {
-  showModalBottomSheet(
-    context: context,
-    builder: (context) {
-      // Acessa o carrinho por meio do Provider
-      final carrinho = Provider.of<CarrinhoProvider>(context);
 
-      return FutureBuilder(
-        future: carrinho.fetchCarrinho("usuarioId"), // Exemplo de ID do usuário
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'Erro ao carregar o carrinho.',
-                style: TextStyle(fontSize: 18),
-              ),
-            );
-          }
+  void _abrirCarrinho() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        final carrinho = Provider.of<CarrinhoProvider>(context);
 
-          // Exibe o carrinho com base nas informações recuperadas
-          final ingredientes = carrinho.carrinho?.ingredientes ?? [];
+        return FutureBuilder(
+          future: carrinho.fetchCarrinho("usuarioId"),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                  'Erro ao carregar o carrinho.',
+                  style: TextStyle(fontSize: 18),
+                ),
+              );
+            }
+            final ingredientes = carrinho.carrinho?.ingredientes ?? [];
 
-          return Container(
-            padding: EdgeInsets.all(16),
-            child: SingleChildScrollView( // Permite a rolagem
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  StyledText(title: 'Carrinho de Compras'),
-                  if (ingredientes.isEmpty)
-                    Center(
-                      child: Text(
-                        'Seu carrinho está vazio.',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    )
-                  else
-                    ...ingredientes.map((item) {
-                      return ListTile(
-                        title: Text(item, style: TextStyle(fontSize: 18)),
-                        trailing: IconButton(
-                          icon: Icon(Icons.remove_circle),
-                          color: Colors.red,
-                          onPressed: () => carrinho.removerIngrediente(item),
+            return Container(
+              padding: EdgeInsets.all(16),
+              child: SingleChildScrollView(
+                // Permite a rolagem
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    StyledText(title: 'Carrinho de Compras'),
+                    if (ingredientes.isEmpty) ...[
+                      SizedBox(height: 20), // Espaçamento entre os elementos
+                      Center(
+                        child: Text(
+                          'Seu carrinho está vazio.',
+                          style: TextStyle(fontSize: 18),
                         ),
-                      );
-                    }).toList(),
-                ],
+                      ),
+                    ] else
+                      ...ingredientes.map((item) {
+                        return ListTile(
+                          title: Text(item, style: TextStyle(fontSize: 18)),
+                          trailing: IconButton(
+                            icon: Icon(Icons.remove_circle),
+                            color: Colors.red,
+                            onPressed: () => carrinho.removerIngrediente(item),
+                          ),
+                        );
+                      }).toList(),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      );
-    },
-  );
-}
-
+            );
+          },
+        );
+      },
+    );
+  }
 }
