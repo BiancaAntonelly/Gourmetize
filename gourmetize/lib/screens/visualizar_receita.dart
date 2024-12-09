@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/provider/auth_provider.dart';
 import 'package:gourmetize/provider/avaliacao_provider.dart';
+import 'package:gourmetize/provider/carrinho_provider.dart';
 import 'package:gourmetize/widgets/etiquetas_receita.dart';
 import 'package:gourmetize/widgets/page_wrapper.dart';
 import 'package:gourmetize/widgets/avaliacao_card.dart';
@@ -29,7 +30,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   late Receita _receita;
   int _selectedTabIndex = 0;
   bool _isLoadingAvaliacoes = true;
-
+  List<String> _carrinho = [];
   @override
   void initState() {
     super.initState();
@@ -162,8 +163,33 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                       ),
                       SizedBox(height: 20),
                       StyledText(title: 'Ingredientes'),
-                      Text(_receita.ingredientes,
-                          style: TextStyle(fontSize: 18)),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: _receita.ingredientes
+                            .split('\n')
+                            .map((ingrediente) => Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 2), // Menor espaçamento
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        ingrediente,
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                      if (widget.usuarioLogado.id !=
+                                          _receita.usuario.id)
+                                        IconButton(
+                                          icon: Icon(Icons.add_shopping_cart),
+                                          onPressed: () =>
+                                              _adicionarAoCarrinho(ingrediente),
+                                        )
+                                    ],
+                                  ),
+                                ))
+                            .toList(),
+                      ),
                       SizedBox(height: 20),
                       StyledText(title: 'Modo de preparo'),
                       Text(_receita.preparo, style: TextStyle(fontSize: 18)),
@@ -221,13 +247,18 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
       ),
       floatingActionButton: usuarioLogado.id == _receita.usuario.id
           ? (_selectedTabIndex == 0
-              ? (FloatingActionButton(
+              ? FloatingActionButton(
                   onPressed: _openEditar,
                   child: Icon(Icons.edit,
                       color: Theme.of(context).colorScheme.secondary),
                   backgroundColor: Theme.of(context).colorScheme.primary,
+                )
+              : FloatingActionButton(
+                  onPressed: _abrirCarrinho,
+                  child: Icon(Icons.shopping_cart,
+                      color: Theme.of(context).colorScheme.secondary),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                 ))
-              : null)
           : (_selectedTabIndex == 1 && !_isLoadingAvaliacoes
               ? FloatingActionButton(
                   onPressed: openAvaliacao,
@@ -235,7 +266,109 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                       color: Theme.of(context).colorScheme.secondary),
                   backgroundColor: Theme.of(context).colorScheme.primary,
                 )
-              : null),
+              : FloatingActionButton(
+                  onPressed: _abrirCarrinho,
+                  child: Icon(Icons.shopping_cart,
+                      color: Theme.of(context).colorScheme.secondary),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                )),
     );
   }
+
+  void _adicionarAoCarrinho(String ingrediente) {
+    final usuarioId =
+        widget.usuarioLogado.id.toString(); // Identificador do usuário
+
+    // Adiciona o ingrediente ao carrinho
+    Provider.of<CarrinhoProvider>(context, listen: false)
+        .adicionarIngrediente(ingrediente, widget.usuarioLogado)
+        .then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$ingrediente adicionado ao carrinho!')),
+      );
+    }).catchError((e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao adicionar ingrediente: $e')),
+      );
+    });
+  }
+
+  void _removerDoCarrinho(String ingrediente) {
+    final usuarioId =
+        widget.usuarioLogado.id.toString(); // Identificador do usuário
+
+    // Remove o ingrediente do carrinho
+    Provider.of<CarrinhoProvider>(context, listen: false)
+        .removerIngrediente(ingrediente)
+        .then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$ingrediente removido do carrinho!')),
+      );
+    }).catchError((e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao remover ingrediente: $e')),
+      );
+    });
+  }
+void _abrirCarrinho() {
+  showModalBottomSheet(
+    context: context,
+    builder: (context) {
+      // Acessa o carrinho por meio do Provider
+      final carrinho = Provider.of<CarrinhoProvider>(context);
+
+      return FutureBuilder(
+        future: carrinho.fetchCarrinho("usuarioId"), // Exemplo de ID do usuário
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                'Erro ao carregar o carrinho.',
+                style: TextStyle(fontSize: 18),
+              ),
+            );
+          }
+
+          // Exibe o carrinho com base nas informações recuperadas
+          final ingredientes = carrinho.carrinho?.ingredientes ?? [];
+
+          return Container(
+            padding: EdgeInsets.all(16),
+            child: SingleChildScrollView( // Permite a rolagem
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  StyledText(title: 'Carrinho de Compras'),
+                  if (ingredientes.isEmpty)
+                    Center(
+                      child: Text(
+                        'Seu carrinho está vazio.',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    )
+                  else
+                    ...ingredientes.map((item) {
+                      return ListTile(
+                        title: Text(item, style: TextStyle(fontSize: 18)),
+                        trailing: IconButton(
+                          icon: Icon(Icons.remove_circle),
+                          color: Colors.red,
+                          onPressed: () => carrinho.removerIngrediente(item),
+                        ),
+                      );
+                    }).toList(),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
 }
