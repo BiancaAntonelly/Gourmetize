@@ -10,7 +10,9 @@ class Receita {
   String preparo;
   Usuario usuario;
   double? mediaAvaliacao;
+  String imageUrl;
   List<Etiqueta> etiquetas;
+
 
   Receita({
     this.id = 0,
@@ -20,6 +22,7 @@ class Receita {
     required this.preparo,
     this.mediaAvaliacao,
     required this.usuario,
+    required this.imageUrl,
     List<Etiqueta>? etiquetas,
   }) : etiquetas = etiquetas ?? [];
 
@@ -44,6 +47,7 @@ class Receita {
       preparo: json['preparo'] ?? '',
       usuario: Usuario.fromJson(json['usuario']),
       mediaAvaliacao: json['mediaAvaliacao'],
+      imageUrl: json['imageUrl'] ?? '',
       etiquetas: (json['etiquetas'] as List<dynamic>?)
               ?.map((etiqueta) => Etiqueta.fromJson(etiqueta))
               .toList() ??
@@ -53,6 +57,6 @@ class Receita {
 
   @override
   String toString() {
-    return 'Receita{id: $id, titulo: $titulo, descricao: $descricao, ingredientes: $ingredientes, preparo: $preparo, usuario: ${usuario.nome}, etiquetas: $etiquetas}';
+    return 'Receita{id: $id, titulo: $titulo, descricao: $descricao, ingredientes: $ingredientes, preparo: $preparo, usuario: ${usuario.nome}, imageUrl: $imageUrl, etiquetas: $etiquetas}';
   }
 }
