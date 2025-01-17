@@ -13,6 +13,7 @@ import 'package:path_provider/path_provider.dart' as syspaths;
 
 import '../provider/auth_provider.dart';
 import '../provider/receita_provider.dart';
+import '../service/upload_service.dart';
 
 class RegisterRevenueExtraProps {
   final Receita? receitaParaEdicao;
@@ -44,6 +45,9 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
   bool _isLoadingEtiquetas = true;
 
   File? _storedImage;
+  String _imageUrl = '';
+  
+  get defaultValue => 0;
 
   @override
   void initState() {
@@ -96,6 +100,8 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
   }
 
   _takePicture() async {
+
+    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado;
     final ImagePicker _picker = ImagePicker();
     XFile imageFile = await _picker.pickImage(
       source: ImageSource.camera,
@@ -116,8 +122,40 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
       '${appDir.path}/$fileName',
     );
 
-    //widget.onSelectImage(savedImage);
+    if (_storedImage != null) {
+      //final imageFile = File(fileName);
+      final uploadService = UploadService();
+      final String imageUrl = await uploadService.uploadImage(savedImage, usuarioLogado?.id ?? defaultValue);
+      _imageUrl = imageUrl;
+    } else {
+      print('Nenhuma imagem foi selecionada.');
+    }
   }
+
+  Future<void> pickImageAndUpload(int userId) async {
+    final ImagePicker picker = ImagePicker();
+    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado;
+
+    try {
+      // Abre a galeria para o usuário selecionar uma imagem
+      final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        // Cria um arquivo a partir do caminho da imagem selecionada
+        File imageFile = File(pickedFile.path);
+
+        // Faz o upload da imagem selecionada
+        final uploadService = UploadService();
+        final String imageUrl = await uploadService.uploadImage(imageFile, usuarioLogado?.id ?? defaultValue);
+        _imageUrl = imageUrl;
+      } else {
+        print('Nenhuma imagem foi selecionada.');
+      }
+    } catch (e) {
+      print('Erro ao selecionar imagem: $e');
+    }
+  }
+
 
   void _onSubmit() {
     final usuarioLogado =
@@ -130,6 +168,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
         ingredientes: ingredientesController.text,
         preparo: preparoController.text,
         usuario: usuarioLogado,
+        imageUrl: _imageUrl,
         etiquetas: _etiquetas,
       );
 

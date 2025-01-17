@@ -127,8 +127,10 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                         width: double.infinity,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            'assets/receita-meta2.jpeg',
+                          child: Image(
+                            image: _receita.imageUrl.isEmpty
+                                ? AssetImage('assets/receita-meta2.jpeg')
+                                : NetworkImage(_receita.imageUrl),
                             fit: BoxFit.cover,
                           ),
                         ),
