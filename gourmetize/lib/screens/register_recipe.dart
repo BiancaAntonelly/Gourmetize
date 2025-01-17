@@ -132,19 +132,29 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
     }
   }
 
-  Future<void> pickImageAndUpload(int userId) async {
+  Future<void> pickImageAndUpload() async {
     final ImagePicker picker = ImagePicker();
     final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado;
 
     try {
-      // Abre a galeria para o usuário selecionar uma imagem
       final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-      if (pickedFile != null) {
-        // Cria um arquivo a partir do caminho da imagem selecionada
-        File imageFile = File(pickedFile.path);
+       if (pickedFile == null) return;
 
-        // Faz o upload da imagem selecionada
+      setState(() {
+        _storedImage = File(pickedFile.path);
+      });
+
+      // Obtém a pasta onde os arquivos podem ser salvos
+      final appDir = await syspaths.getApplicationDocumentsDirectory();
+      String fileName = path.basename(_storedImage!.path);
+
+      final savedImage = await _storedImage!.copy(
+        '${appDir.path}/$fileName',
+      );
+
+      if (_storedImage != null) {
+        File imageFile = File(pickedFile.path);
         final uploadService = UploadService();
         final String imageUrl = await uploadService.uploadImage(imageFile, usuarioLogado?.id ?? defaultValue);
         _imageUrl = imageUrl;
@@ -453,9 +463,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                       label: Text('Tirar Foto'),
                     ),
                     ElevatedButton.icon(
-                      onPressed: () {
-                        // Ação para buscar na galeria ainda não implementada
-                      },
+                      onPressed: pickImageAndUpload,
                       icon: Icon(Icons.photo),
                       label: Text('Buscar na Galeria'),
                     ),

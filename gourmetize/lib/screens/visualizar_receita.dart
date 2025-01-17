@@ -12,6 +12,7 @@ import 'package:gourmetize/widgets/nova_avaliacao.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gourmetize/widgets/styled_text.dart';
 import 'package:provider/provider.dart';
+import 'package:gourmetize/config/app_config.dart';
 
 class VisualizarReceita extends StatefulWidget {
   final Receita receita;
@@ -94,6 +95,11 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
     }
   }
 
+  String _getImageUrl () {
+    return AppConfig.minioUrl + _receita.imageUrl;
+
+  }
+
   @override
   Widget build(BuildContext context) {
     final avaliacoes = Provider.of<AvaliacaoProvider>(context).avaliacoes;
@@ -130,7 +136,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                           child: Image(
                             image: _receita.imageUrl.isEmpty
                                 ? AssetImage('assets/receita-meta2.jpeg')
-                                : NetworkImage(_receita.imageUrl),
+                                : NetworkImage(_getImageUrl()),
                             fit: BoxFit.cover,
                           ),
                         ),

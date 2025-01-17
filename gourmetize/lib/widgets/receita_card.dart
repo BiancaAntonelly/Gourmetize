@@ -43,7 +43,6 @@ class _ReceitaCardState extends State<ReceitaCard> {
   }
 
   String _getImageUrl () {
-    print(AppConfig.minioUrl + widget.receita.imageUrl);
     return AppConfig.minioUrl + widget.receita.imageUrl;
 
   }
