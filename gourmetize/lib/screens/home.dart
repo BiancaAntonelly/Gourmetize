@@ -7,11 +7,11 @@ import '../widgets/styled_text.dart';
 import '../widgets/lista_receitas.dart';
 import '../provider/receita_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+
 
 class Home extends StatefulWidget {
-  Home({
-    super.key,
-  });
+  Home({super.key});
 
   @override
   _HomeState createState() => _HomeState();
@@ -25,13 +25,15 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+
     _searchController.addListener(() {
       setState(() {
         _query = _searchController.text.toLowerCase();
       });
     });
+
     final usuarioLogado =
-        Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
+    Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
     context.read<ReceitaProvider>().buscarReceitas(usuarioLogado).then((value) {
       setState(() {
         _isLoading = false;
@@ -46,8 +48,6 @@ class _HomeState extends State<Home> {
   }
 
   List<Receita> _filterReceitas(List<Receita> receitas) {
-    print(receitas);
-
     return receitas.where((receita) {
       return receita.titulo.toLowerCase().contains(_query) ||
           receita.descricao.toLowerCase().contains(_query) ||
@@ -60,7 +60,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final receitasFiltradas =
-        _filterReceitas(Provider.of<ReceitaProvider>(context).receitas);
+    _filterReceitas(Provider.of<ReceitaProvider>(context).receitas);
     final usuarioLogado = Provider.of<AuthProvider>(context).usuarioLogado;
 
     if (usuarioLogado == null) {
@@ -109,6 +109,8 @@ class _HomeState extends State<Home> {
                 isLoading: _isLoading,
               ),
             ),
+            const SizedBox(height: 16),
+            // Exibindo o player do YouTube
           ],
         ),
       ),

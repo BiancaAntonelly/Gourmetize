@@ -13,6 +13,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gourmetize/widgets/styled_text.dart';
 import 'package:provider/provider.dart';
 import 'package:gourmetize/config/app_config.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VisualizarReceita extends StatefulWidget {
   final Receita receita;
@@ -37,6 +38,14 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   @override
   void initState() {
     super.initState();
+    _youtubeController = YoutubePlayerController(
+      initialVideoId: '2FRRH9fMTeI',
+      flags: YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+      ),
+    );
+
     _receita = widget.receita;
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
 
@@ -65,6 +74,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   @override
   void dispose() {
     _tabController.dispose();
+    _youtubeController.dispose();
     super.dispose();
   }
 
@@ -100,6 +110,8 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
 
   }
 
+  late YoutubePlayerController _youtubeController;
+
   @override
   Widget build(BuildContext context) {
     final avaliacoes = Provider.of<AvaliacaoProvider>(context).avaliacoes;
@@ -128,6 +140,14 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      YoutubePlayer(
+                        controller: _youtubeController,
+                        showVideoProgressIndicator: true,
+                        progressIndicatorColor: Theme.of(context).colorScheme.primary,
+                        onReady: () {
+                          print('YouTube player pronto!');
+                        },
+                      ),
                       SizedBox(
                         height: 180,
                         width: double.infinity,
