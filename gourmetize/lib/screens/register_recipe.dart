@@ -422,9 +422,13 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                     : Wrap(
                         spacing: 8.0,
                         children: etiquetas.map((tag) {
+                          final isSelected =
+                              _etiquetas.indexWhere((e) => e.id == tag.id) !=
+                                  -1;
+
                           return ChoiceChip(
                             label: Text(tag.nome),
-                            selected: _etiquetas.contains(tag),
+                            selected: isSelected,
                             backgroundColor: Colors.white,
                             selectedColor:
                                 Theme.of(context).colorScheme.primary,
@@ -434,7 +438,8 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                               setState(() {
                                 selected
                                     ? _etiquetas.add(tag)
-                                    : _etiquetas.remove(tag);
+                                    : _etiquetas
+                                        .removeWhere((e) => e.id == tag.id);
                               });
                             },
                             side: BorderSide(
