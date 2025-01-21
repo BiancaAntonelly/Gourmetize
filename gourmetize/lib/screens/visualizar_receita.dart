@@ -38,15 +38,17 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   @override
   void initState() {
     super.initState();
-    _youtubeController = YoutubePlayerController(
-      initialVideoId: '2FRRH9fMTeI',
-      flags: YoutubePlayerFlags(
-        autoPlay: false,
-        mute: false,
-      ),
-    );
-
     _receita = widget.receita;
+    if (_receita.youtubeId != null && _receita.youtubeId!.isNotEmpty) {
+      _youtubeController = YoutubePlayerController(
+        initialVideoId: _receita.youtubeId ?? '',
+        flags: YoutubePlayerFlags(
+          autoPlay: false,
+          mute: false,
+        ),
+      );
+    }
+
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
 
     _tabController.addListener(() {
@@ -57,7 +59,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
     usuarioLogado =
         Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
 
-    _carregarAvaliacoes(); // Adiciona a chamada para carregar as avaliações
+    _carregarAvaliacoes();
   }
 
   void _carregarAvaliacoes() {
@@ -140,14 +142,15 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      YoutubePlayer(
-                        controller: _youtubeController,
-                        showVideoProgressIndicator: true,
-                        progressIndicatorColor: Theme.of(context).colorScheme.primary,
-                        onReady: () {
-                          print('YouTube player pronto!');
-                        },
-                      ),
+                      if (_receita.youtubeId != null && _receita.youtubeId!.isNotEmpty)
+                        YoutubePlayer(
+                          controller: _youtubeController,
+                          showVideoProgressIndicator: true,
+                          progressIndicatorColor: Theme.of(context).colorScheme.primary,
+                          onReady: () {
+                            print('YouTube player pronto!');
+                          },
+                        ),
                       SizedBox(
                         height: 180,
                         width: double.infinity,

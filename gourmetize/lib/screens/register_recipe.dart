@@ -42,6 +42,8 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<Etiqueta> _etiquetas = [];
   final TextEditingController etiquetaController = TextEditingController();
+  final TextEditingController youtubeIdController = TextEditingController();
+
   bool _isLoadingEtiquetas = true;
 
   File? _storedImage;
@@ -180,6 +182,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
         usuario: usuarioLogado,
         imageUrl: _imageUrl,
         etiquetas: _etiquetas,
+        youtubeId: youtubeIdController.text,
       );
 
       final receitaProvider =
@@ -364,6 +367,43 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                     return null;
                   },
                 ),
+                Text(
+                  'ID do Vídeo no YouTube:',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: youtubeIdController,
+                  style: TextStyle(fontSize: 16),
+                  decoration: InputDecoration(
+                    hintText: 'Digite o ID do vídeo no YouTube',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty && value.length != 11) {
+                      return 'O ID do vídeo do YouTube deve ter 11 caracteres.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
                 const SizedBox(height: 16),
                 Text(
                   'Etiquetas:',
