@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gourmetize/model/etiqueta.dart';
+import 'package:gourmetize/model/ingrediente.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/provider/etiquetas_provider.dart';
 import 'package:gourmetize/widgets/page_wrapper.dart';
@@ -30,14 +31,17 @@ class RegisterRevenue extends StatefulWidget {
 
 class _RegisterRevenueState extends State<RegisterRevenue> {
   final TextEditingController tituloController = TextEditingController();
-  final TextEditingController ingredientesController = TextEditingController();
   final TextEditingController descricaoController = TextEditingController();
   final TextEditingController preparoController = TextEditingController();
+  final TextEditingController _ingredientController = TextEditingController();
+  final TextEditingController _unidadeController = TextEditingController();
+  final TextEditingController _quantidadeController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<Etiqueta> _etiquetas = [];
   final TextEditingController etiquetaController = TextEditingController();
+  final _ingredientesFormKey = GlobalKey<FormState>();
   bool _isLoadingEtiquetas = true;
-
+  final List<Ingrediente> _ingredientes = [];
   @override
   void initState() {
     super.initState();
@@ -54,7 +58,10 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
 
     if (widget.receitaParaEdicao != null) {
       tituloController.text = widget.receitaParaEdicao!.titulo;
-      ingredientesController.text = widget.receitaParaEdicao!.ingredientes;
+      // Carregar ingredientes
+      _ingredientes.addAll(widget.receitaParaEdicao!.ingredientes);
+
+      _etiquetas.addAll(widget.receitaParaEdicao!.etiquetas);
       descricaoController.text = widget.receitaParaEdicao!.descricao;
       preparoController.text = widget.receitaParaEdicao!.preparo;
 
@@ -93,14 +100,13 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
         Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
     if (_formKey.currentState!.validate()) {
       Receita receita = Receita(
-        id: widget.receitaParaEdicao?.id ?? 0,
-        titulo: tituloController.text,
-        descricao: descricaoController.text,
-        ingredientes: ingredientesController.text,
-        preparo: preparoController.text,
-        usuario: usuarioLogado,
-        etiquetas: _etiquetas,
-      );
+          id: widget.receitaParaEdicao?.id ?? 0,
+          titulo: tituloController.text,
+          descricao: descricaoController.text,
+          ingredientes: _ingredientes,
+          preparo: preparoController.text,
+          usuario: usuarioLogado,
+          etiquetas: _etiquetas);
 
       final receitaProvider =
           Provider.of<ReceitaProvider>(context, listen: false);
@@ -113,6 +119,22 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
 
       context.pop(receita);
     }
+  }
+
+  void _addIngrediente() {
+    setState(() {
+      // Adiciona um novo ingrediente com os valores dos campos
+      _ingredientes.add(Ingrediente(
+        ingredient: _ingredientController.text,
+        unidade: _unidadeController.text,
+        quantidade: _quantidadeController.text,
+      ));
+
+      // Limpa os campos de entrada
+      _ingredientController.clear();
+      _unidadeController.clear();
+      _quantidadeController.clear();
+    });
   }
 
   @override
@@ -168,6 +190,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                   },
                 ),
                 const SizedBox(height: 16),
+                // Ingredientes
                 Text(
                   'Ingredientes:',
                   style: TextStyle(
@@ -177,35 +200,141 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                TextFormField(
-                  controller: ingredientesController,
-                  style: TextStyle(fontSize: 16),
-                  maxLines: 4,
-                  decoration: InputDecoration(
-                    hintText:
-                        'Informe os ingredientes separados por uma quebra de linha',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 2),
-                    ),
+                Form(
+                  key: _ingredientesFormKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        controller: _quantidadeController,
+                        decoration: InputDecoration(
+                          hintText: 'Quantidade',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.primary),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 2),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Informe a quantidade';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: _unidadeController,
+                        decoration: InputDecoration(
+                          hintText: 'Unidade',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.primary),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 2),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Informe a unidade';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: _ingredientController,
+                        decoration: InputDecoration(
+                          hintText: 'Nome do ingrediente',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.primary),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 2),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Informe o ingrediente';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_ingredientesFormKey.currentState!.validate()) {
+                            _addIngrediente();
+                          }
+                        },
+                        child: Text('Adicionar Ingrediente'),
+                      ),
+                    ],
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Os ingredientes são obrigatórios';
-                    }
-                    return null;
-                  },
                 ),
+
+                const SizedBox(height: 16),
+                if (_ingredientes.isNotEmpty)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Ingredientes Adicionados:',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 1),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: _ingredientes.length,
+                        itemBuilder: (context, index) {
+                          final ingrediente = _ingredientes[index];
+                          if (_ingredientes.isNotEmpty)
+                            return ListTile(
+                              subtitle: Text(
+                                '${ingrediente.quantidade} ${ingrediente.unidade} de ${ingrediente.ingredient}',
+                              ),
+                              trailing: IconButton(
+                                icon: Icon(Icons.delete, color: Colors.red),
+                                onPressed: () {
+                                  setState(() {
+                                    _ingredientes.removeAt(index);
+                                  });
+                                },
+                              ),
+                            );
+                        },
+                      ),
+                    ],
+                  ),
                 const SizedBox(height: 16),
                 Text(
                   'Descrição:',

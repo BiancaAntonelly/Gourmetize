@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:gourmetize/config/app_config.dart';
 import 'package:gourmetize/model/carrinho.dart';
+import 'package:gourmetize/model/ingrediente.dart';
 import 'package:http/http.dart' as http;
 
 class CarrinhoService {
@@ -53,7 +54,7 @@ class CarrinhoService {
 
   // Método para adicionar um ingrediente ao carrinho
   Future<void> adicionarIngrediente(
-      Carrinho carrinho, String ingrediente) async {
+      Carrinho carrinho, Ingrediente ingrediente) async {
     carrinho.ingredientes.add(ingrediente); // Adiciona o ingrediente
     await atualizarCarrinho(carrinho); // Atualiza o carrinho no servidor
   }
