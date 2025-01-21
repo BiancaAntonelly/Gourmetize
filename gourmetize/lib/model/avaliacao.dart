@@ -7,6 +7,7 @@ class Avaliacao {
   String comentario;
   Usuario usuario;
   Receita receita;
+  String? imageUrl;
 
   Avaliacao({
     this.id = 0,
@@ -14,6 +15,7 @@ class Avaliacao {
     required this.comentario,
     required this.usuario,
     required this.receita,
+    this.imageUrl,
   });
 
   Map<String, dynamic> toJson() {
@@ -23,6 +25,7 @@ class Avaliacao {
       'comentario': comentario,
       'usuario': usuario.toJson(),
       'receita': receita.toJson(),
+      'imageUrl': receita.imageUrl,
     };
   }
 
@@ -33,6 +36,7 @@ class Avaliacao {
       comentario: json['comentario'],
       usuario: Usuario.fromJson(json['usuario']),
       receita: Receita.fromJson(json['receita']),
+      imageUrl: json['imageUrl'],
     );
   }
 }

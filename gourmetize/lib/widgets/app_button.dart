@@ -19,7 +19,7 @@ class AppButton extends StatelessWidget {
 
     return variant == AppButtonVariant.secondary
         ? colorScheme.secondary
-        : colorScheme.secondary;
+        : colorScheme.primary;
   }
 
   @override

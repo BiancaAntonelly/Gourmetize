@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gourmetize/config/app_config.dart';
 import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/provider/etiquetas_provider.dart';
+import 'package:gourmetize/widgets/image_input.dart';
 import 'package:gourmetize/widgets/page_wrapper.dart';
 import 'package:provider/provider.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as syspaths;
 
@@ -47,8 +48,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
   bool _isLoadingEtiquetas = true;
 
   File? _storedImage;
-  String _imageUrl = '';
-  
+
   get defaultValue => 0;
 
   @override
@@ -101,53 +101,12 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
     etiquetaController.clear();
   }
 
-  _takePicture() async {
-
-    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado;
-    final ImagePicker _picker = ImagePicker();
-    XFile imageFile = await _picker.pickImage(
-      source: ImageSource.camera,
-      maxWidth: 600,
-    ) as XFile;
-
-    if (imageFile == null) return;
-
-    setState(() {
-      _storedImage = File(imageFile.path);
-    });
-
-    //pegar pasta que posso salvar documentos
-    final appDir = await syspaths.getApplicationDocumentsDirectory();
-    String fileName = path.basename(_storedImage!.path);
-    
-    final savedImage = await _storedImage!.copy(
-      '${appDir.path}/$fileName',
-    );
+  void _onSubmit() async {
+    final usuarioLogado =
+        Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
+    String? imageUrl;
 
     if (_storedImage != null) {
-      //final imageFile = File(fileName);
-      final uploadService = UploadService();
-      final String imageUrl = await uploadService.uploadImage(savedImage, usuarioLogado?.id ?? defaultValue);
-      _imageUrl = imageUrl;
-    } else {
-      print('Nenhuma imagem foi selecionada.');
-    }
-  }
-
-  Future<void> pickImageAndUpload() async {
-    final ImagePicker picker = ImagePicker();
-    final usuarioLogado = Provider.of<AuthProvider>(context, listen: false).usuarioLogado;
-
-    try {
-      final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-       if (pickedFile == null) return;
-
-      setState(() {
-        _storedImage = File(pickedFile.path);
-      });
-
-      // Obtém a pasta onde os arquivos podem ser salvos
       final appDir = await syspaths.getApplicationDocumentsDirectory();
       String fileName = path.basename(_storedImage!.path);
 
@@ -155,23 +114,11 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
         '${appDir.path}/$fileName',
       );
 
-      if (_storedImage != null) {
-        File imageFile = File(pickedFile.path);
-        final uploadService = UploadService();
-        final String imageUrl = await uploadService.uploadImage(imageFile, usuarioLogado?.id ?? defaultValue);
-        _imageUrl = imageUrl;
-      } else {
-        print('Nenhuma imagem foi selecionada.');
-      }
-    } catch (e) {
-      print('Erro ao selecionar imagem: $e');
+      File imageFile = File(savedImage.path);
+      final uploadService = UploadService();
+      imageUrl = await uploadService.uploadImage(imageFile, usuarioLogado.id);
     }
-  }
 
-
-  void _onSubmit() {
-    final usuarioLogado =
-        Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
     if (_formKey.currentState!.validate()) {
       Receita receita = Receita(
         id: widget.receitaParaEdicao?.id ?? 0,
@@ -180,7 +127,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
         ingredientes: ingredientesController.text,
         preparo: preparoController.text,
         usuario: usuarioLogado,
-        imageUrl: _imageUrl,
+        imageUrl: imageUrl ?? '',
         etiquetas: _etiquetas,
         youtubeId: youtubeIdController.text,
       );
@@ -189,9 +136,9 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
           Provider.of<ReceitaProvider>(context, listen: false);
 
       if (widget.receitaParaEdicao != null) {
-        receitaProvider.atualizarReceita(receita);
+        await receitaProvider.atualizarReceita(receita);
       } else {
-        receitaProvider.adicionarReceita(receita);
+        await receitaProvider.adicionarReceita(receita);
       }
 
       context.pop(receita);
@@ -473,46 +420,17 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                     ),
                     onFieldSubmitted: _addEtiqueta,
                   ),
-                const SizedBox(height: 24),
-                const SizedBox(height: 8),
-                Container(
-                  height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  alignment: Alignment.center,
-                  child: _storedImage != null
-                      ? Image.file(
-                          _storedImage!,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        )
-                      : Text(
-                          'Selecione uma imagem',
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: _takePicture,
-                      icon: Icon(Icons.camera),
-                      label: Text('Tirar Foto'),
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: pickImageAndUpload,
-                      icon: Icon(Icons.photo),
-                      label: Text('Buscar na Galeria'),
-                    ),
-                  ],
+                const SizedBox(height: 32),
+                ImageInput(
+                  value: _storedImage,
+                  onChange: (value) {
+                    setState(() {
+                      _storedImage = value;
+                    });
+                  },
+                  initialUrl: widget.receitaParaEdicao?.imageUrl != null
+                      ? AppConfig.minioUrl + widget.receitaParaEdicao!.imageUrl
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 Center(

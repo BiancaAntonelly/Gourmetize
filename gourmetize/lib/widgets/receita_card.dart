@@ -42,9 +42,8 @@ class _ReceitaCardState extends State<ReceitaCard> {
     return widget.receita.ingredientes.split('\n').toList();
   }
 
-  String _getImageUrl () {
+  String _getImageUrl() {
     return AppConfig.minioUrl + widget.receita.imageUrl;
-
   }
 
   Future<void> _showDeleteConfirmationDialog(BuildContext context) async {
@@ -138,7 +137,7 @@ class _ReceitaCardState extends State<ReceitaCard> {
           children: <Widget>[
             Stack(
               children: [
-               ClipRRect(
+                ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image(
                     height: 180,

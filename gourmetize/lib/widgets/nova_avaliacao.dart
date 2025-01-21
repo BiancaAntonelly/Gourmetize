@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:gourmetize/model/avaliacao.dart';
@@ -5,8 +7,13 @@ import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/provider/auth_provider.dart';
 import 'package:gourmetize/provider/avaliacao_provider.dart';
 import 'package:gourmetize/provider/receita_provider.dart';
+import 'package:gourmetize/service/upload_service.dart';
 import 'package:gourmetize/widgets/app_button.dart';
+import 'package:gourmetize/widgets/image_input.dart';
+import 'package:gourmetize/widgets/styled_text.dart';
 import 'package:provider/provider.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart' as syspaths;
 
 class NovaAvaliacao extends StatefulWidget {
   final Receita receita;
@@ -23,6 +30,7 @@ class NovaAvaliacao extends StatefulWidget {
 }
 
 class _NovaAvaliacaoState extends State<NovaAvaliacao> {
+  File? _image;
   late double _notaAvaliacao;
   late final TextEditingController _descricaoController;
 
@@ -54,27 +62,44 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
     }
 
     try {
-      // Tenta criar a avaliação
+      final usuarioLogado =
+          Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
+      String? imageUrl;
+
+      if (_image != null) {
+        final appDir = await syspaths.getApplicationDocumentsDirectory();
+        String fileName = path.basename(_image!.path);
+
+        final savedImage = await _image!.copy(
+          '${appDir.path}/$fileName',
+        );
+
+        File imageFile = File(savedImage.path);
+        final uploadService = UploadService();
+        imageUrl = await uploadService.uploadImage(imageFile, usuarioLogado.id);
+      }
+
       if (widget.avaliacao == null) {
         await Provider.of<AvaliacaoProvider>(context, listen: false)
             .createAvaliacao(
           Avaliacao(
             nota: _notaAvaliacao.toInt(),
             comentario: _descricaoController.text,
-            usuario: Provider.of<AuthProvider>(context, listen: false)
-                .usuarioLogado!, // Certifique-se de que `usuarioLogado` está disponível
+            usuario: usuarioLogado,
             receita: widget.receita,
+            imageUrl: imageUrl ?? widget.avaliacao?.imageUrl,
           ),
         );
       } else {
         await Provider.of<AvaliacaoProvider>(context, listen: false)
             .updateAvaliacao(
           Avaliacao(
-            id: widget.avaliacao!.id, nota: _notaAvaliacao.toInt(),
+            id: widget.avaliacao!.id,
+            nota: _notaAvaliacao.toInt(),
             comentario: _descricaoController.text,
-            usuario: Provider.of<AuthProvider>(context, listen: false)
-                .usuarioLogado!, // Certifique-se de que `usuarioLogado` está disponível
+            usuario: usuarioLogado,
             receita: widget.receita,
+            imageUrl: imageUrl ?? widget.avaliacao?.imageUrl,
           ),
         );
       }
@@ -114,98 +139,115 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
+        color: Colors.white,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(50),
           topRight: Radius.circular(50),
         ),
       ),
-      child: Column(
-        children: [
-          RatingStars(
-            value: _notaAvaliacao,
-            onValueChanged: _onNotaChange,
-            starBuilder: (index, color) => Icon(
-              Icons.star,
-              color: color,
-              size: 50,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 8,
             ),
-            starSize: 50,
-            starCount: 5,
-            maxValue: 5,
-            starSpacing: 10,
-            valueLabelVisibility: false,
-            starColor: Theme.of(context).colorScheme.secondary,
-            starOffColor: Colors.white,
-          ),
-          const SizedBox(
-            height: 32,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Avaliação:",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
+            StyledText(title: 'Avaliação de Receita'),
+            const SizedBox(
+              height: 16,
+            ),
+            RatingStars(
+              value: _notaAvaliacao,
+              onValueChanged: _onNotaChange,
+              starBuilder: (index, color) => Icon(
+                Icons.star,
+                color: color,
+                size: 50,
               ),
-              const SizedBox(height: 8),
-              TextFormField(
-                maxLines: 8,
-                controller: _descricaoController,
-                decoration: InputDecoration(
-                  hintText: 'Digite sua avaliação',
-                  hintStyle: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
+              starSize: 50,
+              starCount: 5,
+              maxValue: 5,
+              starSpacing: 10,
+              valueLabelVisibility: false,
+              starColor: Theme.of(context).colorScheme.secondary,
+              starOffColor: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Avaliação:",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.secondary,
+                ),
+                const SizedBox(height: 8),
+                TextFormField(
+                  maxLines: 8,
+                  controller: _descricaoController,
+                  decoration: InputDecoration(
+                    hintText: 'Digite sua avaliação',
+                    hintStyle: const TextStyle(
+                      fontSize: 14,
                     ),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.secondary,
-                      width: 2,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    borderRadius: BorderRadius.circular(15),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                   ),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                  fillColor: Theme.of(context).colorScheme.primary,
-                  filled: true,
-                ),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  AppButton(
-                    label: 'Enviar',
-                    onPressed: _onSubmit,
-                    variant: AppButtonVariant.secondary,
+                  style: const TextStyle(
+                    fontSize: 14,
                   ),
-                ],
-              ),
-            ],
-          )
-        ],
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 32,
+            ),
+            ImageInput(
+              value: _image,
+              onChange: (value) {
+                setState(() {
+                  _image = value;
+                });
+              },
+              initialUrl: widget.avaliacao?.imageUrl,
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    AppButton(
+                      label: 'Enviar',
+                      onPressed: _onSubmit,
+                      variant: AppButtonVariant.primary,
+                    ),
+                  ],
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

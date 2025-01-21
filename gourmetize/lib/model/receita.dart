@@ -14,7 +14,6 @@ class Receita {
   String? youtubeId;
   List<Etiqueta> etiquetas;
 
-
   Receita({
     this.id = 0,
     required this.titulo,
