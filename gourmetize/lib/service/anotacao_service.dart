@@ -25,14 +25,13 @@ class AnotacaoService {
     final response = await http.get(
       Uri.parse("$_baseUrl?usuarioId=$usuarioId&receitaId=$receitaId"),
     );
-    print(response.body);
 
     if (response.statusCode != 200) {
-      if (response.statusCode == 404) {
-        return null;
-      }
-
       throw Exception("Erro ao recuperar anotação");
+    }
+
+    if (response.body.isEmpty) {
+      return null;
     }
 
     return AnotacaoReceita.fromJson(jsonDecode(response.body));

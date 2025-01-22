@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:gourmetize/config/app_config.dart';
 import 'package:gourmetize/model/avaliacao.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/provider/auth_provider.dart';
@@ -79,6 +80,8 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
         imageUrl = await uploadService.uploadImage(imageFile, usuarioLogado.id);
       }
 
+      print(imageUrl);
+
       if (widget.avaliacao == null) {
         await Provider.of<AvaliacaoProvider>(context, listen: false)
             .createAvaliacao(
@@ -87,7 +90,7 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
             comentario: _descricaoController.text,
             usuario: usuarioLogado,
             receita: widget.receita,
-            imageUrl: imageUrl ?? widget.avaliacao?.imageUrl,
+            imageUrl: imageUrl,
           ),
         );
       } else {
@@ -226,7 +229,9 @@ class _NovaAvaliacaoState extends State<NovaAvaliacao> {
                   _image = value;
                 });
               },
-              initialUrl: widget.avaliacao?.imageUrl,
+              initialUrl: widget.avaliacao?.imageUrl != null
+                  ? AppConfig.minioUrl + widget.avaliacao!.imageUrl!
+                  : null,
             ),
             const SizedBox(
               height: 16,

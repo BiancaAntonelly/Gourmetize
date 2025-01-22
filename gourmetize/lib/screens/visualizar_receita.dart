@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gourmetize/model/ingrediente.dart';
 import 'package:gourmetize/model/anotacao_receita.dart';
 import 'package:gourmetize/model/receita.dart';
@@ -14,8 +17,10 @@ import 'package:gourmetize/widgets/nota_receita.dart';
 import 'package:gourmetize/widgets/nova_avaliacao.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gourmetize/widgets/styled_text.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:gourmetize/config/app_config.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VisualizarReceita extends StatefulWidget {
@@ -72,6 +77,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
         .getAnotacao(usuarioLogado.id, widget.receita.id)
         .then((value) {
       setState(() {
+        print(value);
         _anotacao = value;
 
         _isLoadingAnotacao = false;
@@ -153,6 +159,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
             child: TabBarView(
               controller: _tabController,
               children: [
+                // Conteúdo da aba de Detalhes
                 SingleChildScrollView(
                   padding: EdgeInsets.all(16),
                   child: Column(
@@ -179,17 +186,28 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                                 ? AssetImage('assets/receita-meta2.jpeg')
                                 : NetworkImage(_getImageUrl()),
                             fit: BoxFit.cover,
+                            alignment: Alignment.center,
                           ),
                         ),
                       ),
                       SizedBox(height: 20),
-                      Text(
-                        _receita.titulo,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            _receita.titulo,
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.share,
+                                color: Theme.of(context).colorScheme.primary),
+                            onPressed: _compartilharReceita,
+                          ),
+                        ],
                       ),
                       Text(
                         "Enviado por ${_receita.usuario.nome}",
@@ -223,8 +241,12 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  ingrediente
-                                      .ingredient, // Acessando o nome do ingrediente
+                                  ingrediente.quantidade +
+                                      " " +
+                                      ingrediente.unidade +
+                                      " de " +
+                                      ingrediente
+                                          .ingredient, // Acessando o nome do ingrediente
                                   style: TextStyle(fontSize: 18),
                                 ),
                                 if (usuarioLogado.id != _receita.usuario.id)
@@ -280,6 +302,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                     ],
                   ),
                 ),
+                // Conteúdo da aba de Avaliações
                 Container(
                   padding: EdgeInsets.all(16),
                   child: Column(
@@ -354,6 +377,47 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                   backgroundColor: Theme.of(context).colorScheme.primary,
                 )),
     );
+  }
+
+  void _compartilharReceita() async {
+    final String conteudoCompartilhar = '''
+  Confira essa receita incrível: ${_receita.titulo}!
+
+  Descrição: ${_receita.descricao}
+
+  Ingredientes:
+  ${_receita.ingredientes.map((ingrediente) => "- ${ingrediente.quantidade + " " + ingrediente.unidade + " de " + ingrediente.ingredient}").join("\n")}
+
+  Modo de preparo:
+  ${_receita.preparo}
+
+  Veja mais no aplicativo Gourmetize!
+  ''';
+
+    if (widget.receita.imageUrl.isEmpty) {
+      Share.share(conteudoCompartilhar);
+
+      return;
+    }
+
+    try {
+      final imageUrl = _getImageUrl();
+      final response = await NetworkAssetBundle(Uri.parse(imageUrl)).load("");
+      final bytes = response.buffer.asUint8List();
+
+      final tempDir = await getTemporaryDirectory();
+      final filePath = '${tempDir.path}/receita.jpg';
+      final file = await File(filePath).writeAsBytes(bytes);
+
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: conteudoCompartilhar,
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao compartilhar')),
+      );
+    }
   }
 
   void _adicionarAoCarrinho(Ingrediente ingrediente) {

@@ -135,7 +135,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
         ingredientes: _ingredientes,
         preparo: preparoController.text,
         usuario: usuarioLogado,
-        imageUrl: imageUrl ?? '',
+        imageUrl: imageUrl ?? widget.receitaParaEdicao?.imageUrl ?? '',
         etiquetas: _etiquetas,
         youtubeId: youtubeIdController.text,
       );
@@ -239,6 +239,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                     children: [
                       TextFormField(
                         controller: _quantidadeController,
+                        style: TextStyle(fontSize: 16),
                         decoration: InputDecoration(
                           hintText: 'Quantidade',
                           border: OutlineInputBorder(
@@ -266,6 +267,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                       const SizedBox(height: 12),
                       TextFormField(
                         controller: _unidadeController,
+                        style: TextStyle(fontSize: 16),
                         decoration: InputDecoration(
                           hintText: 'Unidade',
                           border: OutlineInputBorder(
@@ -293,6 +295,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                       const SizedBox(height: 12),
                       TextFormField(
                         controller: _ingredientController,
+                        style: TextStyle(fontSize: 16),
                         decoration: InputDecoration(
                           hintText: 'Nome do ingrediente',
                           border: OutlineInputBorder(
@@ -445,6 +448,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                     return null;
                   },
                 ),
+                const SizedBox(height: 16),
                 Text(
                   'ID do Vídeo no YouTube:',
                   style: TextStyle(
@@ -475,13 +479,14 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                     ),
                   ),
                   validator: (value) {
-                    if (value != null && value.isNotEmpty && value.length != 11) {
+                    if (value != null &&
+                        value.isNotEmpty &&
+                        value.length != 11) {
                       return 'O ID do vídeo do YouTube deve ter 11 caracteres.';
                     }
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
                 const SizedBox(height: 16),
                 Text(
                   'Etiquetas:',
@@ -559,7 +564,8 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                       _storedImage = value;
                     });
                   },
-                  initialUrl: widget.receitaParaEdicao?.imageUrl != null
+                  initialUrl: widget.receitaParaEdicao != null &&
+                          !widget.receitaParaEdicao!.imageUrl.isEmpty
                       ? AppConfig.minioUrl + widget.receitaParaEdicao!.imageUrl
                       : null,
                 ),
