@@ -20,9 +20,9 @@ class ReceitaProvider with ChangeNotifier {
   }
 
   Future<void> adicionarReceita(Receita receita) async {
-    await _receitaService.adicionarReceita(receita);
-    _receitas.add(receita);
-    _receitasUser.add(receita);
+    Receita receitaAdicionada = await _receitaService.adicionarReceita(receita);
+    _receitas.add(receitaAdicionada);
+    _receitasUser.add(receitaAdicionada);
     notifyListeners();
   }
 

@@ -52,7 +52,7 @@ class ReceitaService {
     }
   }
 
-  Future<void> adicionarReceita(Receita receita) async {
+  Future<Receita> adicionarReceita(Receita receita) async {
     try {
       final url = Uri.parse('$baseUrl');
       final response = await http.post(
@@ -64,11 +64,13 @@ class ReceitaService {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         print("Receita adicionada com sucesso.");
+
+        return Receita.fromJson(jsonDecode(response.body));
       } else {
-        print("Erro ao adicionar receita: ${response.statusCode}");
+        throw Exception("Erro ao adicionar receita: ${response.statusCode}");
       }
     } catch (e) {
-      print("Erro ao adicionar receita: $e");
+      throw Exception("Erro ao adicionar receita: $e");
     }
   }
 
