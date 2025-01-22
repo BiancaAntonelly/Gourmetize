@@ -7,6 +7,7 @@ import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/ingrediente.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/provider/etiquetas_provider.dart';
+import 'package:gourmetize/utils/format_double.dart';
 import 'package:gourmetize/widgets/image_input.dart';
 import 'package:gourmetize/widgets/page_wrapper.dart';
 import 'package:provider/provider.dart';
@@ -159,7 +160,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
       _ingredientes.add(Ingrediente(
         ingredient: _ingredientController.text,
         unidade: _unidadeController.text,
-        quantidade: _quantidadeController.text,
+        quantidade: double.parse(_quantidadeController.text),
       ));
 
       // Limpa os campos de entrada
@@ -261,6 +262,13 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                           if (value == null || value.isEmpty) {
                             return 'Informe a quantidade';
                           }
+
+                          try {
+                            double.parse(value);
+                          } catch (e) {
+                            return 'Valor inválido';
+                          }
+
                           return null;
                         },
                       ),
@@ -355,7 +363,7 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                           if (_ingredientes.isNotEmpty)
                             return ListTile(
                               subtitle: Text(
-                                '${ingrediente.quantidade} ${ingrediente.unidade} de ${ingrediente.ingredient}',
+                                '${formatDouble(ingrediente.quantidade)} ${ingrediente.unidade} de ${ingrediente.ingredient}',
                               ),
                               trailing: IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),

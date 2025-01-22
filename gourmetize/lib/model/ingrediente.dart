@@ -1,7 +1,7 @@
 class Ingrediente {
   String ingredient;
   String unidade;
-  String quantidade;
+  double quantidade;
 
   Ingrediente(
       {required this.ingredient,

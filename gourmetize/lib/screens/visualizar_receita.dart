@@ -10,6 +10,7 @@ import 'package:gourmetize/provider/auth_provider.dart';
 import 'package:gourmetize/provider/avaliacao_provider.dart';
 import 'package:gourmetize/provider/carrinho_provider.dart';
 import 'package:gourmetize/service/anotacao_service.dart';
+import 'package:gourmetize/utils/format_double.dart';
 import 'package:gourmetize/widgets/etiquetas_receita.dart';
 import 'package:gourmetize/widgets/page_wrapper.dart';
 import 'package:gourmetize/widgets/avaliacao_card.dart';
@@ -176,6 +177,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                             print('YouTube player pronto!');
                           },
                         ),
+                      SizedBox(height: 20),
                       SizedBox(
                         height: 180,
                         width: double.infinity,
@@ -241,7 +243,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  ingrediente.quantidade +
+                                  formatDouble(ingrediente.quantidade) +
                                       " " +
                                       ingrediente.unidade +
                                       " de " +
@@ -386,7 +388,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   Descrição: ${_receita.descricao}
 
   Ingredientes:
-  ${_receita.ingredientes.map((ingrediente) => "- ${ingrediente.quantidade + " " + ingrediente.unidade + " de " + ingrediente.ingredient}").join("\n")}
+  ${_receita.ingredientes.map((ingrediente) => "- ${formatDouble(ingrediente.quantidade) + " " + ingrediente.unidade + " de " + ingrediente.ingredient}").join("\n")}
 
   Modo de preparo:
   ${_receita.preparo}
