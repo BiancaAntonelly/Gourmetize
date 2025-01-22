@@ -59,6 +59,7 @@ class ImageInput extends StatelessWidget {
                       initialUrl!,
                       fit: BoxFit.cover,
                       width: double.infinity,
+                      alignment: Alignment.center,
                     )
                   : Text(
                       'Selecione uma imagem',
