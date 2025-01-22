@@ -39,7 +39,9 @@ class _ReceitaCardState extends State<ReceitaCard> {
   }
 
   List<String> _obterIngredientesEmLista() {
-    return widget.receita.ingredientes.split('\n').toList();
+    return widget.receita.ingredientes
+        .map((ingrediente) => ingrediente.ingredient)
+        .toList();
   }
 
   String _getImageUrl() {

@@ -49,9 +49,12 @@ class _HomeState extends State<Home> {
 
   List<Receita> _filterReceitas(List<Receita> receitas) {
     return receitas.where((receita) {
+      // Filtra baseado no título, descrição, nome dos ingredientes ou nas etiquetas
       return receita.titulo.toLowerCase().contains(_query) ||
           receita.descricao.toLowerCase().contains(_query) ||
-          receita.ingredientes.toLowerCase().contains(_query) ||
+          receita.ingredientes.any((ingrediente) => ingrediente.ingredient
+              .toLowerCase()
+              .contains(_query)) || // Verifica o nome do ingrediente
           receita.etiquetas
               .any((item) => item.nome.toLowerCase().contains(_query));
     }).toList();

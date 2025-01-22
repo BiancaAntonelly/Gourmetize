@@ -1,4 +1,5 @@
 import 'package:gourmetize/model/etiqueta.dart';
+import 'package:gourmetize/model/ingrediente.dart';
 
 import 'usuario.dart';
 
@@ -6,7 +7,7 @@ class Receita {
   final int id;
   String titulo;
   String descricao;
-  String ingredientes;
+  List<Ingrediente> ingredientes; // Lista de objetos Ingrediente
   String preparo;
   Usuario usuario;
   double? mediaAvaliacao;
@@ -32,7 +33,9 @@ class Receita {
       'id': id == 0 ? null : id,
       'titulo': titulo,
       'descricao': descricao,
-      'ingredientes': ingredientes,
+      'ingredientes': ingredientes
+          .map((ingrediente) => ingrediente.toJson())
+          .toList(), // Convertendo a lista de ingredientes
       'preparo': preparo,
       'usuario': usuario.toJson(),
       'youtubeId': youtubeId,
@@ -45,7 +48,10 @@ class Receita {
       id: json['id'],
       titulo: json['titulo'] ?? '',
       descricao: json['descricao'] ?? '',
-      ingredientes: json['ingredientes'] ?? '',
+      ingredientes: (json['ingredientes'] as List<dynamic>?)
+              ?.map((ingredienteJson) => Ingrediente.fromJson(ingredienteJson))
+              .toList() ??
+          [],
       preparo: json['preparo'] ?? '',
       usuario: Usuario.fromJson(json['usuario']),
       mediaAvaliacao: json['mediaAvaliacao'],

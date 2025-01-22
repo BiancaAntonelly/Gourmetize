@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gourmetize/model/ingrediente.dart';
 import 'package:gourmetize/provider/carrinho_provider.dart';
 import 'package:provider/provider.dart';
+
 class CarrinhoPage extends StatelessWidget {
   const CarrinhoPage({super.key});
 
@@ -26,7 +28,7 @@ class CarrinhoPage extends StatelessWidget {
         ],
       ),
       body: FutureBuilder(
-        future: carrinhoProvider.fetchCarrinho('usuarioId'), 
+        future: carrinhoProvider.fetchCarrinho('usuarioId'),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -57,11 +59,15 @@ class CarrinhoPage extends StatelessWidget {
             itemBuilder: (context, index) {
               final ingrediente = ingredientes[index];
               return ListTile(
-                title: Text('${index + 1}   $ingrediente', style: const TextStyle(fontSize: 18)), // Exibe a numeração
+                title: Text(
+                  '${index + 1}. ${ingrediente.ingredient} - ${ingrediente.quantidade}', // Exibe o nome e a quantidade do ingrediente
+                  style: const TextStyle(fontSize: 18),
+                ),
                 trailing: IconButton(
                   icon: const Icon(Icons.remove_circle),
                   color: Colors.red,
-                  onPressed: () => _removerDoCarrinho(context, carrinhoProvider, ingrediente),
+                  onPressed: () => _removerDoCarrinho(
+                      context, carrinhoProvider, ingrediente),
                 ),
               );
             },
@@ -70,7 +76,8 @@ class CarrinhoPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          _limparCarrinho(context, carrinhoProvider); // Limpa o carrinho ao pressionar o botão
+          _limparCarrinho(context,
+              carrinhoProvider); // Limpa o carrinho ao pressionar o botão
         },
         label: const Text('Limpar Carrinho'),
         icon: const Icon(Icons.delete),
@@ -79,10 +86,13 @@ class CarrinhoPage extends StatelessWidget {
     );
   }
 
-  void _removerDoCarrinho(BuildContext context, CarrinhoProvider provider, String ingrediente) {
+  void _removerDoCarrinho(BuildContext context, CarrinhoProvider provider,
+      Ingrediente ingrediente) {
     provider.removerIngrediente(ingrediente).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('$ingrediente removido do carrinho!')),
+        SnackBar(
+            content: Text(
+                '${ingrediente.ingredient} removido do carrinho!')), // Exibe o nome do ingrediente
       );
     }).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(

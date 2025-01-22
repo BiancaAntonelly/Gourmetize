@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gourmetize/model/ingrediente.dart';
 import 'package:gourmetize/model/anotacao_receita.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/model/usuario.dart';
@@ -214,30 +215,28 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                       StyledText(title: 'Ingredientes'),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: _receita.ingredientes
-                            .split('\n')
-                            .map((ingrediente) => Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 2), // Menor espaçamento
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        ingrediente,
-                                        style: TextStyle(fontSize: 18),
-                                      ),
-                                      if (usuarioLogado.id !=
-                                          _receita.usuario.id)
-                                        IconButton(
-                                          icon: Icon(Icons.add_shopping_cart),
-                                          onPressed: () =>
-                                              _adicionarAoCarrinho(ingrediente),
-                                        )
-                                    ],
+                        children: _receita.ingredientes.map((ingrediente) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 2), // Menor espaçamento
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  ingrediente
+                                      .ingredient, // Acessando o nome do ingrediente
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                if (usuarioLogado.id != _receita.usuario.id)
+                                  IconButton(
+                                    icon: Icon(Icons.add_shopping_cart),
+                                    onPressed: () =>
+                                        _adicionarAoCarrinho(ingrediente),
                                   ),
-                                ))
-                            .toList(),
+                              ],
+                            ),
+                          );
+                        }).toList(),
                       ),
                       SizedBox(height: 20),
                       StyledText(title: 'Modo de preparo'),
@@ -357,7 +356,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
     );
   }
 
-  void _adicionarAoCarrinho(String ingrediente) {
+  void _adicionarAoCarrinho(Ingrediente ingrediente) {
     final usuarioId = usuarioLogado.id.toString(); // Identificador do usuário
 
     // Adiciona o ingrediente ao carrinho
@@ -365,7 +364,9 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
         .adicionarIngrediente(ingrediente, usuarioLogado)
         .then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('$ingrediente adicionado ao carrinho!')),
+        SnackBar(
+            content: Text(
+                '${ingrediente.ingredient} adicionado ao carrinho!')), // Acessando o nome do ingrediente
       );
     }).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -374,12 +375,13 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
     });
   }
 
-  void _removerDoCarrinho(String ingrediente) {
+  void _removerDoCarrinho(Ingrediente ingrediente) {
     Provider.of<CarrinhoProvider>(context, listen: false)
         .removerIngrediente(ingrediente)
         .then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('$ingrediente removido do carrinho!')),
+        SnackBar(
+            content: Text('${ingrediente.ingredient} removido do carrinho!')),
       );
     }).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -409,12 +411,13 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                 ),
               );
             }
+
+            // Agora, pegamos os ingredientes, que são uma lista de objetos Ingrediente
             final ingredientes = carrinho.carrinho?.ingredientes ?? [];
 
             return Container(
               padding: EdgeInsets.all(16),
               child: SingleChildScrollView(
-                // Permite a rolagem
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -430,11 +433,18 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                     ] else
                       ...ingredientes.map((item) {
                         return ListTile(
-                          title: Text(item, style: TextStyle(fontSize: 18)),
+                          title: Text(item.ingredient,
+                              style: TextStyle(
+                                  fontSize:
+                                      18)), // Acessando o nome do ingrediente
+                          subtitle: Text(
+                              'Tipo: ${item.unidade}, Quantidade: ${item.quantidade}',
+                              style: TextStyle(fontSize: 16)),
                           trailing: IconButton(
                             icon: Icon(Icons.remove_circle),
                             color: Colors.red,
-                            onPressed: () => carrinho.removerIngrediente(item),
+                            onPressed: () => carrinho.removerIngrediente(
+                                item), // Passando o objeto Ingrediente
                           ),
                         );
                       }).toList(),
