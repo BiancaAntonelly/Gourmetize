@@ -39,6 +39,7 @@ class Receita {
       'preparo': preparo,
       'usuario': usuario.toJson(),
       'youtubeId': youtubeId,
+      'imageUrl': imageUrl,
       'etiquetas': etiquetas.map((etiqueta) => etiqueta.toJson()).toList(),
     };
   }
