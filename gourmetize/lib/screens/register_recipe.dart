@@ -1,14 +1,21 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gourmetize/config/app_config.dart';
 import 'package:gourmetize/model/etiqueta.dart';
 import 'package:gourmetize/model/ingrediente.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/provider/etiquetas_provider.dart';
+import 'package:gourmetize/widgets/image_input.dart';
 import 'package:gourmetize/widgets/page_wrapper.dart';
 import 'package:provider/provider.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart' as syspaths;
 
 import '../provider/auth_provider.dart';
 import '../provider/receita_provider.dart';
+import '../service/upload_service.dart';
 
 class RegisterRevenueExtraProps {
   final Receita? receitaParaEdicao;
@@ -40,8 +47,15 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
   final List<Etiqueta> _etiquetas = [];
   final TextEditingController etiquetaController = TextEditingController();
   final _ingredientesFormKey = GlobalKey<FormState>();
-  bool _isLoadingEtiquetas = true;
   final List<Ingrediente> _ingredientes = [];
+  final TextEditingController youtubeIdController = TextEditingController();
+
+  bool _isLoadingEtiquetas = true;
+
+  File? _storedImage;
+
+  get defaultValue => 0;
+
   @override
   void initState() {
     super.initState();
@@ -95,26 +109,44 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
     etiquetaController.clear();
   }
 
-  void _onSubmit() {
+  void _onSubmit() async {
     final usuarioLogado =
         Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
+    String? imageUrl;
+
+    if (_storedImage != null) {
+      final appDir = await syspaths.getApplicationDocumentsDirectory();
+      String fileName = path.basename(_storedImage!.path);
+
+      final savedImage = await _storedImage!.copy(
+        '${appDir.path}/$fileName',
+      );
+
+      File imageFile = File(savedImage.path);
+      final uploadService = UploadService();
+      imageUrl = await uploadService.uploadImage(imageFile, usuarioLogado.id);
+    }
+
     if (_formKey.currentState!.validate()) {
       Receita receita = Receita(
-          id: widget.receitaParaEdicao?.id ?? 0,
-          titulo: tituloController.text,
-          descricao: descricaoController.text,
-          ingredientes: _ingredientes,
-          preparo: preparoController.text,
-          usuario: usuarioLogado,
-          etiquetas: _etiquetas);
+        id: widget.receitaParaEdicao?.id ?? 0,
+        titulo: tituloController.text,
+        descricao: descricaoController.text,
+        ingredientes: _ingredientes,
+        preparo: preparoController.text,
+        usuario: usuarioLogado,
+        imageUrl: imageUrl ?? '',
+        etiquetas: _etiquetas,
+        youtubeId: youtubeIdController.text,
+      );
 
       final receitaProvider =
           Provider.of<ReceitaProvider>(context, listen: false);
 
       if (widget.receitaParaEdicao != null) {
-        receitaProvider.atualizarReceita(receita);
+        await receitaProvider.atualizarReceita(receita);
       } else {
-        receitaProvider.adicionarReceita(receita);
+        await receitaProvider.adicionarReceita(receita);
       }
 
       context.pop(receita);
@@ -413,6 +445,43 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                     return null;
                   },
                 ),
+                Text(
+                  'ID do Vídeo no YouTube:',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: youtubeIdController,
+                  style: TextStyle(fontSize: 16),
+                  decoration: InputDecoration(
+                    hintText: 'Digite o ID do vídeo no YouTube',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty && value.length != 11) {
+                      return 'O ID do vídeo do YouTube deve ter 11 caracteres.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
                 const SizedBox(height: 16),
                 Text(
                   'Etiquetas:',
@@ -431,9 +500,13 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                     : Wrap(
                         spacing: 8.0,
                         children: etiquetas.map((tag) {
+                          final isSelected =
+                              _etiquetas.indexWhere((e) => e.id == tag.id) !=
+                                  -1;
+
                           return ChoiceChip(
                             label: Text(tag.nome),
-                            selected: _etiquetas.contains(tag),
+                            selected: isSelected,
                             backgroundColor: Colors.white,
                             selectedColor:
                                 Theme.of(context).colorScheme.primary,
@@ -443,7 +516,8 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                               setState(() {
                                 selected
                                     ? _etiquetas.add(tag)
-                                    : _etiquetas.remove(tag);
+                                    : _etiquetas
+                                        .removeWhere((e) => e.id == tag.id);
                               });
                             },
                             side: BorderSide(
@@ -477,7 +551,19 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
                     ),
                     onFieldSubmitted: _addEtiqueta,
                   ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
+                ImageInput(
+                  value: _storedImage,
+                  onChange: (value) {
+                    setState(() {
+                      _storedImage = value;
+                    });
+                  },
+                  initialUrl: widget.receitaParaEdicao?.imageUrl != null
+                      ? AppConfig.minioUrl + widget.receitaParaEdicao!.imageUrl
+                      : null,
+                ),
+                const SizedBox(height: 16),
                 Center(
                     child: ElevatedButton(
                   onPressed: _onSubmit,

@@ -22,19 +22,26 @@ class ReceitaProvider with ChangeNotifier {
   Future<void> adicionarReceita(Receita receita) async {
     await _receitaService.adicionarReceita(receita);
     _receitas.add(receita);
+    _receitasUser.add(receita);
     notifyListeners();
   }
 
   Future<void> removerReceita(Receita receita) async {
     await _receitaService.removerReceita(receita);
-    _receitas.remove(receita);
+    _receitas.removeWhere((item) => item.id == receita.id);
+    _receitasUser.removeWhere((item) => item.id == receita.id);
+    _favoritas.removeWhere((item) => item.id == receita.id);
     notifyListeners();
   }
 
   Future<void> atualizarReceita(Receita receita) async {
     await _receitaService.atualizarReceita(receita);
-    final index = _receitas.indexWhere((r) => r.id == receita.id);
+    var index = _receitas.indexWhere((r) => r.id == receita.id);
     _receitas[index] = receita;
+    index = _receitasUser.indexWhere((r) => r.id == receita.id);
+    if (index != -1) _receitasUser[index] = receita;
+    index = _favoritas.indexWhere((r) => r.id == receita.id);
+    if (index != -1) _favoritas[index] = receita;
     notifyListeners();
   }
 

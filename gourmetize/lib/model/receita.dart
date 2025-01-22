@@ -11,6 +11,8 @@ class Receita {
   String preparo;
   Usuario usuario;
   double? mediaAvaliacao;
+  String imageUrl;
+  String? youtubeId;
   List<Etiqueta> etiquetas;
 
   Receita({
@@ -21,6 +23,8 @@ class Receita {
     required this.preparo,
     this.mediaAvaliacao,
     required this.usuario,
+    required this.imageUrl,
+    this.youtubeId,
     List<Etiqueta>? etiquetas,
   }) : etiquetas = etiquetas ?? [];
 
@@ -34,6 +38,7 @@ class Receita {
           .toList(), // Convertendo a lista de ingredientes
       'preparo': preparo,
       'usuario': usuario.toJson(),
+      'youtubeId': youtubeId,
       'etiquetas': etiquetas.map((etiqueta) => etiqueta.toJson()).toList(),
     };
   }
@@ -50,6 +55,8 @@ class Receita {
       preparo: json['preparo'] ?? '',
       usuario: Usuario.fromJson(json['usuario']),
       mediaAvaliacao: json['mediaAvaliacao'],
+      imageUrl: json['imageUrl'] ?? '',
+      youtubeId: json['youtubeId'] ?? '',
       etiquetas: (json['etiquetas'] as List<dynamic>?)
               ?.map((etiqueta) => Etiqueta.fromJson(etiqueta))
               .toList() ??
@@ -59,6 +66,6 @@ class Receita {
 
   @override
   String toString() {
-    return 'Receita{id: $id, titulo: $titulo, descricao: $descricao, ingredientes: $ingredientes, preparo: $preparo, usuario: ${usuario.nome}, etiquetas: $etiquetas}';
+    return 'Receita{id: $id, titulo: $titulo, descricao: $descricao, ingredientes: $ingredientes, preparo: $preparo, usuario: ${usuario.nome}, imageUrl: $imageUrl, youtubeId: $youtubeId, etiquetas: $etiquetas}';
   }
 }

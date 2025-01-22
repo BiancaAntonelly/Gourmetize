@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gourmetize/model/ingrediente.dart';
+import 'package:gourmetize/model/anotacao_receita.dart';
 import 'package:gourmetize/model/receita.dart';
 import 'package:gourmetize/model/usuario.dart';
 import 'package:gourmetize/provider/auth_provider.dart';
 import 'package:gourmetize/provider/avaliacao_provider.dart';
 import 'package:gourmetize/provider/carrinho_provider.dart';
+import 'package:gourmetize/service/anotacao_service.dart';
 import 'package:gourmetize/widgets/etiquetas_receita.dart';
 import 'package:gourmetize/widgets/page_wrapper.dart';
 import 'package:gourmetize/widgets/avaliacao_card.dart';
@@ -13,6 +15,8 @@ import 'package:gourmetize/widgets/nova_avaliacao.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gourmetize/widgets/styled_text.dart';
 import 'package:provider/provider.dart';
+import 'package:gourmetize/config/app_config.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VisualizarReceita extends StatefulWidget {
   final Receita receita;
@@ -34,10 +38,24 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   bool _isLoadingAvaliacoes = true;
   List<String> _carrinho = [];
   late Usuario usuarioLogado;
+  AnotacaoReceita? _anotacao;
+  bool _isLoadingAnotacao = true;
+  final AnotacaoService _anotacaoService = AnotacaoService();
+
   @override
   void initState() {
     super.initState();
     _receita = widget.receita;
+    if (_receita.youtubeId != null && _receita.youtubeId!.isNotEmpty) {
+      _youtubeController = YoutubePlayerController(
+        initialVideoId: _receita.youtubeId ?? '',
+        flags: YoutubePlayerFlags(
+          autoPlay: false,
+          mute: false,
+        ),
+      );
+    }
+
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
 
     _tabController.addListener(() {
@@ -49,6 +67,16 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
         Provider.of<AuthProvider>(context, listen: false).usuarioLogado!;
 
     _carregarAvaliacoes(); // Adiciona a chamada para carregar as avaliações
+
+    _anotacaoService
+        .getAnotacao(usuarioLogado.id, widget.receita.id)
+        .then((value) {
+      setState(() {
+        _anotacao = value;
+
+        _isLoadingAnotacao = false;
+      });
+    });
   }
 
   void _carregarAvaliacoes() {
@@ -65,6 +93,7 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
   @override
   void dispose() {
     _tabController.dispose();
+    _youtubeController.dispose();
     super.dispose();
   }
 
@@ -95,6 +124,12 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
     }
   }
 
+  String _getImageUrl() {
+    return AppConfig.minioUrl + _receita.imageUrl;
+  }
+
+  late YoutubePlayerController _youtubeController;
+
   @override
   Widget build(BuildContext context) {
     final avaliacoes = Provider.of<AvaliacaoProvider>(context).avaliacoes;
@@ -123,13 +158,26 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if (_receita.youtubeId != null &&
+                          _receita.youtubeId!.isNotEmpty)
+                        YoutubePlayer(
+                          controller: _youtubeController,
+                          showVideoProgressIndicator: true,
+                          progressIndicatorColor:
+                              Theme.of(context).colorScheme.primary,
+                          onReady: () {
+                            print('YouTube player pronto!');
+                          },
+                        ),
                       SizedBox(
                         height: 180,
                         width: double.infinity,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            'assets/receita-meta2.jpeg',
+                          child: Image(
+                            image: _receita.imageUrl.isEmpty
+                                ? AssetImage('assets/receita-meta2.jpeg')
+                                : NetworkImage(_getImageUrl()),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -193,11 +241,42 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                       SizedBox(height: 20),
                       StyledText(title: 'Modo de preparo'),
                       Text(_receita.preparo, style: TextStyle(fontSize: 18)),
-                      SizedBox(height: 20),
+                      if (_receita.etiquetas.length > 0) SizedBox(height: 20),
                       if (_receita.etiquetas.length > 0)
                         StyledText(title: 'Etiquetas'),
                       if (_receita.etiquetas.length > 0)
-                        EtiquetasReceita(receita: _receita)
+                        EtiquetasReceita(receita: _receita),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          StyledText(title: 'Suas Anotações'),
+                          if (!_isLoadingAnotacao)
+                            IconButton(
+                              icon: Icon(Icons.edit,
+                                  color: Theme.of(context).colorScheme.primary),
+                              onPressed: () => _openModalAnotacoes(),
+                            ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      _isLoadingAnotacao
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : Text(
+                              _anotacao != null &&
+                                      _anotacao!.anotacao.length > 0
+                                  ? _anotacao!.anotacao
+                                  : 'Adicione uma anotação para essa receita',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: _anotacao == null
+                                    ? Colors.grey
+                                    : Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                      SizedBox(height: 120),
                     ],
                   ),
                 ),
@@ -259,13 +338,15 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
                       color: Theme.of(context).colorScheme.secondary),
                   backgroundColor: Theme.of(context).colorScheme.primary,
                 ))
-          : (_selectedTabIndex == 1 && !_isLoadingAvaliacoes
-              ? FloatingActionButton(
-                  onPressed: openAvaliacao,
-                  child: Icon(Icons.star,
-                      color: Theme.of(context).colorScheme.secondary),
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                )
+          : (_selectedTabIndex == 1
+              ? _isLoadingAvaliacoes
+                  ? null
+                  : FloatingActionButton(
+                      onPressed: openAvaliacao,
+                      child: Icon(Icons.star,
+                          color: Theme.of(context).colorScheme.secondary),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                    )
               : FloatingActionButton(
                   onPressed: _abrirCarrinho,
                   child: Icon(Icons.shopping_cart,
@@ -372,6 +453,71 @@ class _VisualizarReceitaState extends State<VisualizarReceita>
               ),
             );
           },
+        );
+      },
+    );
+  }
+
+  void _openModalAnotacoes() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController _anotacoesController = TextEditingController(
+          text: _anotacao?.anotacao,
+        );
+        return AlertDialog(
+          title: Text(
+            'Suas Anotações',
+            style: TextStyle(fontSize: 20),
+          ),
+          content: TextField(
+            controller: _anotacoesController,
+            maxLines: 5,
+            style: TextStyle(fontSize: 18),
+            decoration: InputDecoration(
+              hintText: 'Escreva suas anotações aqui...',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                AnotacaoReceita anotacaoReceita;
+
+                if (_anotacao != null) {
+                  anotacaoReceita = await _anotacaoService.atualizarAnotacao(
+                    AnotacaoReceita(
+                      id: _anotacao!.id,
+                      anotacao: _anotacoesController.text,
+                      usuario: usuarioLogado,
+                      receita: _receita,
+                    ),
+                  );
+                } else {
+                  anotacaoReceita = await _anotacaoService.criarAnotacao(
+                    AnotacaoReceita(
+                      anotacao: _anotacoesController.text,
+                      usuario: usuarioLogado,
+                      receita: _receita,
+                    ),
+                  );
+                }
+
+                setState(() {
+                  _anotacao = anotacaoReceita;
+                });
+
+                Navigator.of(context).pop();
+              },
+              child: Text('Salvar'),
+            ),
+          ],
         );
       },
     );

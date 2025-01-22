@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../model/receita.dart';
 import '../screens/register_recipe.dart';
 import '../widgets/nota_receita.dart';
+import 'package:gourmetize/config/app_config.dart';
 
 import '../provider/receita_provider.dart';
 
@@ -41,6 +42,10 @@ class _ReceitaCardState extends State<ReceitaCard> {
     return widget.receita.ingredientes
         .map((ingrediente) => ingrediente.ingredient)
         .toList();
+  }
+
+  String _getImageUrl() {
+    return AppConfig.minioUrl + widget.receita.imageUrl;
   }
 
   Future<void> _showDeleteConfirmationDialog(BuildContext context) async {
@@ -132,16 +137,17 @@ class _ReceitaCardState extends State<ReceitaCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            // Imagem e título sobrepostos
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                  child: Image.asset(
-                    'assets/receita-meta2.jpeg',
-                    fit: BoxFit.cover,
-                    width: double.infinity,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image(
                     height: 180,
+                    width: double.infinity,
+                    image: widget.receita.imageUrl.isEmpty
+                        ? AssetImage('assets/receita-meta2.jpeg')
+                        : NetworkImage(_getImageUrl()),
+                    fit: BoxFit.cover,
                   ),
                 ),
                 Positioned(
