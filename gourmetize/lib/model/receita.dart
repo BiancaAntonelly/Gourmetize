@@ -44,6 +44,22 @@ class Receita {
     };
   }
 
+  Map<String, dynamic> toSecondaryJson() {
+    return {
+      'id': id == 0 ? null : id,
+      'titulo': titulo,
+      'descricao': descricao,
+      'ingredientes': ingredientes
+          .map((ingrediente) => ingrediente.toSecondaryJson())
+          .toList(), // Convertendo a lista de ingredientes
+      'preparo': preparo,
+      'usuario': usuario.toJson(),
+      'youtubeId': youtubeId,
+      'imageUrl': imageUrl,
+      'etiquetas': etiquetas.map((etiqueta) => etiqueta.toJson()).toList(),
+    };
+  }
+
   factory Receita.fromJson(Map<String, dynamic> json) {
     return Receita(
       id: json['id'],

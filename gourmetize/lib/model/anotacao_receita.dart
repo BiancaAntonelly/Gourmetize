@@ -28,7 +28,7 @@ class AnotacaoReceita {
       'id': id == 0 ? null : id,
       'anotacao': anotacao,
       'usuario': usuario.toJson(),
-      'receita': receita.toJson(),
+      'receita': receita.toSecondaryJson(),
     };
   }
 }

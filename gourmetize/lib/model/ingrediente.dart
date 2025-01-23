@@ -16,6 +16,16 @@ class Ingrediente {
     };
   }
 
+  Map<String, dynamic> toSecondaryJson() {
+    return {
+      'ingrediente': {
+        'nome': ingredient,
+      },
+      'unidade': unidade,
+      'quantidade': quantidade,
+    };
+  }
+
   factory Ingrediente.fromJson(Map<String, dynamic> json) {
     return Ingrediente(
       ingredient: json['ingredient'] ?? json['ingrediente']['nome'],

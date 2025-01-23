@@ -79,6 +79,9 @@ class _RegisterRevenueState extends State<RegisterRevenue> {
       _etiquetas.addAll(widget.receitaParaEdicao!.etiquetas);
       descricaoController.text = widget.receitaParaEdicao!.descricao;
       preparoController.text = widget.receitaParaEdicao!.preparo;
+      if (widget.receitaParaEdicao!.youtubeId != null) {
+        youtubeIdController.text = widget.receitaParaEdicao!.youtubeId!;
+      }
 
       _etiquetas.addAll(widget.receitaParaEdicao!.etiquetas);
     }

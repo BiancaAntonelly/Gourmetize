@@ -8,8 +8,7 @@ class UploadService {
   final String baseUrl = AppConfig.baseUrl + '/images';
 
   Future<String> uploadImage(File imageFile, int userId) async {
-
-  final url = Uri.parse('$baseUrl/upload');
+    final url = Uri.parse('$baseUrl/upload');
 
     try {
       final request = http.MultipartRequest('POST', url);
@@ -27,14 +26,15 @@ class UploadService {
       final response = await request.send();
 
       if (response.statusCode == 200) {
-
         final responseBody = await response.stream.bytesToString();
         print('Upload realizado com sucesso: $responseBody');
         return responseBody.toString();
       } else {
         print('Erro ao fazer upload da imagem. Código: ${response.statusCode}');
       }
-      return Future.error('Erro ao fazer upload da imagem. Código: ${response.statusCode}');
+
+      return Future.error(
+          'Erro ao fazer upload da imagem. Código: ${response.statusCode}');
     } catch (e) {
       print('Erro ao fazer upload da imagem: $e');
       return Future.error('Erro ao fazer upload da imagem.');

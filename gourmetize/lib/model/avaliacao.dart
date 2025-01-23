@@ -24,7 +24,7 @@ class Avaliacao {
       'nota': nota,
       'comentario': comentario,
       'usuario': usuario.toJson(),
-      'receita': receita.toJson(),
+      'receita': receita.toSecondaryJson(),
       'imageUrl': imageUrl,
     };
   }
